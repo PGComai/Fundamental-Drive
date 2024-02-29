@@ -1,0 +1,24 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://c3ncn0d2knyfh"]
+
+[ext_resource type="Shader" uid="uid://bugqovsdwtj60" path="res://textures/ground.tres" id="1_fteax"]
+[ext_resource type="FastNoiseLite" uid="uid://dp04ywvtqogcm" path="res://textures/crackled_noise.tres" id="2_0af6t"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8n0gm"]
+seamless = true
+seamless_blend_skirt = 0.075
+normalize = false
+noise = ExtResource("2_0af6t")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vdpek"]
+seamless = true
+seamless_blend_skirt = 0.075
+as_normal_map = true
+noise = ExtResource("2_0af6t")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_fteax")
+shader_parameter/ColorParameter = Color(0.239216, 0.239216, 0.239216, 1)
+shader_parameter/ColorParameter2 = Color(0.121569, 0.113725, 0.113725, 1)
+shader_parameter/tex_frg_2 = SubResource("NoiseTexture2D_8n0gm")
+shader_parameter/tex_frg_7 = SubResource("NoiseTexture2D_vdpek")

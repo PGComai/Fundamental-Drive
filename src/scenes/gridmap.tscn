@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://sn4uafdpghoe"]
+
+[ext_resource type="Material" uid="uid://c3ncn0d2knyfh" path="res://textures/ground_material.tres" id="1_5iah5"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wd4x5"]
+size = Vector2(200, 200)
+
+[node name="Gridmap" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_overlay = ExtResource("1_5iah5")
+mesh = SubResource("PlaneMesh_wd4x5")

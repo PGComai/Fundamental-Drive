@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cnrw6tayvx0w5"
+path="res://.godot/imported/spherecar.obj-4615816d0d61190f9caa72c6ddf53edf.mesh"
+
+[deps]
+
+files=["res://.godot/imported/spherecar.obj-4615816d0d61190f9caa72c6ddf53edf.mesh"]
+
+source_file="res://textures/spherecar.obj"
+dest_files=["res://.godot/imported/spherecar.obj-4615816d0d61190f9caa72c6ddf53edf.mesh", "res://.godot/imported/spherecar.obj-4615816d0d61190f9caa72c6ddf53edf.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b8jk5ww3o3t4t"
+path="res://.godot/imported/rallycar.obj-6a6730e56ecfb698d3b00c9661be58bd.mesh"
+
+[deps]
+
+files=["res://.godot/imported/rallycar.obj-6a6730e56ecfb698d3b00c9661be58bd.mesh"]
+
+source_file="res://textures/rallycar.obj"
+dest_files=["res://.godot/imported/rallycar.obj-6a6730e56ecfb698d3b00c9661be58bd.mesh", "res://.godot/imported/rallycar.obj-6a6730e56ecfb698d3b00c9661be58bd.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

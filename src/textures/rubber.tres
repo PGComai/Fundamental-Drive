@@ -1,0 +1,173 @@
+[gd_resource type="VisualShader" load_steps=16 format=3 uid="uid://4ohetevf3vhs"]
+
+[sub_resource type="VisualShaderNodeClamp" id="VisualShaderNodeClamp_xoo4o"]
+default_input_values = [0, 0.0, 1, 0.0, 2, 0.4]
+
+[sub_resource type="VisualShaderNodeRemap" id="VisualShaderNodeRemap_w5u7j"]
+default_input_values = [1, 0.0, 2, 0.4, 3, 0.0, 4, 1.0]
+
+[sub_resource type="Curve" id="Curve_tp4gb"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.775524, 0), 0.0, 0.0, 0, 0, Vector2(0.784937, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_n5mio"]
+curve = SubResource("Curve_tp4gb")
+
+[sub_resource type="VisualShaderNodeCurveTexture" id="VisualShaderNodeCurveTexture_nwfg5"]
+texture = SubResource("CurveTexture_n5mio")
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_8vkva"]
+function = 31
+
+[sub_resource type="VisualShaderNodeTextureParameterTriplanar" id="VisualShaderNodeTextureParameterTriplanar_3yeuf"]
+parameter_name = "TextureParameterTriplanar"
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_vx840"]
+parameter_name = "HubColor"
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_5ink4"]
+parameter_name = "TireColor"
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_j3140"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2, Quaternion(0.5, 0.5, 0.5, 0.5)]
+op_type = 5
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_vjc0c"]
+input_name = "node_position_world"
+
+[sub_resource type="VisualShaderNodeVectorDistance" id="VisualShaderNodeVectorDistance_adbdu"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_xig6k"]
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeTransformVecMult" id="VisualShaderNodeTransformVecMult_mefc7"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_45md1"]
+input_name = "inv_view_matrix"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform vec4 HubColor : source_color;
+uniform sampler2D TextureParameterTriplanar;
+uniform sampler2D curve_frg_12 : repeat_disable;
+
+
+// TextureParameterTriplanar
+	vec4 triplanar_texture(sampler2D p_sampler, vec3 p_weights, vec3 p_triplanar_pos) {
+		vec4 samp = vec4(0.0);
+		samp += texture(p_sampler, p_triplanar_pos.xy) * p_weights.z;
+		samp += texture(p_sampler, p_triplanar_pos.xz) * p_weights.y;
+		samp += texture(p_sampler, p_triplanar_pos.zy * vec2(-1.0, 1.0)) * p_weights.x;
+		return samp;
+	}
+
+	uniform vec3 triplanar_scale = vec3(1.0, 1.0, 1.0);
+	uniform vec3 triplanar_offset;
+	uniform float triplanar_sharpness = 0.5;
+
+	varying vec3 triplanar_power_normal;
+	varying vec3 triplanar_pos;
+
+void vertex() {
+// TextureParameterTriplanar
+	{
+		triplanar_power_normal = pow(abs(NORMAL), vec3(triplanar_sharpness));
+		triplanar_power_normal /= dot(triplanar_power_normal, vec3(1.0));
+		triplanar_pos = VERTEX * triplanar_scale + triplanar_offset;
+		triplanar_pos *= vec3(1.0, -1.0, 1.0);
+	}
+}
+
+void fragment() {
+// ColorParameter:2
+	vec4 n_out2p0 = HubColor;
+
+
+// TextureParameterTriplanar:14
+	vec4 n_out14p0 = triplanar_texture(TextureParameterTriplanar, triplanar_power_normal, triplanar_pos);
+
+
+// Input:9
+	mat4 n_out9p0 = INV_VIEW_MATRIX;
+
+
+// Input:7
+	vec3 n_out7p0 = VERTEX;
+
+
+// TransformVectorMult:8
+	vec3 n_out8p0 = (n_out9p0 * vec4(n_out7p0, 1.0)).xyz;
+
+
+// Input:5
+	vec3 n_out5p0 = NODE_POSITION_WORLD;
+
+
+// Distance:6
+	float n_out6p0 = distance(n_out8p0, n_out5p0);
+
+
+// Clamp:10
+	float n_in10p1 = 0.00000;
+	float n_in10p2 = 0.40000;
+	float n_out10p0 = clamp(n_out6p0, n_in10p1, n_in10p2);
+
+
+	float n_out11p0;
+// Remap:11
+	float n_in11p1 = 0.00000;
+	float n_in11p2 = 0.40000;
+	float n_in11p3 = 0.00000;
+	float n_in11p4 = 1.00000;
+	{
+		float __input_range = n_in11p2 - n_in11p1;
+		float __output_range = n_in11p4 - n_in11p3;
+		n_out11p0 = n_in11p3 + __output_range * ((n_out10p0 - n_in11p1) / __input_range);
+	}
+
+
+// CurveTexture:12
+	float n_out12p0 = texture(curve_frg_12, vec2(n_out11p0)).r;
+
+
+// Mix:4
+	vec4 n_out4p0 = mix(n_out2p0, n_out14p0, vec4(n_out12p0));
+
+
+// Output:0
+	ALBEDO = vec3(n_out4p0.xyz);
+	ROUGHNESS = n_out12p0;
+
+
+}
+"
+nodes/fragment/0/position = Vector2(3240, 680)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_vx840")
+nodes/fragment/2/position = Vector2(1260, -40)
+nodes/fragment/3/node = SubResource("VisualShaderNodeColorParameter_5ink4")
+nodes/fragment/3/position = Vector2(1040, 380)
+nodes/fragment/4/node = SubResource("VisualShaderNodeMix_j3140")
+nodes/fragment/4/position = Vector2(2340, 340)
+nodes/fragment/5/node = SubResource("VisualShaderNodeInput_vjc0c")
+nodes/fragment/5/position = Vector2(-460, 1320)
+nodes/fragment/6/node = SubResource("VisualShaderNodeVectorDistance_adbdu")
+nodes/fragment/6/position = Vector2(320, 1140)
+nodes/fragment/7/node = SubResource("VisualShaderNodeInput_xig6k")
+nodes/fragment/7/position = Vector2(-800, 1060)
+nodes/fragment/8/node = SubResource("VisualShaderNodeTransformVecMult_mefc7")
+nodes/fragment/8/position = Vector2(-220, 900)
+nodes/fragment/9/node = SubResource("VisualShaderNodeInput_45md1")
+nodes/fragment/9/position = Vector2(-740, 820)
+nodes/fragment/10/node = SubResource("VisualShaderNodeClamp_xoo4o")
+nodes/fragment/10/position = Vector2(660, 1060)
+nodes/fragment/11/node = SubResource("VisualShaderNodeRemap_w5u7j")
+nodes/fragment/11/position = Vector2(960, 1040)
+nodes/fragment/12/node = SubResource("VisualShaderNodeCurveTexture_nwfg5")
+nodes/fragment/12/position = Vector2(1540, 920)
+nodes/fragment/13/node = SubResource("VisualShaderNodeFloatFunc_8vkva")
+nodes/fragment/13/position = Vector2(2140, 1060)
+nodes/fragment/14/node = SubResource("VisualShaderNodeTextureParameterTriplanar_3yeuf")
+nodes/fragment/14/position = Vector2(220, -120)
+nodes/fragment/connections = PackedInt32Array(2, 0, 4, 0, 4, 0, 0, 0, 5, 0, 6, 1, 7, 0, 8, 1, 9, 0, 8, 0, 8, 0, 6, 0, 6, 0, 10, 0, 10, 0, 11, 0, 11, 0, 12, 0, 12, 0, 4, 2, 12, 0, 13, 0, 14, 0, 4, 1, 12, 0, 0, 3)

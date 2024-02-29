@@ -1,0 +1,664 @@
+[gd_scene load_steps=37 format=3 uid="uid://dnc70ycajbrmd"]
+
+[ext_resource type="Script" path="res://scripts/car.gd" id="1_h44u5"]
+[ext_resource type="Script" path="res://scripts/CamXForm.gd" id="1_sdi5q"]
+[ext_resource type="Script" path="res://scripts/Chassis.gd" id="2_arpt0"]
+[ext_resource type="Script" path="res://scripts/wheel.gd" id="3_b08dv"]
+[ext_resource type="Shader" uid="uid://4ohetevf3vhs" path="res://textures/rubber.tres" id="3_onalh"]
+[ext_resource type="ArrayMesh" uid="uid://5v11hqpbv1t7" path="res://textures/rallycar soft.obj" id="3_qkukt"]
+[ext_resource type="ArrayMesh" uid="uid://bk643hvj3litl" path="res://textures/rallycar spoiler.obj" id="4_650ai"]
+[ext_resource type="FastNoiseLite" uid="uid://cbjbroke477lp" path="res://textures/rubber_noise.tres" id="4_qopmw"]
+[ext_resource type="AudioStream" uid="uid://brphpqvt76krr" path="res://sounds/engine-shaver.ogg" id="6_1qg6e"]
+[ext_resource type="Script" path="res://addons/midi/MidiPlayer.gd" id="9_08hwx"]
+
+[sub_resource type="Curve" id="Curve_5gdyi"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_v47ld"]
+_data = [Vector2(0, 0.267976), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_kwmb6"]
+_data = [Vector2(0, 0.594571), 0.0, 0.0, 0, 0, Vector2(0.86747, 0.43315), 0.0, 0.0, 0, 0, Vector2(1, 0.868611), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mjyfr"]
+noise_type = 4
+frequency = 0.0236
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lllna"]
+seamless = true
+as_normal_map = true
+bump_strength = 0.7
+noise = SubResource("FastNoiseLite_mjyfr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ic7ip"]
+albedo_color = Color(0.592157, 0.247059, 0.239216, 1)
+roughness = 0.02
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_lllna")
+uv1_triplanar = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qa6lw"]
+noise_type = 2
+frequency = 0.1761
+cellular_jitter = 0.0
+cellular_return_type = 3
+domain_warp_type = 1
+domain_warp_amplitude = 2.46
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 10
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_no711"]
+seamless = true
+as_normal_map = true
+bump_strength = 4.1
+noise = SubResource("FastNoiseLite_qa6lw")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uhtnq"]
+albedo_color = Color(0.117647, 0.117647, 0.117647, 1)
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_no711")
+clearcoat_enabled = true
+uv1_triplanar = true
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_b2hp3"]
+points = PackedVector3Array(0.463725, 1.16061, 0.804567, -0.592202, -0.646505, 0.126094, 0.565157, -1.06564, 0.113971, 0.506528, 1.02018, 0.0142642, -0.54368, 0.448378, 0.914802, -0.563654, 1.23184, 0.158534, 0.532074, -0.588345, 0.726837, -0.556968, -0.955777, 0.505714, -0.568673, 1.39751, 0.700872, -0.482234, -0.95941, 0.00834799, 0.562971, 1.40155, 0.701566, 0.0878263, 0.0773165, 0.945589, -0.510044, 1.01333, 0.0179832, 0.579581, 0.113212, 0.881698, 0.478286, -0.967999, 0.00464681, 0.587392, 1.14226, 0.124425, -0.537756, -0.401669, 0.799628, 0.520724, -1.01489, 0.467273, 0.0517724, 0.633068, 0.950647, -0.529201, -1.09503, 0.155879, -0.0600075, 1.31368, 0.805474, 0.0514094, -0.513132, 0.800073, 0.556109, 1.23182, 0.158541, 0.534858, 0.484672, 0.91378, -0.548159, 0.97634, 0.843297, -0.591371, 1.02254, 0.126603, 0.585678, -0.761989, 0.125475, -0.0593629, -0.73942, 0.69057, 0.58146, -0.264415, 0.807497, 0.586773, 1.33169, 0.696126, -0.541907, -0.109029, 0.876254, -0.490917, -1.09651, 0.272395)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_cj3f5"]
+radius = 0.25
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8avk3"]
+points = PackedVector3Array(-0.428504, 1.15588, 0.699724, 0.868726, 1.79652, 1.19965, 0.914286, 1.64142, 1.21389, -0.914286, 1.64142, 1.21389, 0.428504, 1.41302, 0.64257, -0.914286, 1.81289, 1.12816, 0.610068, 1.37005, 1.15701, 0.428504, 1.15588, 0.699724, -0.609954, 1.37007, 1.15697, -0.428504, 1.41302, 0.64257, 0.914286, 1.81289, 1.12816, -0.857009, 1.47014, 1.09958, 0.857009, 1.47014, 1.09958, -0.428504, 1.15588, 0.756878, -0.868728, 1.79652, 1.19965, 0.28795, 1.32842, 1.12019, 0.428504, 1.15588, 0.756878, 0.428504, 1.35591, 0.64257, 0.428504, 1.44158, 0.671147, -0.885647, 1.52719, 1.09958, 0.885647, 1.52719, 1.09958, -0.288117, 1.32833, 1.1203, -0.428504, 1.35591, 0.64257, -0.799911, 1.41302, 1.09958, 0.799911, 1.41302, 1.09958, -0.428504, 1.44158, 0.671147, 0.796372, 1.47115, 1.16712, -0.796306, 1.47115, 1.1671, -0.914286, 1.61286, 1.12816, 0.914286, 1.61286, 1.12816, -0.72708, 1.41952, 1.1619, 0.727089, 1.41952, 1.16191)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nrsul"]
+friction = 0.0
+rough = true
+bounce = 1.0
+absorbent = true
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_3u4n5"]
+height = 0.2
+radius = 0.4
+
+[sub_resource type="Gradient" id="Gradient_10k2o"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.244224, 1)
+colors = PackedColorArray(0.00489983, 0.00489983, 0.00489983, 1, 0.195545, 0.195545, 0.195545, 1)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1b32e"]
+seamless = true
+color_ramp = SubResource("Gradient_10k2o")
+noise = ExtResource("4_qopmw")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xtwv1"]
+render_priority = 0
+shader = ExtResource("3_onalh")
+shader_parameter/HubColor = Color(0.490196, 0.490196, 0.490196, 1)
+shader_parameter/triplanar_scale = Vector3(0.5, 0.5, 0.5)
+shader_parameter/triplanar_offset = null
+shader_parameter/triplanar_sharpness = 0.5
+shader_parameter/TextureParameterTriplanar = SubResource("NoiseTexture2D_1b32e")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1kopq"]
+material = SubResource("ShaderMaterial_xtwv1")
+top_radius = 0.4
+bottom_radius = 0.4
+height = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_ijdeo"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c0l4a"]
+albedo_color = Color(0.584314, 0.584314, 0.584314, 1)
+distance_fade_min_distance = 1.5
+distance_fade_max_distance = 6.9
+
+[sub_resource type="Curve" id="Curve_3uvon"]
+max_value = 100.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.275862, 100), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tp3p6"]
+curve = SubResource("Curve_3uvon")
+
+[sub_resource type="Curve" id="Curve_3libn"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.529781, 0.71489), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ljrpq"]
+curve = SubResource("Curve_3libn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gym7y"]
+particle_flag_align_y = true
+emission_shape = 3
+emission_box_extents = Vector3(0.2, 0.05, 0.01)
+direction = Vector3(0, 0, 1)
+spread = 15.166
+flatness = 0.486
+gravity = Vector3(0, 0.3, 0)
+damping_curve = SubResource("CurveTexture_tp3p6")
+scale_curve = SubResource("CurveTexture_ljrpq")
+turbulence_enabled = true
+collision_mode = 1
+collision_friction = 0.02
+collision_bounce = 0.0
+collision_use_scale = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_v2hhu"]
+radius = 0.3
+height = 0.6
+radial_segments = 16
+rings = 8
+
+[node name="Car" type="Node3D"]
+script = ExtResource("1_h44u5")
+rpm_torque_response = SubResource("Curve_5gdyi")
+grip_curve = SubResource("Curve_v47ld")
+sideways_curve = SubResource("Curve_kwmb6")
+
+[node name="Chassis" type="RigidBody3D" parent="." groups=["chassis"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.266479, 0)
+collision_layer = 4
+collision_mask = 4
+mass = 9.0
+can_sleep = false
+continuous_cd = true
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("2_arpt0")
+
+[node name="ChassisMesh" type="MeshInstance3D" parent="Chassis"]
+transform = Transform3D(-1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 0, -0.3, 0)
+layers = 16385
+mesh = ExtResource("3_qkukt")
+surface_material_override/0 = SubResource("StandardMaterial3D_ic7ip")
+
+[node name="Spoiler" type="MeshInstance3D" parent="Chassis/ChassisMesh"]
+mesh = ExtResource("4_650ai")
+surface_material_override/0 = SubResource("StandardMaterial3D_uhtnq")
+
+[node name="CollisionChassis" type="CollisionShape3D" parent="Chassis"]
+transform = Transform3D(-1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 0, -0.3, 0)
+shape = SubResource("ConvexPolygonShape3D_b2hp3")
+
+[node name="JointFL" type="Generic6DOFJoint3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.266, -1.2)
+node_a = NodePath("..")
+node_b = NodePath("../../WheelFL")
+linear_limit_y/upper_distance = 0.1
+linear_limit_y/softness = 0.12
+linear_limit_y/restitution = 0.4
+linear_limit_z/softness = 0.05
+linear_limit_z/restitution = 1.0
+linear_spring_y/enabled = true
+linear_spring_y/stiffness = 0.915
+linear_spring_y/damping = 0.475
+linear_spring_y/equilibrium_point = -0.075
+angular_limit_y/upper_angle = 0.523599
+angular_limit_y/lower_angle = -0.523599
+angular_spring_x/stiffness = 0.1
+angular_spring_x/damping = 0.4
+angular_spring_y/stiffness = 0.1
+angular_spring_y/damping = 0.4
+angular_spring_z/stiffness = 0.1
+angular_spring_z/damping = 0.4
+
+[node name="JointFR" type="Generic6DOFJoint3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.266, -1.2)
+node_a = NodePath("..")
+node_b = NodePath("../../WheelFR")
+linear_limit_y/upper_distance = 0.1
+linear_limit_y/softness = 0.12
+linear_limit_y/restitution = 0.4
+linear_limit_z/softness = 0.05
+linear_limit_z/restitution = 1.0
+linear_spring_y/enabled = true
+linear_spring_y/stiffness = 0.915
+linear_spring_y/damping = 0.475
+linear_spring_y/equilibrium_point = -0.075
+angular_limit_y/upper_angle = 0.523599
+angular_limit_y/lower_angle = -0.523599
+angular_spring_x/stiffness = 0.1
+angular_spring_x/damping = 0.4
+angular_spring_y/stiffness = 0.1
+angular_spring_y/damping = 0.4
+angular_spring_z/stiffness = 0.1
+angular_spring_z/damping = 0.4
+
+[node name="JointBL" type="Generic6DOFJoint3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.266, 1.2)
+node_a = NodePath("..")
+node_b = NodePath("../../WheelBL")
+linear_limit_y/upper_distance = 0.1
+linear_limit_y/softness = 0.12
+linear_limit_y/restitution = 0.4
+linear_limit_z/softness = 0.05
+linear_limit_z/restitution = 1.0
+linear_spring_y/enabled = true
+linear_spring_y/stiffness = 0.915
+linear_spring_y/damping = 0.475
+linear_spring_y/equilibrium_point = -0.075
+angular_spring_x/stiffness = 0.1
+angular_spring_x/damping = 0.4
+angular_spring_y/stiffness = 0.1
+angular_spring_y/damping = 0.4
+angular_spring_z/stiffness = 0.1
+angular_spring_z/damping = 0.4
+
+[node name="JointBR" type="Generic6DOFJoint3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.266, 1.2)
+node_a = NodePath("..")
+node_b = NodePath("../../WheelBR")
+linear_limit_y/upper_distance = 0.1
+linear_limit_y/softness = 0.12
+linear_limit_y/restitution = 0.4
+linear_limit_z/softness = 0.05
+linear_limit_z/restitution = 1.0
+linear_spring_y/enabled = true
+linear_spring_y/stiffness = 0.915
+linear_spring_y/damping = 0.475
+linear_spring_y/equilibrium_point = -0.075
+angular_spring_x/stiffness = 0.1
+angular_spring_x/damping = 0.4
+angular_spring_y/stiffness = 0.1
+angular_spring_y/damping = 0.4
+angular_spring_z/stiffness = 0.1
+angular_spring_z/damping = 0.4
+
+[node name="FlippedCast" type="RayCast3D" parent="Chassis"]
+target_position = Vector3(0, 1, 0)
+
+[node name="CamBase" type="Node3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.266479, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="Chassis/CamBase"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+collision_mask = 9
+shape = SubResource("SphereShape3D_cj3f5")
+spring_length = 6.0
+margin = 0.04
+
+[node name="CamXForm" type="Node3D" parent="Chassis/CamBase/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 0.883529, 0.468377, 0, -0.468377, 0.883529, 0, 0, 0)
+script = ExtResource("1_sdi5q")
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000305176, 0.137215, 0.106761)
+size = Vector3(1.19788, 0.944625, 2.44984)
+
+[node name="AudioStreamPlayerEngine" type="AudioStreamPlayer3D" parent="Chassis"]
+stream = ExtResource("6_1qg6e")
+volume_db = 4.782
+autoplay = true
+
+[node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
+transform = Transform3D(-1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 0, -0.3, 0)
+shape = SubResource("ConvexPolygonShape3D_8avk3")
+
+[node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1.2)
+collision_layer = 2
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_nrsul")
+can_sleep = false
+continuous_cd = true
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("3_b08dv")
+car = NodePath("..")
+diameter = 0.8
+mesh = NodePath("MeshInstance3D")
+smoke = NodePath("SmokeFL")
+attractor = NodePath("WheelAttractor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WheelFL"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_3u4n5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WheelFL"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_1kopq")
+
+[node name="marker" type="MeshInstance3D" parent="WheelFL/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5651, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_ijdeo")
+
+[node name="SmokeFL" type="GPUParticles3D" parent="WheelFL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+material_overlay = SubResource("StandardMaterial3D_c0l4a")
+cast_shadow = 0
+emitting = false
+amount = 64
+lifetime = 0.36
+fixed_fps = 60
+interpolate = false
+process_material = SubResource("ParticleProcessMaterial_gym7y")
+draw_pass_1 = SubResource("SphereMesh_v2hhu")
+
+[node name="WheelAttractor" type="GPUParticlesAttractorSphere3D" parent="WheelFL"]
+strength = 128.0
+attenuation = 0.901251
+radius = 0.51
+
+[node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelFL"]
+radius = 0.368013
+
+[node name="WheelFR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1.2)
+collision_layer = 2
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_nrsul")
+can_sleep = false
+continuous_cd = true
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("3_b08dv")
+car = NodePath("..")
+diameter = 0.8
+mesh = NodePath("MeshInstance3D")
+smoke = NodePath("SmokeFR")
+attractor = NodePath("WheelAttractor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WheelFR"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_3u4n5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WheelFR"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_1kopq")
+
+[node name="SmokeFR" type="GPUParticles3D" parent="WheelFR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+material_overlay = SubResource("StandardMaterial3D_c0l4a")
+cast_shadow = 0
+emitting = false
+amount = 64
+lifetime = 0.36
+fixed_fps = 60
+interpolate = false
+process_material = SubResource("ParticleProcessMaterial_gym7y")
+draw_pass_1 = SubResource("SphereMesh_v2hhu")
+
+[node name="WheelAttractor" type="GPUParticlesAttractorSphere3D" parent="WheelFR"]
+strength = 128.0
+attenuation = 0.901251
+radius = 0.51
+
+[node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelFR"]
+radius = 0.368013
+
+[node name="WheelBL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1.2)
+collision_layer = 2
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_nrsul")
+can_sleep = false
+continuous_cd = true
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("3_b08dv")
+car = NodePath("..")
+diameter = 0.8
+mesh = NodePath("MeshInstance3D")
+smoke = NodePath("SmokeBL")
+attractor = NodePath("WheelAttractor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WheelBL"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_3u4n5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WheelBL"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_1kopq")
+
+[node name="WheelAttractor" type="GPUParticlesAttractorSphere3D" parent="WheelBL"]
+strength = 128.0
+attenuation = 0.901251
+radius = 0.51
+
+[node name="SmokeBL" type="GPUParticles3D" parent="WheelBL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+material_overlay = SubResource("StandardMaterial3D_c0l4a")
+cast_shadow = 0
+emitting = false
+amount = 64
+lifetime = 0.36
+fixed_fps = 60
+interpolate = false
+process_material = SubResource("ParticleProcessMaterial_gym7y")
+draw_pass_1 = SubResource("SphereMesh_v2hhu")
+
+[node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelBL"]
+radius = 0.368013
+
+[node name="WheelBR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1.2)
+collision_layer = 2
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_nrsul")
+can_sleep = false
+continuous_cd = true
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("3_b08dv")
+car = NodePath("..")
+diameter = 0.8
+mesh = NodePath("MeshInstance3D")
+smoke = NodePath("SmokeBR")
+attractor = NodePath("WheelAttractor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WheelBR"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_3u4n5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WheelBR"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_1kopq")
+
+[node name="SmokeBR" type="GPUParticles3D" parent="WheelBR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+material_overlay = SubResource("StandardMaterial3D_c0l4a")
+cast_shadow = 0
+emitting = false
+amount = 64
+lifetime = 0.36
+fixed_fps = 60
+interpolate = false
+process_material = SubResource("ParticleProcessMaterial_gym7y")
+draw_pass_1 = SubResource("SphereMesh_v2hhu")
+
+[node name="WheelAttractor" type="GPUParticlesAttractorSphere3D" parent="WheelBR"]
+strength = 128.0
+attenuation = 0.901251
+radius = 0.51
+
+[node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelBR"]
+radius = 0.368013
+
+[node name="MidiPlayer" type="Node" parent="."]
+script = ExtResource("9_08hwx")
+volume_db = -12.185
+soundfont = "res://The Fixed JummBox SoundFont11.sf2"
+
+[node name="UX" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UX"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainerParams" type="VBoxContainer" parent="UX/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+alignment = 1
+
+[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+text = "Suspension Parameters"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Param1" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param1"]
+layout_mode = 2
+text = "Linear Limit Softness - "
+
+[node name="LabelValueLLSoftness" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param1"]
+layout_mode = 2
+text = "0.00 - "
+
+[node name="HSliderLLSoftness" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param1"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
+[node name="Param2" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param2"]
+layout_mode = 2
+text = "Linear Limit Restitution - "
+
+[node name="LabelValueLLRestitution" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param2"]
+layout_mode = 2
+text = "0.00 - "
+
+[node name="HSliderLLRestitution" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param2"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
+[node name="Param3" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param3"]
+layout_mode = 2
+text = "Linear Limit Damping - "
+
+[node name="LabelValueLLDamping" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param3"]
+layout_mode = 2
+text = "0.00 - "
+
+[node name="HSliderLLDamping" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param3"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
+[node name="HSeparator2" type="HSeparator" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Param4" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param4"]
+layout_mode = 2
+text = "Linear Spring Stiffness - "
+
+[node name="LabelValueSStiffness" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param4"]
+layout_mode = 2
+text = "0.00 - "
+
+[node name="HSliderSStiffness" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param4"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
+[node name="Param5" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param5"]
+layout_mode = 2
+text = "Linear Spring Damping - "
+
+[node name="LabelValueSDamping" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param5"]
+layout_mode = 2
+text = "0.00 - "
+
+[node name="HSliderSDamping" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param5"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
+[node name="HSeparator3" type="HSeparator" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+
+[node name="ButtonDefault" type="Button" parent="UX/MarginContainer/VBoxContainerParams"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Default"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UX"]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UX/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Engine Instrument: "
+
+[node name="SpinBoxEngineInstrument" type="SpinBox" parent="UX/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+max_value = 127.0
+alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UX/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UX/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Engine Percussion: "
+
+[node name="SpinBoxEnginePercussion" type="SpinBox" parent="UX/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+min_value = 35.0
+max_value = 81.0
+value = 35.0
+alignment = 1
+
+[connection signal="body_entered" from="Chassis" to="." method="_on_chassis_body_entered"]
+[connection signal="body_entered" from="WheelFL" to="." method="_on_wheel_fl_body_entered"]
+[connection signal="body_entered" from="WheelFR" to="." method="_on_wheel_fr_body_entered"]
+[connection signal="body_entered" from="WheelBL" to="." method="_on_wheel_bl_body_entered"]
+[connection signal="body_entered" from="WheelBR" to="." method="_on_wheel_br_body_entered"]
+[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param1/HSliderLLSoftness" to="." method="_on_h_slider_ll_softness_value_changed"]
+[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param2/HSliderLLRestitution" to="." method="_on_h_slider_ll_restitution_value_changed"]
+[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param3/HSliderLLDamping" to="." method="_on_h_slider_ll_damping_value_changed"]
+[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param4/HSliderSStiffness" to="." method="_on_h_slider_s_stiffness_value_changed"]
+[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param5/HSliderSDamping" to="." method="_on_h_slider_s_damping_value_changed"]
+[connection signal="button_up" from="UX/MarginContainer/VBoxContainerParams/ButtonDefault" to="." method="_on_button_default_button_up"]
+[connection signal="value_changed" from="UX/VBoxContainer/HBoxContainer/SpinBoxEngineInstrument" to="." method="_on_spin_box_engine_instrument_value_changed"]
+[connection signal="value_changed" from="UX/VBoxContainer/HBoxContainer2/SpinBoxEnginePercussion" to="." method="_on_spin_box_engine_percussion_value_changed"]

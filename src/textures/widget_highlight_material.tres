@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dp7a3pqw8vton"]
+
+[resource]
+render_priority = -1
+no_depth_test = true
+shading_mode = 0
+grow_amount = 0.847

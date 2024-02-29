@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://bjtytp2laydp1"]
+
+[ext_resource type="Script" path="res://scripts/placeable_object.gd" id="1_5s4nc"]
+[ext_resource type="Script" path="res://scripts/curve_surface.gd" id="2_27hso"]
+
+[sub_resource type="Curve3D" id="Curve3D_111qj"]
+
+[node name="PlaceableRoad" type="Node3D"]
+script = ExtResource("1_5s4nc")
+object_type = 1
+
+[node name="RoadPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_111qj")
+script = ExtResource("2_27hso")

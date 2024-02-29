@@ -1,0 +1,49 @@
+[gd_scene load_steps=9 format=3 uid="uid://chqi8b4qvcb2l"]
+
+[ext_resource type="Script" path="res://scripts/billiard_ball.gd" id="1_tfh0s"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2bb8h"]
+friction = 0.12
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_t7opa"]
+radius = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ltyx1"]
+radius = 2.0
+height = 4.0
+
+[sub_resource type="Gradient" id="Gradient_ewyc2"]
+offsets = PackedFloat32Array(0.632997, 1)
+colors = PackedColorArray(0.130772, 0.130772, 0.130772, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f12au"]
+frequency = 0.0384
+domain_warp_enabled = true
+domain_warp_frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tlesa"]
+seamless = true
+color_ramp = SubResource("Gradient_ewyc2")
+noise = SubResource("FastNoiseLite_f12au")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ugglo"]
+albedo_color = Color(0.0823529, 0.239216, 0.109804, 1)
+roughness_texture = SubResource("NoiseTexture2D_tlesa")
+uv1_triplanar = true
+
+[node name="BilliardBall" type="RigidBody3D" groups=["billiard ball"]]
+mass = 0.97
+physics_material_override = SubResource("PhysicsMaterial_2bb8h")
+gravity_scale = 7.744
+continuous_cd = true
+max_contacts_reported = 5
+contact_monitor = true
+linear_damp = 0.01
+script = ExtResource("1_tfh0s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_t7opa")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+mesh = SubResource("SphereMesh_ltyx1")
+surface_material_override/0 = SubResource("StandardMaterial3D_ugglo")

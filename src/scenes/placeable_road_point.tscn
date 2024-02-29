@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7ta37kgmvxju"]
+
+[ext_resource type="Script" path="res://scripts/placeable_object.gd" id="1_nbuji"]
+[ext_resource type="PackedScene" uid="uid://beuy3n3gn8ws6" path="res://scenes/road_point.tscn" id="2_2rxv6"]
+
+[node name="PlaceableRoadPoint" type="Node3D"]
+script = ExtResource("1_nbuji")
+object_type = 2
+
+[node name="RoadPoint" parent="." instance=ExtResource("2_2rxv6")]

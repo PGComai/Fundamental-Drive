@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://d3j4dfh3agu1n"
+path="res://.godot/imported/carkour halfball.obj-88030cf91e0c43ce0a6177c3091fb50d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/carkour halfball.obj-88030cf91e0c43ce0a6177c3091fb50d.mesh"]
+
+source_file="res://textures/carkour halfball.obj"
+dest_files=["res://.godot/imported/carkour halfball.obj-88030cf91e0c43ce0a6177c3091fb50d.mesh", "res://.godot/imported/carkour halfball.obj-88030cf91e0c43ce0a6177c3091fb50d.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

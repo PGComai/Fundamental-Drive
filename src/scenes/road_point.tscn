@@ -1,0 +1,137 @@
+[gd_scene load_steps=15 format=3 uid="uid://beuy3n3gn8ws6"]
+
+[ext_resource type="Script" path="res://scripts/road_widget.gd" id="1_phx70"]
+[ext_resource type="Material" uid="uid://cx2vfuj1a1lk0" path="res://textures/road_material.tres" id="2_0jtvw"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_u0rij"]
+size = Vector2(3, 1)
+orientation = 1
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_s0myb"]
+radius = 0.1
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l2tjj"]
+shading_mode = 0
+albedo_color = Color(0.505882, 0.752941, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_k1lk6"]
+top_radius = 0.0
+bottom_radius = 0.2
+height = 0.4
+cap_top = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vc55d"]
+shading_mode = 0
+albedo_color = Color(0.654902, 1, 0.517647, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_8xkp1"]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sk3y4"]
+shading_mode = 0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6i08b"]
+radius = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_jg4ck"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8rhf5"]
+shading_mode = 0
+albedo_color = Color(0.823529, 0.462745, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_hm0hl"]
+flip_faces = true
+radius = 0.4
+height = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_av6fp"]
+shading_mode = 0
+grow_amount = 0.847
+
+[node name="RoadPoint" type="Node3D"]
+script = ExtResource("1_phx70")
+
+[node name="RoadDisplay" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_u0rij")
+surface_material_override/0 = ExtResource("2_0jtvw")
+
+[node name="RoadFwd" type="MeshInstance3D" parent="RoadDisplay"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1, 0, -1.4)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_s0myb")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2tjj")
+
+[node name="Cone" type="MeshInstance3D" parent="RoadDisplay/RoadFwd"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 2.18557e-08)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_k1lk6")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2tjj")
+
+[node name="RoadFwd2" type="MeshInstance3D" parent="RoadDisplay"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1, 0, -1.4)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_s0myb")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2tjj")
+
+[node name="Cone" type="MeshInstance3D" parent="RoadDisplay/RoadFwd2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 2.18557e-08)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_k1lk6")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2tjj")
+
+[node name="RoadUp" type="MeshInstance3D" parent="RoadDisplay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_s0myb")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_vc55d")
+
+[node name="Cone" type="MeshInstance3D" parent="RoadDisplay/RoadUp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 2.18557e-08)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_k1lk6")
+surface_material_override/0 = SubResource("StandardMaterial3D_vc55d")
+
+[node name="RoadUp2" type="MeshInstance3D" parent="RoadDisplay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_s0myb")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_vc55d")
+
+[node name="Cone" type="MeshInstance3D" parent="RoadDisplay/RoadUp2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 2.18557e-08)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_k1lk6")
+surface_material_override/0 = SubResource("StandardMaterial3D_vc55d")
+
+[node name="InOut" type="Node3D" parent="."]
+
+[node name="InOutMesh" type="MeshInstance3D" parent="InOut"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_8xkp1")
+surface_material_override/0 = SubResource("StandardMaterial3D_sk3y4")
+
+[node name="Handle" type="StaticBody3D" parent="InOut"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+collision_layer = 32
+collision_mask = 32
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InOut/Handle"]
+shape = SubResource("SphereShape3D_6i08b")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InOut/Handle/CollisionShape3D"]
+mesh = SubResource("SphereMesh_jg4ck")
+surface_material_override/0 = SubResource("StandardMaterial3D_8rhf5")
+
+[node name="Highlight" type="MeshInstance3D" parent="InOut/Handle/CollisionShape3D"]
+visible = false
+mesh = SubResource("SphereMesh_hm0hl")
+surface_material_override/0 = SubResource("StandardMaterial3D_av6fp")
