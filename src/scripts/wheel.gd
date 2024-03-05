@@ -27,6 +27,7 @@ func _process(delta):
 
 
 func _physics_process(delta):
+	#apply_central_force(-global_position.normalized() * delta * 4000.0)
 	if get_contact_count() > 0:
 		var vel = linear_velocity
 		var velnorm = vel.normalized()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://dnc70ycajbrmd"]
+[gd_scene load_steps=38 format=3 uid="uid://dnc70ycajbrmd"]
 
 [ext_resource type="Script" path="res://scripts/car.gd" id="1_h44u5"]
 [ext_resource type="Script" path="res://scripts/CamXForm.gd" id="1_sdi5q"]
@@ -68,6 +68,8 @@ points = PackedVector3Array(0.463725, 1.16061, 0.804567, -0.592202, -0.646505, 0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cj3f5"]
 radius = 0.25
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_y3xcp"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8avk3"]
 points = PackedVector3Array(-0.428504, 1.15588, 0.699724, 0.868726, 1.79652, 1.19965, 0.914286, 1.64142, 1.21389, -0.914286, 1.64142, 1.21389, 0.428504, 1.41302, 0.64257, -0.914286, 1.81289, 1.12816, 0.610068, 1.37005, 1.15701, 0.428504, 1.15588, 0.699724, -0.609954, 1.37007, 1.15697, -0.428504, 1.41302, 0.64257, 0.914286, 1.81289, 1.12816, -0.857009, 1.47014, 1.09958, 0.857009, 1.47014, 1.09958, -0.428504, 1.15588, 0.756878, -0.868728, 1.79652, 1.19965, 0.28795, 1.32842, 1.12019, 0.428504, 1.15588, 0.756878, 0.428504, 1.35591, 0.64257, 0.428504, 1.44158, 0.671147, -0.885647, 1.52719, 1.09958, 0.885647, 1.52719, 1.09958, -0.288117, 1.32833, 1.1203, -0.428504, 1.35591, 0.64257, -0.799911, 1.41302, 1.09958, 0.799911, 1.41302, 1.09958, -0.428504, 1.44158, 0.671147, 0.796372, 1.47115, 1.16712, -0.796306, 1.47115, 1.1671, -0.914286, 1.61286, 1.12816, 0.914286, 1.61286, 1.12816, -0.72708, 1.41952, 1.1619, 0.727089, 1.41952, 1.16191)
@@ -284,6 +286,11 @@ margin = 0.04
 [node name="CamXForm" type="Node3D" parent="Chassis/CamBase/SpringArm3D"]
 transform = Transform3D(1, 0, 0, 0, 0.883529, 0.468377, 0, -0.468377, 0.883529, 0, 0, 0)
 script = ExtResource("1_sdi5q")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Chassis/CamBase"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24348, -6.41097)
+visible = false
+mesh = SubResource("CapsuleMesh_y3xcp")
 
 [node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="Chassis"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000305176, 0.137215, 0.106761)

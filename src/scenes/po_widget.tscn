@@ -78,12 +78,14 @@ script = ExtResource("1_25ver")
 
 [node name="WidgetMoveX" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -4, 0, 0)
+visible = false
 collision_layer = 16
 collision_mask = 16
 metadata/move_mode = "x"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WidgetMoveX"]
 shape = SubResource("CylinderShape3D_pi6i7")
+disabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WidgetMoveX/CollisionShape3D"]
 mesh = SubResource("CylinderMesh_con72")
@@ -113,15 +115,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_5ayav")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="WidgetMoveX"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.9, 8.30517e-08)
 shape = SubResource("ConcavePolygonShape3D_x2ltr")
+disabled = true
 
 [node name="WidgetMoveY" type="StaticBody3D" parent="."]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 4, 0)
+visible = false
 collision_layer = 16
 collision_mask = 16
 metadata/move_mode = "y"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WidgetMoveY"]
 shape = SubResource("CylinderShape3D_pi6i7")
+disabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WidgetMoveY/CollisionShape3D"]
 mesh = SubResource("CylinderMesh_con72")
@@ -151,15 +156,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_t6rws")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="WidgetMoveY"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.9, 8.30517e-08)
 shape = SubResource("ConcavePolygonShape3D_3kdef")
+disabled = true
 
 [node name="WidgetMoveZ" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -4)
+visible = false
 collision_layer = 16
 collision_mask = 16
 metadata/move_mode = "z"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WidgetMoveZ"]
 shape = SubResource("CylinderShape3D_pi6i7")
+disabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WidgetMoveZ/CollisionShape3D"]
 mesh = SubResource("CylinderMesh_con72")
@@ -189,6 +197,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_oh64c")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="WidgetMoveZ"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.9, 8.30517e-08)
 shape = SubResource("ConcavePolygonShape3D_pibdh")
+disabled = true
 
 [node name="WidgetMoveOrigin" type="StaticBody3D" parent="."]
 collision_layer = 16

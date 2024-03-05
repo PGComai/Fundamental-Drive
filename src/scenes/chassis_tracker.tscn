@@ -29,5 +29,6 @@ shape = SubResource("CylinderShape3D_j0qqw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+visible = false
 mesh = SubResource("CylinderMesh_sncjq")
 surface_material_override/0 = SubResource("StandardMaterial3D_3xu70")

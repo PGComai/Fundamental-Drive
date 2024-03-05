@@ -19,7 +19,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.0332, 0, -69.6067)
 curve = SubResource("Curve3D_0yvwe")
 script = ExtResource("1_vt422")
 surface_width = 4.0
-generate_mesh = null
 
 [node name="Area3D" type="Area3D" parent="."]
 collision_mask = 3

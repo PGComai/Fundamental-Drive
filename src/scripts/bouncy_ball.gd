@@ -9,5 +9,5 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	#meshy.visible = linear_velocity.length_squared() > 1.0 or get_contact_count() == 0
+	#apply_central_force(-global_position.normalized() * delta * 4000.0)
 	meshy.mesh.text = str(round(linear_velocity.length()))

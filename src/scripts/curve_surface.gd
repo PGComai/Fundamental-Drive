@@ -15,6 +15,7 @@ const CHASSIS_TRACKER_RADIUS = 4.0
 @export var surface_width := 8.0
 @export var wheel_trackers: Array[AnimatableBody3D]
 @export var area: Area3D
+@export var cam_magnet: Node3D
 @export var generate_mesh := false:
 	set(value):
 		if value:
@@ -25,12 +26,14 @@ var tracked_wheels: Array[RigidBody3D] = []
 var tracked_chassis: RigidBody3D
 var chassis_tracker: AnimatableBody3D
 var cam_tracker: AnimatableBody3D
+var tracked_cam: Node3D
 var car: Node3D
 var track_length: float
 var wheel_min_offset: float
 var wheel_max_offset: float
 var chassis_min_offset: float
 var chassis_max_offset: float
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -145,3 +148,19 @@ func _body_exited(body: Node):
 			tracked_wheels.erase(body)
 	if body.is_in_group("chassis"):
 		tracked_chassis = null
+
+
+func _on_area_3d_area_entered(area):
+	pass
+	#if area.is_in_group("magnet") and cam_magnet:
+		#tracked_cam = area.get_parent().get_parent().get_parent()
+		#tracked_cam.magnet_node = cam_magnet
+		#tracked_cam.magnet_enabled = true
+
+
+func _on_area_3d_area_exited(area):
+	pass
+	#if area.is_in_group("magnet") and cam_magnet:
+		#tracked_cam.magnet_node = null
+		#tracked_cam.magnet_enabled = false
+		#tracked_cam = null
