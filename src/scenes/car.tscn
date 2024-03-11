@@ -506,7 +506,6 @@ radius = 0.368013
 [node name="MidiPlayer" type="Node" parent="."]
 script = ExtResource("9_08hwx")
 volume_db = -12.185
-soundfont = "res://The Fixed JummBox SoundFont11.sf2"
 
 [connection signal="body_entered" from="Chassis" to="." method="_on_chassis_body_entered"]
 [connection signal="body_entered" from="WheelFL" to="." method="_on_wheel_fl_body_entered"]

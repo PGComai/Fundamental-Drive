@@ -39,7 +39,6 @@ var global: Node
 @onready var car = $"../Car"
 
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	global = get_node("/root/Global")
@@ -56,9 +55,6 @@ func _input(event):
 
 func _process(delta):
 	if global.build_mode:
-		
-		
-		
 		if Input.is_action_pressed("buildmovefast"):
 			build_speed_multiplier = lerp(build_speed_multiplier, 10.0, 0.1)
 		elif Input.is_action_pressed("buildmoveslow"):
@@ -117,6 +113,7 @@ func _physics_process(delta):
 		#var up = global_position.normalized()
 		look_at(look_at_pos, up)
 	elif global.build_mode:
+		# try and add this back to _on_ux_gui_input
 		if Input.is_action_just_pressed("select") and ray_cast_3d.is_colliding() and not selected_object:
 			var collider: Node = ray_cast_3d.get_collider()
 			selected_object = collider.get_parent().ref
@@ -227,10 +224,8 @@ func _on_ux_build_time(toggle):
 	spring_arm_3d.rotation = Vector3.ZERO
 
 
-func _on_texture_rect_gui_input(event):
+func _on_ux_gui_input(event):
 	if global.build_mode:
 		if event is InputEventMouseMotion:
 			rot_h -= event.relative.x * SENS
 			rot_v -= event.relative.y * SENS
-		
-		

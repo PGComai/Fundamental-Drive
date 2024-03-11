@@ -32,6 +32,9 @@ var global: Node
 @onready var button_debug = $MarginContainer/VBoxContainerMenu/ButtonDebug
 @onready var button_apply = $MarginContainer/CenterContainer/VBoxContainerOptions/ButtonApply
 @onready var build_ux = $MarginContainer/BuildUX
+@onready var v_box_container_controls = $MarginContainer/CenterContainer/VBoxContainerControls
+@onready var texture_rect_keyboard_controls = $MarginContainer/CenterContainer/VBoxContainerControls/TextureRectKeyboardControls
+@onready var texture_rect_controller_controls = $MarginContainer/CenterContainer/VBoxContainerControls/TextureRectControllerControls
 
 
 # Called when the node enters the scene tree for the first time.
@@ -48,7 +51,10 @@ func _ready():
 		option_button_res.selected = 0
 	else:
 		option_button_res.selected = -1
+	sub_viewport.size = resolution.size
 	v_box_container_options.visible = false
+	v_box_container_controls.visible = false
+	v_box_container_params.visible = false
 
 
 func _unhandled_input(event):
@@ -83,10 +89,20 @@ func _process(delta):
 
 func _on_button_options_button_up():
 	v_box_container_options.visible = not v_box_container_options.visible
+	v_box_container_params.visible = false
+	v_box_container_controls.visible = false
 
 
 func _on_button_debug_button_up():
 	v_box_container_params.visible = not v_box_container_params.visible
+	v_box_container_options.visible = false
+	v_box_container_controls.visible = false
+
+
+func _on_button_controls_button_up():
+	v_box_container_controls.visible = not v_box_container_controls.visible
+	v_box_container_options.visible = false
+	v_box_container_params.visible = false
 
 
 func _on_option_button_res_item_selected(index):
@@ -124,19 +140,28 @@ func _on_button_confirm_settings_button_up():
 
 func _on_margin_container_visibility_changed():
 	if panel:
-		if margin_container.visible:
-			margin_container.process_mode = Node.PROCESS_MODE_INHERIT
-			button_apply.focus_mode = FOCUS_ALL
-			button_confirm_settings.focus_mode = FOCUS_ALL
-			button_debug.focus_mode = FOCUS_ALL
-			button_options.focus_mode = FOCUS_ALL
-			option_button_res.focus_mode = FOCUS_ALL
-			option_button_win.focus_mode = FOCUS_ALL
-		else:
-			margin_container.process_mode = Node.PROCESS_MODE_DISABLED
-			button_apply.focus_mode = FOCUS_NONE
-			button_confirm_settings.focus_mode = FOCUS_NONE
-			button_debug.focus_mode = FOCUS_NONE
-			button_options.focus_mode = FOCUS_NONE
-			option_button_res.focus_mode = FOCUS_NONE
-			option_button_win.focus_mode = FOCUS_NONE
+		pass # re-enable if controller controls dont work
+		#if margin_container.visible:
+			#margin_container.process_mode = Node.PROCESS_MODE_INHERIT
+			#button_apply.focus_mode = FOCUS_ALL
+			#button_confirm_settings.focus_mode = FOCUS_ALL
+			#button_debug.focus_mode = FOCUS_ALL
+			#button_options.focus_mode = FOCUS_ALL
+			#option_button_res.focus_mode = FOCUS_ALL
+			#option_button_win.focus_mode = FOCUS_ALL
+		#else:
+			#margin_container.process_mode = Node.PROCESS_MODE_DISABLED
+			#button_apply.focus_mode = FOCUS_NONE
+			#button_confirm_settings.focus_mode = FOCUS_NONE
+			#button_debug.focus_mode = FOCUS_NONE
+			#button_options.focus_mode = FOCUS_NONE
+			#option_button_res.focus_mode = FOCUS_NONE
+			#option_button_win.focus_mode = FOCUS_NONE
+
+
+func _on_button_keyboard_button_up():
+	pass # Replace with function body.
+
+
+func _on_button_controller_button_up():
+	pass # Replace with function body.
