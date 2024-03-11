@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=16 format=3 uid="uid://4ohetevf3vhs"]
+[gd_resource type="VisualShader" load_steps=21 format=3 uid="uid://4ohetevf3vhs"]
 
 [sub_resource type="VisualShaderNodeClamp" id="VisualShaderNodeClamp_xoo4o"]
 default_input_values = [0, 0.0, 1, 0.0, 2, 0.4]
@@ -7,7 +7,7 @@ default_input_values = [0, 0.0, 1, 0.0, 2, 0.4]
 default_input_values = [1, 0.0, 2, 0.4, 3, 0.0, 4, 1.0]
 
 [sub_resource type="Curve" id="Curve_tp4gb"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.775524, 0), 0.0, 0.0, 0, 0, Vector2(0.784937, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.865483, 0), 0.0, 0.0, 0, 0, Vector2(0.873882, 1), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_n5mio"]
@@ -21,6 +21,22 @@ function = 31
 
 [sub_resource type="VisualShaderNodeTextureParameterTriplanar" id="VisualShaderNodeTextureParameterTriplanar_3yeuf"]
 parameter_name = "TextureParameterTriplanar"
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_ve2mq"]
+parameter_name = "HubColor2"
+
+[sub_resource type="VisualShaderNodeTextureParameterTriplanar" id="VisualShaderNodeTextureParameterTriplanar_dykfu"]
+parameter_name = "TextureParameterTriplanar2"
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_lujuh"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2, Quaternion(0.5, 0.5, 0.5, 0.5)]
+op_type = 5
+
+[sub_resource type="VisualShaderNodeTextureParameterTriplanar" id="VisualShaderNodeTextureParameterTriplanar_y0ml4"]
+parameter_name = "TextureParameterTriplanar3"
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_x6u16"]
+constant = 1.0
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_vx840"]
 parameter_name = "HubColor"
@@ -52,6 +68,8 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_s
 uniform vec4 HubColor : source_color;
 uniform sampler2D TextureParameterTriplanar;
 uniform sampler2D curve_frg_12 : repeat_disable;
+uniform sampler2D TextureParameterTriplanar3;
+uniform sampler2D TextureParameterTriplanar2;
 
 
 // TextureParameterTriplanar
@@ -136,9 +154,26 @@ void fragment() {
 	vec4 n_out4p0 = mix(n_out2p0, n_out14p0, vec4(n_out12p0));
 
 
+// FloatConstant:19
+	float n_out19p0 = 1.000000;
+
+
+// TextureParameterTriplanar:18
+	vec4 n_out18p0 = triplanar_texture(TextureParameterTriplanar3, triplanar_power_normal, triplanar_pos);
+
+
+// TextureParameterTriplanar:16
+	vec4 n_out16p0 = triplanar_texture(TextureParameterTriplanar2, triplanar_power_normal, triplanar_pos);
+
+
+// Mix:17
+	vec4 n_out17p0 = mix(n_out18p0, n_out16p0, vec4(n_out12p0));
+
+
 // Output:0
 	ALBEDO = vec3(n_out4p0.xyz);
-	ROUGHNESS = n_out12p0;
+	ROUGHNESS = n_out19p0;
+	NORMAL_MAP = vec3(n_out17p0.xyz);
 
 
 }
@@ -169,5 +204,15 @@ nodes/fragment/12/position = Vector2(1540, 920)
 nodes/fragment/13/node = SubResource("VisualShaderNodeFloatFunc_8vkva")
 nodes/fragment/13/position = Vector2(2140, 1060)
 nodes/fragment/14/node = SubResource("VisualShaderNodeTextureParameterTriplanar_3yeuf")
-nodes/fragment/14/position = Vector2(220, -120)
-nodes/fragment/connections = PackedInt32Array(2, 0, 4, 0, 4, 0, 0, 0, 5, 0, 6, 1, 7, 0, 8, 1, 9, 0, 8, 0, 8, 0, 6, 0, 6, 0, 10, 0, 10, 0, 11, 0, 11, 0, 12, 0, 12, 0, 4, 2, 12, 0, 13, 0, 14, 0, 4, 1, 12, 0, 0, 3)
+nodes/fragment/14/position = Vector2(360, -180)
+nodes/fragment/15/node = SubResource("VisualShaderNodeColorParameter_ve2mq")
+nodes/fragment/15/position = Vector2(1060, 1580)
+nodes/fragment/16/node = SubResource("VisualShaderNodeTextureParameterTriplanar_dykfu")
+nodes/fragment/16/position = Vector2(160, 1440)
+nodes/fragment/17/node = SubResource("VisualShaderNodeMix_lujuh")
+nodes/fragment/17/position = Vector2(2140, 1960)
+nodes/fragment/18/node = SubResource("VisualShaderNodeTextureParameterTriplanar_y0ml4")
+nodes/fragment/18/position = Vector2(200, 2040)
+nodes/fragment/19/node = SubResource("VisualShaderNodeFloatConstant_x6u16")
+nodes/fragment/19/position = Vector2(2400, 800)
+nodes/fragment/connections = PackedInt32Array(2, 0, 4, 0, 4, 0, 0, 0, 5, 0, 6, 1, 7, 0, 8, 1, 9, 0, 8, 0, 8, 0, 6, 0, 6, 0, 10, 0, 10, 0, 11, 0, 11, 0, 12, 0, 12, 0, 4, 2, 12, 0, 13, 0, 14, 0, 4, 1, 16, 0, 17, 1, 17, 0, 0, 9, 18, 0, 17, 0, 19, 0, 0, 3, 12, 0, 17, 2)

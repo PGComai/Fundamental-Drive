@@ -1,7 +1,7 @@
 extends RigidBody3D
 
 const THROTTLE_MULTIPLIER = 3500.0
-const STRAIGHT_MULTIPLIER = 2500.0
+const STRAIGHT_MULTIPLIER = 3500.0
 
 
 @export var throttle := 0.0
@@ -33,9 +33,11 @@ func _physics_process(delta):
 		var velnorm = vel.normalized()
 		var vxz = velnorm.dot(-global_basis.x)
 		var vel_len = clampf(vel.length(), 1.0, 50.0)
-		wheel_angular_velocity = vel.length() * PI * diameter
+		wheel_angular_velocity = vel.length() * sign(vel.dot(-global_basis.z)) * PI * diameter
 		if not is_zero_approx(wheel_angular_velocity):
-			mesh.rotate_object_local(Vector3.UP, wheel_angular_velocity)
+			mesh.rotate_object_local(Vector3.UP, wheel_angular_velocity * delta)
+		else:
+			mesh.rotate_object_local(Vector3.UP, 0.0)
 		var absvxz = car.grip_curve.sample_baked(1.0 - abs(vxz))
 		var sideways = car.sideways_curve.sample_baked(abs(vxz))
 		if smoke:

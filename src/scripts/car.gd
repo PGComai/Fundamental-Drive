@@ -26,23 +26,23 @@ const ENGINE_NOTE_TIME = 0.125
 
 @onready var flipped_cast = $Chassis/FlippedCast
 @onready var midi_player : MidiPlayer = $MidiPlayer
-@onready var ux = $UX
-@onready var v_box_container_params = $UX/MarginContainer/VBoxContainerParams
+#@onready var ux = $UX
+#@onready var v_box_container_params = $UX/MarginContainer/VBoxContainerParams
 @onready var cam_x_form = $Chassis/CamBase/SpringArm3D/CamXForm
 @onready var audio_stream_player_engine = $Chassis/AudioStreamPlayerEngine
 
 
-@onready var label_value_ll_softness = $UX/MarginContainer/VBoxContainerParams/Param1/LabelValueLLSoftness
-@onready var label_value_ll_restitution = $UX/MarginContainer/VBoxContainerParams/Param2/LabelValueLLRestitution
-@onready var label_value_ll_damping = $UX/MarginContainer/VBoxContainerParams/Param3/LabelValueLLDamping
-@onready var label_value_s_stiffness = $UX/MarginContainer/VBoxContainerParams/Param4/LabelValueSStiffness
-@onready var label_value_s_damping = $UX/MarginContainer/VBoxContainerParams/Param5/LabelValueSDamping
-
-@onready var h_slider_ll_softness = $UX/MarginContainer/VBoxContainerParams/Param1/HSliderLLSoftness
-@onready var h_slider_ll_restitution = $UX/MarginContainer/VBoxContainerParams/Param2/HSliderLLRestitution
-@onready var h_slider_ll_damping = $UX/MarginContainer/VBoxContainerParams/Param3/HSliderLLDamping
-@onready var h_slider_s_stiffness = $UX/MarginContainer/VBoxContainerParams/Param4/HSliderSStiffness
-@onready var h_slider_s_damping = $UX/MarginContainer/VBoxContainerParams/Param5/HSliderSDamping
+#@onready var label_value_ll_softness = $UX/MarginContainer/VBoxContainerParams/Param1/LabelValueLLSoftness
+#@onready var label_value_ll_restitution = $UX/MarginContainer/VBoxContainerParams/Param2/LabelValueLLRestitution
+#@onready var label_value_ll_damping = $UX/MarginContainer/VBoxContainerParams/Param3/LabelValueLLDamping
+#@onready var label_value_s_stiffness = $UX/MarginContainer/VBoxContainerParams/Param4/LabelValueSStiffness
+#@onready var label_value_s_damping = $UX/MarginContainer/VBoxContainerParams/Param5/LabelValueSDamping
+#
+#@onready var h_slider_ll_softness = $UX/MarginContainer/VBoxContainerParams/Param1/HSliderLLSoftness
+#@onready var h_slider_ll_restitution = $UX/MarginContainer/VBoxContainerParams/Param2/HSliderLLRestitution
+#@onready var h_slider_ll_damping = $UX/MarginContainer/VBoxContainerParams/Param3/HSliderLLDamping
+#@onready var h_slider_s_stiffness = $UX/MarginContainer/VBoxContainerParams/Param4/HSliderSStiffness
+#@onready var h_slider_s_damping = $UX/MarginContainer/VBoxContainerParams/Param5/HSliderSDamping
 
 
 var joints: Array[Generic6DOFJoint3D]
@@ -76,34 +76,34 @@ var global: Node
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	global = get_node("/root/Global")
-	v_box_container_params.visible = false
+	#v_box_container_params.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	spawn_transform = chassis.global_transform
 	joints = [joint_fl,
 			joint_fr,
 			joint_bl,
 			joint_br]
-	for joint: Generic6DOFJoint3D in joints:
-		var llsoft = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS), 0.01)
-		var llrest = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_RESTITUTION), 0.01)
-		var lldamp = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_DAMPING), 0.01)
-		var sstiff = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS), 0.01)
-		var sdamp = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING), 0.01)
-		label_value_ll_softness.text = str(llsoft)
-		h_slider_ll_softness.set_value_no_signal(llsoft)
-		label_value_ll_restitution.text = str(llrest)
-		h_slider_ll_restitution.set_value_no_signal(llrest)
-		label_value_ll_damping.text = str(lldamp)
-		h_slider_ll_damping.set_value_no_signal(lldamp)
-		label_value_s_stiffness.text = str(sstiff)
-		h_slider_s_stiffness.set_value_no_signal(sstiff)
-		label_value_s_damping.text = str(sdamp)
-		h_slider_s_damping.set_value_no_signal(sdamp)
-		default_joint_params = {"LLSoftness": llsoft,
-								"LLRestitution": llrest,
-								"LLDamping": lldamp,
-								"SStiffness": sstiff,
-								"SDamping": sdamp}
+	#for joint: Generic6DOFJoint3D in joints:
+		#var llsoft = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS), 0.01)
+		#var llrest = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_RESTITUTION), 0.01)
+		#var lldamp = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_DAMPING), 0.01)
+		#var sstiff = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS), 0.01)
+		#var sdamp = snappedf(joint.get_param_y(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING), 0.01)
+		#label_value_ll_softness.text = str(llsoft)
+		#h_slider_ll_softness.set_value_no_signal(llsoft)
+		#label_value_ll_restitution.text = str(llrest)
+		#h_slider_ll_restitution.set_value_no_signal(llrest)
+		#label_value_ll_damping.text = str(lldamp)
+		#h_slider_ll_damping.set_value_no_signal(lldamp)
+		#label_value_s_stiffness.text = str(sstiff)
+		#h_slider_s_stiffness.set_value_no_signal(sstiff)
+		#label_value_s_damping.text = str(sdamp)
+		#h_slider_s_damping.set_value_no_signal(sdamp)
+		#default_joint_params = {"LLSoftness": llsoft,
+								#"LLRestitution": llrest,
+								#"LLDamping": lldamp,
+								#"SStiffness": sstiff,
+								#"SDamping": sdamp}
 	wheels = [wheel_fl,
 			wheel_fr,
 			wheel_bl,
@@ -115,13 +115,7 @@ func _ready():
 
 
 func _unhandled_input(event):
-	if not global.build_mode:
-		if event.is_action_pressed("esc"):
-			v_box_container_params.visible = not v_box_container_params.visible
-			if v_box_container_params.visible:
-				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			else:
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	pass
 
 
 func _physics_process(delta):
@@ -284,52 +278,52 @@ func set_joint_params(param: Generic6DOFJoint3D.Param, value: float):
 	for joint: Generic6DOFJoint3D in joints:
 		joint.set_param_y(param, value)
 
-
-func _on_h_slider_ll_softness_value_changed(value):
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, value)
-	label_value_ll_softness.text = str(value)
-
-func _on_h_slider_ll_restitution_value_changed(value):
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_RESTITUTION, value)
-	label_value_ll_restitution.text = str(value)
-
-
-func _on_h_slider_ll_damping_value_changed(value):
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_DAMPING, value)
-	label_value_ll_damping.text = str(value)
-
-
-func _on_h_slider_s_stiffness_value_changed(value):
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, value)
-	label_value_s_stiffness.text = str(value)
-
-
-func _on_h_slider_s_damping_value_changed(value):
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, value)
-	label_value_s_damping.text = str(value)
-
-
-func _on_button_default_button_up():
-	var value = default_joint_params["LLSoftness"]
-	label_value_ll_softness.text = str(value)
-	h_slider_ll_softness.set_value_no_signal(value)
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, value)
-	value = default_joint_params["LLRestitution"]
-	label_value_ll_restitution.text = str(value)
-	h_slider_ll_restitution.set_value_no_signal(value)
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_RESTITUTION, value)
-	value = default_joint_params["LLDamping"]
-	label_value_ll_damping.text = str(value)
-	h_slider_ll_damping.set_value_no_signal(value)
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_DAMPING, value)
-	value = default_joint_params["SStiffness"]
-	label_value_s_stiffness.text = str(value)
-	h_slider_s_stiffness.set_value_no_signal(value)
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, value)
-	value = default_joint_params["SDamping"]
-	label_value_s_damping.text = str(value)
-	h_slider_s_damping.set_value_no_signal(value)
-	set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, value)
+#
+#func _on_h_slider_ll_softness_value_changed(value):
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, value)
+	#label_value_ll_softness.text = str(value)
+#
+#func _on_h_slider_ll_restitution_value_changed(value):
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_RESTITUTION, value)
+	#label_value_ll_restitution.text = str(value)
+#
+#
+#func _on_h_slider_ll_damping_value_changed(value):
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_DAMPING, value)
+	#label_value_ll_damping.text = str(value)
+#
+#
+#func _on_h_slider_s_stiffness_value_changed(value):
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, value)
+	#label_value_s_stiffness.text = str(value)
+#
+#
+#func _on_h_slider_s_damping_value_changed(value):
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, value)
+	#label_value_s_damping.text = str(value)
+#
+#
+#func _on_button_default_button_up():
+	#var value = default_joint_params["LLSoftness"]
+	#label_value_ll_softness.text = str(value)
+	#h_slider_ll_softness.set_value_no_signal(value)
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_LIMIT_SOFTNESS, value)
+	#value = default_joint_params["LLRestitution"]
+	#label_value_ll_restitution.text = str(value)
+	#h_slider_ll_restitution.set_value_no_signal(value)
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_RESTITUTION, value)
+	#value = default_joint_params["LLDamping"]
+	#label_value_ll_damping.text = str(value)
+	#h_slider_ll_damping.set_value_no_signal(value)
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_DAMPING, value)
+	#value = default_joint_params["SStiffness"]
+	#label_value_s_stiffness.text = str(value)
+	#h_slider_s_stiffness.set_value_no_signal(value)
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, value)
+	#value = default_joint_params["SDamping"]
+	#label_value_s_damping.text = str(value)
+	#h_slider_s_damping.set_value_no_signal(value)
+	#set_joint_params(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, value)
 
 
 func body_note(body: Node):
@@ -362,11 +356,3 @@ func _on_wheel_br_body_entered(body):
 
 func _on_chassis_body_entered(body):
 	body_note(body)
-
-
-func _on_spin_box_engine_instrument_value_changed(value):
-	engine_sound_2_ins = value
-
-
-func _on_spin_box_engine_percussion_value_changed(value):
-	engine_sound_percussion = value

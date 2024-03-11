@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://dnc70ycajbrmd"]
+[gd_scene load_steps=41 format=3 uid="uid://dnc70ycajbrmd"]
 
 [ext_resource type="Script" path="res://scripts/car.gd" id="1_h44u5"]
 [ext_resource type="Script" path="res://scripts/CamXForm.gd" id="1_sdi5q"]
@@ -94,6 +94,21 @@ seamless = true
 color_ramp = SubResource("Gradient_10k2o")
 noise = ExtResource("4_qopmw")
 
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xp6sa"]
+seamless = true
+as_normal_map = true
+noise = ExtResource("4_qopmw")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ajguc"]
+noise_type = 4
+frequency = 0.0881
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4neah"]
+seamless = true
+as_normal_map = true
+bump_strength = 0.4
+noise = SubResource("FastNoiseLite_ajguc")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xtwv1"]
 render_priority = 0
 shader = ExtResource("3_onalh")
@@ -102,6 +117,8 @@ shader_parameter/triplanar_scale = Vector3(0.5, 0.5, 0.5)
 shader_parameter/triplanar_offset = null
 shader_parameter/triplanar_sharpness = 0.5
 shader_parameter/TextureParameterTriplanar = SubResource("NoiseTexture2D_1b32e")
+shader_parameter/TextureParameterTriplanar3 = SubResource("NoiseTexture2D_4neah")
+shader_parameter/TextureParameterTriplanar2 = SubResource("NoiseTexture2D_xp6sa")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_1kopq"]
 material = SubResource("ShaderMaterial_xtwv1")
@@ -298,7 +315,7 @@ size = Vector3(1.19788, 0.944625, 2.44984)
 
 [node name="AudioStreamPlayerEngine" type="AudioStreamPlayer3D" parent="Chassis"]
 stream = ExtResource("6_1qg6e")
-volume_db = 4.782
+volume_db = 9.581
 autoplay = true
 
 [node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
@@ -491,181 +508,8 @@ script = ExtResource("9_08hwx")
 volume_db = -12.185
 soundfont = "res://The Fixed JummBox SoundFont11.sf2"
 
-[node name="UX" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="UX"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
-
-[node name="VBoxContainerParams" type="VBoxContainer" parent="UX/MarginContainer"]
-visible = false
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-alignment = 1
-
-[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-text = "Suspension Parameters"
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Param1" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param1"]
-layout_mode = 2
-text = "Linear Limit Softness - "
-
-[node name="LabelValueLLSoftness" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param1"]
-layout_mode = 2
-text = "0.00 - "
-
-[node name="HSliderLLSoftness" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param1"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 1.0
-step = 0.01
-
-[node name="Param2" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param2"]
-layout_mode = 2
-text = "Linear Limit Restitution - "
-
-[node name="LabelValueLLRestitution" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param2"]
-layout_mode = 2
-text = "0.00 - "
-
-[node name="HSliderLLRestitution" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param2"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 1.0
-step = 0.01
-
-[node name="Param3" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param3"]
-layout_mode = 2
-text = "Linear Limit Damping - "
-
-[node name="LabelValueLLDamping" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param3"]
-layout_mode = 2
-text = "0.00 - "
-
-[node name="HSliderLLDamping" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param3"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 1.0
-step = 0.01
-
-[node name="HSeparator2" type="HSeparator" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Param4" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param4"]
-layout_mode = 2
-text = "Linear Spring Stiffness - "
-
-[node name="LabelValueSStiffness" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param4"]
-layout_mode = 2
-text = "0.00 - "
-
-[node name="HSliderSStiffness" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param4"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 1.0
-step = 0.01
-
-[node name="Param5" type="HBoxContainer" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param5"]
-layout_mode = 2
-text = "Linear Spring Damping - "
-
-[node name="LabelValueSDamping" type="Label" parent="UX/MarginContainer/VBoxContainerParams/Param5"]
-layout_mode = 2
-text = "0.00 - "
-
-[node name="HSliderSDamping" type="HSlider" parent="UX/MarginContainer/VBoxContainerParams/Param5"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 1.0
-step = 0.01
-
-[node name="HSeparator3" type="HSeparator" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-
-[node name="ButtonDefault" type="Button" parent="UX/MarginContainer/VBoxContainerParams"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Default"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UX"]
-visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UX/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Engine Instrument: "
-
-[node name="SpinBoxEngineInstrument" type="SpinBox" parent="UX/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-max_value = 127.0
-alignment = 1
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="UX/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UX/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Engine Percussion: "
-
-[node name="SpinBoxEnginePercussion" type="SpinBox" parent="UX/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-min_value = 35.0
-max_value = 81.0
-value = 35.0
-alignment = 1
-
 [connection signal="body_entered" from="Chassis" to="." method="_on_chassis_body_entered"]
 [connection signal="body_entered" from="WheelFL" to="." method="_on_wheel_fl_body_entered"]
 [connection signal="body_entered" from="WheelFR" to="." method="_on_wheel_fr_body_entered"]
 [connection signal="body_entered" from="WheelBL" to="." method="_on_wheel_bl_body_entered"]
 [connection signal="body_entered" from="WheelBR" to="." method="_on_wheel_br_body_entered"]
-[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param1/HSliderLLSoftness" to="." method="_on_h_slider_ll_softness_value_changed"]
-[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param2/HSliderLLRestitution" to="." method="_on_h_slider_ll_restitution_value_changed"]
-[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param3/HSliderLLDamping" to="." method="_on_h_slider_ll_damping_value_changed"]
-[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param4/HSliderSStiffness" to="." method="_on_h_slider_s_stiffness_value_changed"]
-[connection signal="value_changed" from="UX/MarginContainer/VBoxContainerParams/Param5/HSliderSDamping" to="." method="_on_h_slider_s_damping_value_changed"]
-[connection signal="button_up" from="UX/MarginContainer/VBoxContainerParams/ButtonDefault" to="." method="_on_button_default_button_up"]
-[connection signal="value_changed" from="UX/VBoxContainer/HBoxContainer/SpinBoxEngineInstrument" to="." method="_on_spin_box_engine_instrument_value_changed"]
-[connection signal="value_changed" from="UX/VBoxContainer/HBoxContainer2/SpinBoxEnginePercussion" to="." method="_on_spin_box_engine_percussion_value_changed"]

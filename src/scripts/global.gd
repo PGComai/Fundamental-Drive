@@ -9,6 +9,8 @@ var build_mode := false:
 		build_mode = value
 		emit_signal("build_mode_toggle", value)
 
+var sub_v: SubViewport
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

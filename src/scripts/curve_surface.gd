@@ -7,15 +7,20 @@ const WHEEL_TRACKER = preload("res://scenes/wheel_tracker.tscn")
 const CHASSIS_TRACKER = preload("res://scenes/chassis_tracker.tscn")
 const CAM_TRACKER = preload("res://scenes/cam_tracker.tscn")
 const ROAD_MATERIAL = preload("res://textures/road_material.tres")
+const DRAFT_ROAD_MATERIAL = preload("res://textures/draft_road_material.tres")
 const PLACEABLE_ROAD_POINT = preload("res://scenes/placeable_road_point.tscn")
 const WHEEL_TRACKER_RADIUS = 2.0
 const CHASSIS_TRACKER_RADIUS = 4.0
+const DRAFT_TIME = 0.5
 
 
 @export var surface_width := 8.0
 @export var wheel_trackers: Array[AnimatableBody3D]
 @export var area: Area3D
 @export var cam_magnet: Node3D
+@export var radius := false
+@export var radius_value := 50.0
+@export var radius_up_offset := 50.0
 @export var generate_mesh := false:
 	set(value):
 		if value:
@@ -33,11 +38,14 @@ var wheel_min_offset: float
 var wheel_max_offset: float
 var chassis_min_offset: float
 var chassis_max_offset: float
+var draft_timer := 0.0
+var generate_draft := false
 
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	connect("curve_changed", _on_curve_changed)
 	if not Engine.is_editor_hint():
 		if area:
 			area.body_entered.connect(_body_entered)
@@ -60,6 +68,14 @@ func _ready():
 		chassis_max_offset = track_length - CHASSIS_TRACKER_RADIUS
 
 
+func _process(delta):
+	if generate_draft:
+		draft_timer -= delta
+		if draft_timer <= 0.0:
+			generate_draft = false
+			_generate_mesh_draft()
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	if not Engine.is_editor_hint():
@@ -70,17 +86,36 @@ func _physics_process(delta):
 			var closest_point = curve.get_closest_point(wheel_pos)
 			var closest_offset = curve.get_closest_offset(wheel_pos)
 			var closest_transform = curve.sample_baked_with_rotation(closest_offset, true, true)
-			var dist_to_wheel = min(closest_point.distance_to(wheel_pos), (surface_width / 2.0) - 1.0)
-			var dir_to_wheel = closest_point.direction_to(wheel_pos)
-			var side_to_wheel = sign(closest_transform.basis.x.dot(dir_to_wheel))
-			tracker.transform = closest_transform
-			tracker.position += closest_transform.basis.x * side_to_wheel * dist_to_wheel
+			var track_right = closest_transform.basis.x
+			var track_up = closest_transform.basis.y
+			var track_fwd = -closest_transform.basis.z
+			if radius:
+				var circle_center = closest_point + Vector3(track_up * radius_up_offset)
+				var circle_circumference = radius_up_offset * 2.0 * PI
+				var track_coverage = surface_width / circle_circumference
+				track_coverage *= 2.0
+				var dir_to_pos = circle_center.direction_to(wheel.global_position)
+				dir_to_pos = Plane(track_fwd, circle_center).project(dir_to_pos).normalized()
+				var angle_to_wheel = -track_up.signed_angle_to(wheel_pos, track_fwd)
+				var dir_basis_x = dir_to_pos.cross(track_fwd)
+				var wheel_basis = Basis(dir_basis_x, -dir_to_pos, -track_fwd)
+				tracker.basis = wheel_basis.orthonormalized()
+				tracker.position = circle_center + Vector3(dir_to_pos * radius_value)
+			else:
+				var dist_to_wheel = min(closest_point.distance_to(wheel_pos), (surface_width / 2.0) - 1.0)
+				var dir_to_wheel = closest_point.direction_to(wheel_pos)
+				var side_to_wheel = sign(closest_transform.basis.x.dot(dir_to_wheel))
+				tracker.transform = closest_transform
+				tracker.position += closest_transform.basis.x * side_to_wheel * dist_to_wheel
 		if tracked_chassis:
 			var chassis_pos = to_local(tracked_chassis.global_position)
 			var closest_point = curve.get_closest_point(chassis_pos)
 			var closest_offset = curve.get_closest_offset(chassis_pos)
 			closest_offset = clamp(closest_offset, chassis_min_offset, chassis_max_offset)
 			var closest_transform = curve.sample_baked_with_rotation(closest_offset, true, true)
+			var track_right = closest_transform.basis.x
+			var track_up = closest_transform.basis.y
+			var track_fwd = -closest_transform.basis.z
 			var dist_to_chassis = min(closest_point.distance_to(chassis_pos), (surface_width / 2.0) - 4.0)
 			var dir_to_chassis = closest_point.direction_to(chassis_pos)
 			var side_to_chassis = sign(closest_transform.basis.x.dot(dir_to_chassis))
@@ -91,6 +126,9 @@ func _physics_process(delta):
 			var closest_point_cam = curve.get_closest_point(cam_pos)
 			var closest_offset_cam = curve.get_closest_offset(cam_pos)
 			var closest_transform_cam = curve.sample_baked_with_rotation(closest_offset_cam, true, true)
+			var track_right_cam = closest_transform_cam.basis.x
+			var track_up_cam = closest_transform_cam.basis.y
+			var track_fwd_cam = -closest_transform_cam.basis.z
 			var dist_to_cam = min(closest_point_cam.distance_to(cam_pos), (surface_width / 2.0) - 4.0)
 			var dir_to_cam = closest_point_cam.direction_to(cam_pos)
 			var side_to_cam = sign(closest_transform_cam.basis.x.dot(dir_to_cam))
@@ -107,18 +145,65 @@ func _generate_mesh():
 		var normal_array := PackedVector3Array([])
 		var uv_array := PackedVector2Array([])
 		var curve_points := curve.tessellate_even_length()
-		for point in curve_points:
+		var alternator = 1.0
+		for i in curve_points.size() - 1:
+			var point = curve_points[i]
 			var point_offset = curve.get_closest_offset(point)
 			var point_transform = curve.sample_baked_with_rotation(point_offset, true, true)
 			var track_right = point_transform.basis.x
+			var track_up = point_transform.basis.y
+			var track_fwd = -point_transform.basis.z
+			
+			var point_next = curve_points[i + 1]
+			var point_offset_next = curve.get_closest_offset(point_next)
+			var point_transform_next = curve.sample_baked_with_rotation(point_offset_next, true, true)
+			var track_right_next = point_transform_next.basis.x
+			var track_up_next = point_transform_next.basis.y
+			var track_fwd_next = -point_transform_next.basis.z
+			
 			var point0r = point + (track_right * surface_width / 2.0)
 			var point0l = point - (track_right * surface_width / 2.0)
-			vertex_array.append(point0r)
-			vertex_array.append(point0l)
-			normal_array.append(point_transform.basis.y)
-			normal_array.append(point_transform.basis.y)
-			uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
-			uv_array.append(Vector2(0.0, point_offset / curve.get_baked_length()))
+			if radius:
+				var circle_center = point + Vector3(track_up * radius_up_offset)
+				var circle_center_next = point_next + Vector3(track_up_next * radius_up_offset)
+				var circle_circumference = radius_up_offset * 2.0 * PI
+				var track_coverage = surface_width / circle_circumference
+				#track_coverage = clampf(track_coverage, 0.0, 1.0)
+				track_coverage *= 2.0
+				#track_coverage -= 1.0
+				for va in 11:
+					var progress = float(va) / 10.0
+					progress -= 0.5
+					progress *= alternator
+					var vertex_angle = track_coverage * progress * PI
+					var dir_to_pos = circle_center.direction_to(point)
+					var pt = circle_center + (dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value)
+					var dir_to_pos_next = circle_center_next.direction_to(point_next)
+					var pt_next = circle_center_next + (dir_to_pos_next.rotated(track_fwd_next, vertex_angle) * radius_value)
+					if alternator > 0.0:
+						vertex_array.append(pt_next)
+						normal_array.append(-dir_to_pos_next)
+						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+						
+						vertex_array.append(pt)
+						normal_array.append(-dir_to_pos)
+						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+					else:
+						vertex_array.append(pt)
+						normal_array.append(-dir_to_pos)
+						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+						
+						vertex_array.append(pt_next)
+						normal_array.append(-dir_to_pos_next)
+						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+				alternator *= -1.0
+			else:
+				vertex_array.append(point0r)
+				vertex_array.append(point0l)
+				normal_array.append(track_up)
+				normal_array.append(track_up)
+				uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+				uv_array.append(Vector2(0.0, point_offset / curve.get_baked_length()))
 		arr[ArrayMesh.ARRAY_VERTEX] = vertex_array
 		arr[ArrayMesh.ARRAY_NORMAL] = normal_array
 		arr[ArrayMesh.ARRAY_TEX_UV] = uv_array
@@ -130,6 +215,91 @@ func _generate_mesh():
 		add_child(newmesh)
 		newmesh.mesh = arrmesh
 		newmesh.set_surface_override_material(0, ROAD_MATERIAL)
+
+
+func _generate_mesh_draft():
+	if curve.point_count > 0:
+		var arrmesh := ArrayMesh.new()
+		var arr = []
+		arr.resize(ArrayMesh.ARRAY_MAX)
+		var vertex_array := PackedVector3Array([])
+		var normal_array := PackedVector3Array([])
+		var uv_array := PackedVector2Array([])
+		var curve_points := curve.tessellate_even_length()
+		var alternator = 1.0
+		for i in curve_points.size() - 1:
+			var point = curve_points[i]
+			var point_offset = curve.get_closest_offset(point)
+			var point_transform = curve.sample_baked_with_rotation(point_offset, true, true)
+			var track_right = point_transform.basis.x
+			var track_up = point_transform.basis.y
+			var track_fwd = -point_transform.basis.z
+			
+			var point_next = curve_points[i + 1]
+			var point_offset_next = curve.get_closest_offset(point_next)
+			var point_transform_next = curve.sample_baked_with_rotation(point_offset_next, true, true)
+			var track_right_next = point_transform_next.basis.x
+			var track_up_next = point_transform_next.basis.y
+			var track_fwd_next = -point_transform_next.basis.z
+			
+			var point0r = point + (track_right * surface_width / 2.0)
+			var point0l = point - (track_right * surface_width / 2.0)
+			if radius:
+				var circle_center = point + Vector3(track_up * radius_up_offset)
+				var circle_center_next = point_next + Vector3(track_up_next * radius_up_offset)
+				var circle_circumference = radius_up_offset * 2.0 * PI
+				var track_coverage = surface_width / circle_circumference
+				#track_coverage = clampf(track_coverage, 0.0, 1.0)
+				track_coverage *= 2.0
+				#track_coverage -= 1.0
+				for va in 11:
+					var progress = float(va) / 10.0
+					progress -= 0.5
+					progress *= alternator
+					var vertex_angle = track_coverage * progress * PI
+					var dir_to_pos = circle_center.direction_to(point)
+					var pt = circle_center + (dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value)
+					var dir_to_pos_next = circle_center_next.direction_to(point_next)
+					var pt_next = circle_center_next + (dir_to_pos_next.rotated(track_fwd_next, vertex_angle) * radius_value)
+					if alternator > 0.0:
+						vertex_array.append(pt_next)
+						normal_array.append(-dir_to_pos_next)
+						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+						
+						vertex_array.append(pt)
+						normal_array.append(-dir_to_pos)
+						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+					else:
+						vertex_array.append(pt)
+						normal_array.append(-dir_to_pos)
+						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+						
+						vertex_array.append(pt_next)
+						normal_array.append(-dir_to_pos_next)
+						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+				alternator *= -1.0
+			else:
+				vertex_array.append(point0r)
+				vertex_array.append(point0l)
+				normal_array.append(track_up)
+				normal_array.append(track_up)
+				uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+				uv_array.append(Vector2(0.0, point_offset / curve.get_baked_length()))
+		arr[ArrayMesh.ARRAY_VERTEX] = vertex_array
+		arr[ArrayMesh.ARRAY_NORMAL] = normal_array
+		arr[ArrayMesh.ARRAY_TEX_UV] = uv_array
+		if radius:
+			arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINE_STRIP, arr)
+		else:
+			arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arr)
+		for child in get_children():
+			if child.is_class("MeshInstance3D"):
+				child.queue_free()
+		var newmesh = MeshInstance3D.new()
+		add_child(newmesh)
+		newmesh.mesh = arrmesh
+		newmesh.set_surface_override_material(0, DRAFT_ROAD_MATERIAL)
+		print("generated draft road")
 
 
 func _body_entered(body: Node):
@@ -164,3 +334,8 @@ func _on_area_3d_area_exited(area):
 		#tracked_cam.magnet_node = null
 		#tracked_cam.magnet_enabled = false
 		#tracked_cam = null
+
+
+func _on_curve_changed():
+	draft_timer = DRAFT_TIME
+	generate_draft = true

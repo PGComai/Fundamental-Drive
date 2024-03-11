@@ -25,10 +25,10 @@ var selected_object_move_mode := "free"
 var object_rotation := false
 var magnet_node: Node3D
 var magnet_enabled := false
+var target_spring_length := 0.0
 
 var global: Node
 
-@onready var build_ux = $BuildUX
 @onready var spring_arm_3d = $SpringArm3D
 @onready var cam = $SpringArm3D/Cam
 @onready var ray_cast_3d = $SpringArm3D/Cam/RayCast3D
@@ -42,7 +42,6 @@ var global: Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	build_ux.visible = false
 	global = get_node("/root/Global")
 	node_holder = get_node("/root/NodeHolder")
 	node_holder.cam_x_form_node_set.connect(_on_cam_x_form_node_set)
@@ -51,45 +50,15 @@ func _ready():
 		xform_node = node_holder.cam_x_form_node
 
 
-func _unhandled_input(event):
-	if global.build_mode:
-		if event is InputEventMouseMotion:
-			rot_h -= event.relative.x * SENS
-			rot_v -= event.relative.y * SENS
-		
-		if event.is_action_pressed("select") and ray_cast_3d.is_colliding() and not selected_object:
-			var collider: Node = ray_cast_3d.get_collider()
-			selected_object = collider.get_parent().ref
-			selected_object_move_mode = collider.get_meta("move_mode")
-			selected_object.widget.move_mode = selected_object_move_mode
-		elif event.is_action_pressed("select") and selected_object:
-			selected_object.widget.move_mode = "none"
-			selected_object = null
-		
-		if event.is_action_pressed("rotate_object") and selected_object:
-			object_rotation = true
-		elif event.is_action_released("rotate_object"):
-			object_rotation = false
-		
-		if event.is_action_pressed("select") and ray_cast_3d_handle.is_colliding() and not selected_object:
-			pass
-		
-	if event.is_action_pressed("build"):
-		global.build_mode = not global.build_mode
-		if global.build_mode:
-			rot_h = rotation.y
-			rot_v = rotation.x
-			rotation = Vector3.ZERO
-		else:
-			if selected_object:
-				selected_object.widget.move_mode = "none"
-				selected_object = null
-		spring_arm_3d.rotation = Vector3.ZERO
-		build_ux.visible = global.build_mode
+func _input(event):
+	pass
 
 
 func _process(delta):
 	if global.build_mode:
+		
+		
+		
 		if Input.is_action_pressed("buildmovefast"):
 			build_speed_multiplier = lerp(build_speed_multiplier, 10.0, 0.1)
 		elif Input.is_action_pressed("buildmoveslow"):
@@ -118,7 +87,6 @@ func _process(delta):
 				var movement_offset = travel_dir * 0.2 * build_speed_multiplier
 				if selected_object_move_mode == "free":
 					selected_object.global_position += movement_offset
-				global_position = selected_object.global_position
 		elif selected_object:
 			selected_object.orthonormalize()
 			if abs(look_axis.x) > abs(look_axis.y):
@@ -127,6 +95,9 @@ func _process(delta):
 				rotate_selected_object_x(look_axis.y)
 			elif abs(input_dir.x) > 0.0:
 				rotate_selected_object_z(-input_dir.x)
+		if selected_object:
+			global_position = global_position.lerp(selected_object.global_position, 0.3)
+	spring_arm_3d.spring_length = lerp(spring_arm_3d.spring_length, target_spring_length, 0.1)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -145,6 +116,23 @@ func _physics_process(delta):
 		var up = Vector3.UP
 		#var up = global_position.normalized()
 		look_at(look_at_pos, up)
+	elif global.build_mode:
+		if Input.is_action_just_pressed("select") and ray_cast_3d.is_colliding() and not selected_object:
+			var collider: Node = ray_cast_3d.get_collider()
+			selected_object = collider.get_parent().ref
+			selected_object_move_mode = collider.get_meta("move_mode")
+			selected_object.widget.move_mode = selected_object_move_mode
+		elif Input.is_action_just_pressed("select") and selected_object:
+			selected_object.widget.move_mode = "none"
+			selected_object = null
+		
+		if Input.is_action_pressed("rotate_object") and selected_object:
+			object_rotation = true
+		elif Input.is_action_just_released("rotate_object"):
+			object_rotation = false
+		
+		if Input.is_action_just_pressed("select") and ray_cast_3d_handle.is_colliding() and not selected_object:
+			pass
 
 
 func rotate_selected_object_y(rot_amount: float):
@@ -194,11 +182,12 @@ func rotate_selected_object_z(rot_amount: float):
 
 func _selected_object_selected():
 	if selected_object:
-		global_position = selected_object.global_position
-		spring_arm_3d.spring_length = 10.0
+		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_object.global_position)
+		print(spring_arm_3d.spring_length)
+		target_spring_length = 10.0
 	else:
 		global_position = cam.global_position
-		spring_arm_3d.spring_length = 0.0
+		target_spring_length = 0.0
 
 
 func _on_cam_x_form_node_set(toggle):
@@ -223,3 +212,25 @@ func _on_area_3d_area_exited(area):
 	print("exit")
 	if area.is_in_group("magnet"):
 		magnet_node = null
+
+
+func _on_ux_build_time(toggle):
+	print("build")
+	if toggle:
+		rot_h = rotation.y
+		rot_v = rotation.x
+		rotation = Vector3.ZERO
+	else:
+		if selected_object:
+			selected_object.widget.move_mode = "none"
+			selected_object = null
+	spring_arm_3d.rotation = Vector3.ZERO
+
+
+func _on_texture_rect_gui_input(event):
+	if global.build_mode:
+		if event is InputEventMouseMotion:
+			rot_h -= event.relative.x * SENS
+			rot_v -= event.relative.y * SENS
+		
+		
