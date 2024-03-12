@@ -8,8 +8,8 @@
 [ext_resource type="ArrayMesh" uid="uid://5v11hqpbv1t7" path="res://textures/rallycar soft.obj" id="3_qkukt"]
 [ext_resource type="ArrayMesh" uid="uid://bk643hvj3litl" path="res://textures/rallycar spoiler.obj" id="4_650ai"]
 [ext_resource type="FastNoiseLite" uid="uid://cbjbroke477lp" path="res://textures/rubber_noise.tres" id="4_qopmw"]
-[ext_resource type="AudioStream" uid="uid://brphpqvt76krr" path="res://sounds/engine-shaver.ogg" id="6_1qg6e"]
-[ext_resource type="Script" path="res://addons/midi/MidiPlayer.gd" id="9_08hwx"]
+[ext_resource type="AudioStream" uid="uid://dg5lqkgf6wl5c" path="res://sounds/engine-shaver-refined-amplified.ogg" id="6_2lxj4"]
+[ext_resource type="AudioStream" uid="uid://dhaxpy6pcf0jv" path="res://sounds/fund_drive_bounce.ogg" id="10_wvm3s"]
 
 [sub_resource type="Curve" id="Curve_5gdyi"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -314,15 +314,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000305176, 0.137215, 0.1067
 size = Vector3(1.19788, 0.944625, 2.44984)
 
 [node name="AudioStreamPlayerEngine" type="AudioStreamPlayer3D" parent="Chassis"]
-stream = ExtResource("6_1qg6e")
-volume_db = 9.581
+stream = ExtResource("6_2lxj4")
+volume_db = -10.539
 autoplay = true
 
 [node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
 transform = Transform3D(-1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 0, -0.3, 0)
 shape = SubResource("ConvexPolygonShape3D_8avk3")
 
-[node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+[node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1.2)
 collision_layer = 2
 collision_mask = 2
@@ -337,6 +337,7 @@ diameter = 0.8
 mesh = NodePath("MeshInstance3D")
 smoke = NodePath("SmokeFL")
 attractor = NodePath("WheelAttractor")
+bounce_noise = NodePath("AudioStreamPlayer3DBounce")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WheelFL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -371,7 +372,13 @@ radius = 0.51
 [node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelFL"]
 radius = 0.368013
 
-[node name="WheelFR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+[node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelFL"]
+stream = ExtResource("10_wvm3s")
+volume_db = -12.934
+max_db = 1.383
+pitch_scale = 0.99
+
+[node name="WheelFR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1.2)
 collision_layer = 2
 collision_mask = 2
@@ -386,6 +393,7 @@ diameter = 0.8
 mesh = NodePath("MeshInstance3D")
 smoke = NodePath("SmokeFR")
 attractor = NodePath("WheelAttractor")
+bounce_noise = NodePath("AudioStreamPlayer3DBounce")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WheelFR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -415,7 +423,12 @@ radius = 0.51
 [node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelFR"]
 radius = 0.368013
 
-[node name="WheelBL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+[node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelFR"]
+stream = ExtResource("10_wvm3s")
+volume_db = -12.934
+max_db = 1.383
+
+[node name="WheelBL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1.2)
 collision_layer = 2
 collision_mask = 2
@@ -430,6 +443,7 @@ diameter = 0.8
 mesh = NodePath("MeshInstance3D")
 smoke = NodePath("SmokeBL")
 attractor = NodePath("WheelAttractor")
+bounce_noise = NodePath("AudioStreamPlayer3DBounce")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WheelBL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -459,7 +473,13 @@ draw_pass_1 = SubResource("SphereMesh_v2hhu")
 [node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelBL"]
 radius = 0.368013
 
-[node name="WheelBR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor") groups=["wheel"]]
+[node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelBL"]
+stream = ExtResource("10_wvm3s")
+volume_db = -12.934
+max_db = 1.383
+pitch_scale = 1.01
+
+[node name="WheelBR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1.2)
 collision_layer = 2
 collision_mask = 2
@@ -474,6 +494,7 @@ diameter = 0.8
 mesh = NodePath("MeshInstance3D")
 smoke = NodePath("SmokeBR")
 attractor = NodePath("WheelAttractor")
+bounce_noise = NodePath("AudioStreamPlayer3DBounce")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WheelBR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -503,9 +524,11 @@ radius = 0.51
 [node name="GPUParticlesCollisionSphere3D" type="GPUParticlesCollisionSphere3D" parent="WheelBR"]
 radius = 0.368013
 
-[node name="MidiPlayer" type="Node" parent="."]
-script = ExtResource("9_08hwx")
-volume_db = -12.185
+[node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelBR"]
+stream = ExtResource("10_wvm3s")
+volume_db = -12.934
+max_db = 1.383
+pitch_scale = 1.02
 
 [connection signal="body_entered" from="Chassis" to="." method="_on_chassis_body_entered"]
 [connection signal="body_entered" from="WheelFL" to="." method="_on_wheel_fl_body_entered"]

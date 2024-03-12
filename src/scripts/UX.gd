@@ -160,8 +160,14 @@ func _on_margin_container_visibility_changed():
 
 
 func _on_button_keyboard_button_up():
-	pass # Replace with function body.
+	texture_rect_keyboard_controls.visible = true
+	texture_rect_controller_controls.visible = false
 
 
 func _on_button_controller_button_up():
-	pass # Replace with function body.
+	texture_rect_keyboard_controls.visible = false
+	texture_rect_controller_controls.visible = true
+
+
+func _on_button_quit_button_up():
+	get_tree().quit()

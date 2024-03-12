@@ -10,6 +10,7 @@ const STRAIGHT_MULTIPLIER = 3500.0
 @export var mesh: MeshInstance3D
 @export var smoke: GPUParticles3D
 @export var attractor: GPUParticlesAttractorSphere3D
+@export var bounce_noise: AudioStreamPlayer3D
 
 
 var wheel_angular_velocity: float

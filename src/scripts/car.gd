@@ -25,7 +25,7 @@ const ENGINE_NOTE_TIME = 0.125
 @onready var chassis = $Chassis
 
 @onready var flipped_cast = $Chassis/FlippedCast
-@onready var midi_player : MidiPlayer = $MidiPlayer
+#@onready var midi_player : MidiPlayer = $MidiPlayer
 #@onready var ux = $UX
 #@onready var v_box_container_params = $UX/MarginContainer/VBoxContainerParams
 @onready var cam_x_form = $Chassis/CamBase/SpringArm3D/CamXForm
@@ -169,8 +169,8 @@ func _process(delta):
 		wheel.throttle = throttle
 
 
-func note_mute_cuica():
-	midi_percussion(78, 90)
+#func note_mute_cuica():
+	#midi_percussion(78, 90)
 
 
 func hydraulics():
@@ -212,15 +212,32 @@ func hydraulics():
 
 func input_percussion():
 	if Input.is_action_just_pressed("lift back"):
-		midi_percussion(60, 90)
+		pass
+		wheel_bl.bounce_noise.play()
+		wheel_br.bounce_noise.play()
+		#midi_percussion(60, 90)
 	if Input.is_action_just_pressed("lift fwd"):
-		midi_percussion(60, 90)
+		pass
+		wheel_fl.bounce_noise.play()
+		wheel_fr.bounce_noise.play()
+		#midi_percussion(60, 90)
 	if Input.is_action_just_pressed("lift left"):
-		midi_percussion(60, 90)
+		pass
+		wheel_bl.bounce_noise.play()
+		wheel_fl.bounce_noise.play()
+		#midi_percussion(60, 90)
 	if Input.is_action_just_pressed("lift right"):
-		midi_percussion(60, 90)
+		pass
+		wheel_fr.bounce_noise.play()
+		wheel_br.bounce_noise.play()
+		#midi_percussion(60, 90)
 	if Input.is_action_just_pressed("jump"):
-		midi_percussion(61, 90)
+		pass
+		wheel_bl.bounce_noise.play()
+		wheel_br.bounce_noise.play()
+		wheel_fl.bounce_noise.play()
+		wheel_fr.bounce_noise.play()
+		#midi_percussion(61, 90)
 
 
 func input_flip():
@@ -236,25 +253,25 @@ func input_flip():
 		pass
 
 
-func midi_off(instrument: int, velocity: int, pitch: int, channel: int = 0):
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_PROGRAM_CHANGE, pitch, velocity, instrument))
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_OFF, pitch, velocity, instrument))
-
-
-func midi_on(instrument: int, velocity: int, pitch: int, channel: int = 0):
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_PROGRAM_CHANGE, pitch, velocity, instrument))
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_ON, pitch, velocity, instrument))
-
-
-func midi_normal(instrument: int, velocity: int, pitch: int, channel: int = 0):
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_PROGRAM_CHANGE, pitch, velocity, instrument))
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_OFF, pitch, velocity, instrument))
-	midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_ON, pitch, velocity, instrument))
-
-
-func midi_percussion(instrument: int, velocity: int):
-	#midi_player.receive_raw_midi_message(make_midi_event(9, MIDI_MESSAGE_NOTE_OFF, instrument, velocity, 0))
-	midi_player.receive_raw_midi_message(make_midi_event(9, MIDI_MESSAGE_NOTE_ON, instrument, velocity, 0))
+#func midi_off(instrument: int, velocity: int, pitch: int, channel: int = 0):
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_PROGRAM_CHANGE, pitch, velocity, instrument))
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_OFF, pitch, velocity, instrument))
+#
+#
+#func midi_on(instrument: int, velocity: int, pitch: int, channel: int = 0):
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_PROGRAM_CHANGE, pitch, velocity, instrument))
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_ON, pitch, velocity, instrument))
+#
+#
+#func midi_normal(instrument: int, velocity: int, pitch: int, channel: int = 0):
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_PROGRAM_CHANGE, pitch, velocity, instrument))
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_OFF, pitch, velocity, instrument))
+	#midi_player.receive_raw_midi_message(make_midi_event(channel, MIDI_MESSAGE_NOTE_ON, pitch, velocity, instrument))
+#
+#
+#func midi_percussion(instrument: int, velocity: int):
+	##midi_player.receive_raw_midi_message(make_midi_event(9, MIDI_MESSAGE_NOTE_OFF, instrument, velocity, 0))
+	#midi_player.receive_raw_midi_message(make_midi_event(9, MIDI_MESSAGE_NOTE_ON, instrument, velocity, 0))
 
 
 func make_midi_event(channel: int,
@@ -329,13 +346,17 @@ func set_joint_params(param: Generic6DOFJoint3D.Param, value: float):
 func body_note(body: Node):
 	if body.is_in_group("bouncy ball"):
 		# good: 60, 
-		midi_percussion(64, 60)
+		pass
+		#midi_percussion(64, 60)
 	elif body.is_in_group("billiard ball"):
-		midi_percussion(76, 70)
+		pass
+		#midi_percussion(76, 70)
 	elif body.is_in_group("cymbal"):
-		midi_percussion(52, 80)
+		pass
+		#midi_percussion(52, 80)
 	elif body.is_in_group("wood"):
-		midi_percussion(77, 50)
+		pass
+		#midi_percussion(77, 50)
 
 
 func _on_wheel_fl_body_entered(body):
