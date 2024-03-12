@@ -122,8 +122,8 @@ func _on_button_apply_button_up():
 	print(selected_res)
 	print(selected_win)
 	DisplayServer.window_set_mode(selected_win)
-	sub_viewport.size = selected_res
 	DisplayServer.window_set_size(selected_res)
+	sub_viewport.size = selected_res
 	button_confirm_settings.visible = true
 	display_timer.start()
 	counting_down = true
