@@ -30,10 +30,6 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/midi/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
-
 [input]
 
 fwd={
