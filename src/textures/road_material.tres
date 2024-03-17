@@ -11,9 +11,9 @@ bump_strength = 4.4
 noise = SubResource("FastNoiseLite_oseee")
 
 [resource]
-cull_mode = 2
 albedo_color = Color(0.270588, 0.270588, 0.270588, 1)
 normal_enabled = true
 normal_texture = SubResource("NoiseTexture2D_kcy44")
 uv1_scale = Vector3(0.1, 0.1, 0.1)
 uv1_triplanar = true
+grow_amount = 0.608

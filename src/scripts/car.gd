@@ -114,10 +114,6 @@ func _ready():
 	node_holder.player_node = self
 
 
-func _unhandled_input(event):
-	pass
-
-
 func _physics_process(delta):
 	if not global.build_mode:
 		emit_signal("position_signal", chassis.global_position)
@@ -176,38 +172,72 @@ func _process(delta):
 func hydraulics():
 	var lift_dist = -0.3
 	var default_dist = -0.1
-	if (Input.is_action_pressed("lift back")
-	or Input.is_action_pressed("lift left")
-	or Input.is_action_just_pressed("jump")):
-		joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
-		joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+	if Input.get_connected_joypads().size() > 0 and not global.kb_input:
+		if (Input.is_action_pressed("lift back")
+		or Input.is_action_pressed("lift left")
+		or Input.is_action_just_pressed("jump")):
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift back")
+		or Input.is_action_pressed("lift right")
+		or Input.is_action_just_pressed("jump")):
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift fwd")
+		or Input.is_action_pressed("lift right")
+		or Input.is_action_just_pressed("jump")):
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift fwd")
+		or Input.is_action_pressed("lift left")
+		or Input.is_action_just_pressed("jump")):
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
 	else:
-		joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
-		joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
-	if (Input.is_action_pressed("lift back")
-	or Input.is_action_pressed("lift right")
-	or Input.is_action_just_pressed("jump")):
-		joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
-		joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
-	else:
-		joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
-		joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
-	if (Input.is_action_pressed("lift fwd")
-	or Input.is_action_pressed("lift right")
-	or Input.is_action_just_pressed("jump")):
-		joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
-		joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
-	else:
-		joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
-		joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
-	if (Input.is_action_pressed("lift fwd")
-	or Input.is_action_pressed("lift left")
-	or Input.is_action_just_pressed("jump")):
-		joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
-		joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
-	else:
-		joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
-		joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift back kb")
+		or Input.is_action_pressed("lift left kb")
+		or Input.is_action_just_pressed("jump")):
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_bl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift back kb")
+		or Input.is_action_pressed("lift right kb")
+		or Input.is_action_just_pressed("jump")):
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_br.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift fwd kb")
+		or Input.is_action_pressed("lift right kb")
+		or Input.is_action_just_pressed("jump")):
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_fr.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
+		if (Input.is_action_pressed("lift fwd kb")
+		or Input.is_action_pressed("lift left kb")
+		or Input.is_action_just_pressed("jump")):
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, lift_dist)
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, lift_dist - 0.1)
+		else:
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, default_dist)
+			joint_fl.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, default_dist - 0.1)
 
 
 func input_percussion():

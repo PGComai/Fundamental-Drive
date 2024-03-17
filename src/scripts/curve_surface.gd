@@ -8,6 +8,8 @@ const CHASSIS_TRACKER = preload("res://scenes/chassis_tracker.tscn")
 const CAM_TRACKER = preload("res://scenes/cam_tracker.tscn")
 const ROAD_MATERIAL = preload("res://textures/road_material.tres")
 const DRAFT_ROAD_MATERIAL = preload("res://textures/draft_road_material.tres")
+const ROAD_UNDERSIDE_MATERIAL = preload("res://textures/road_underside_material.tres")
+const ROAD_SIDE_MATERIAL = preload("res://textures/road_side_material.tres")
 const PLACEABLE_ROAD_POINT = preload("res://scenes/placeable_road_point.tscn")
 const WHEEL_TRACKER_RADIUS = 2.0
 const CHASSIS_TRACKER_RADIUS = 4.0
@@ -138,12 +140,26 @@ func _physics_process(delta):
 
 func _generate_mesh():
 	if curve.point_count > 0:
+		var curve_length = curve.get_baked_length()
 		var arrmesh := ArrayMesh.new()
 		var arr = []
 		arr.resize(ArrayMesh.ARRAY_MAX)
 		var vertex_array := PackedVector3Array([])
 		var normal_array := PackedVector3Array([])
 		var uv_array := PackedVector2Array([])
+		
+		var arr_side_left = []
+		arr_side_left.resize(ArrayMesh.ARRAY_MAX)
+		var vertex_array_side_left := PackedVector3Array([])
+		var normal_array_side_left := PackedVector3Array([])
+		var uv_array_side_left := PackedVector2Array([])
+		
+		var arr_side_right = []
+		arr_side_right.resize(ArrayMesh.ARRAY_MAX)
+		var vertex_array_side_right := PackedVector3Array([])
+		var normal_array_side_right := PackedVector3Array([])
+		var uv_array_side_right := PackedVector2Array([])
+		
 		var curve_points := curve.tessellate_even_length()
 		var alternator = 1.0
 		for i in curve_points.size() - 1:
@@ -183,31 +199,57 @@ func _generate_mesh():
 					if alternator > 0.0:
 						vertex_array.append(pt_next)
 						normal_array.append(-dir_to_pos_next)
-						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+						uv_array.append(Vector2(1.0, point_offset_next / curve_length))
 						
 						vertex_array.append(pt)
 						normal_array.append(-dir_to_pos)
-						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+						uv_array.append(Vector2(1.0, point_offset / curve_length))
 					else:
 						vertex_array.append(pt)
 						normal_array.append(-dir_to_pos)
-						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+						uv_array.append(Vector2(1.0, point_offset / curve_length))
 						
 						vertex_array.append(pt_next)
 						normal_array.append(-dir_to_pos_next)
-						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+						uv_array.append(Vector2(1.0, point_offset_next / curve_length))
 				alternator *= -1.0
 			else:
 				vertex_array.append(point0r)
 				vertex_array.append(point0l)
 				normal_array.append(track_up)
 				normal_array.append(track_up)
-				uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
-				uv_array.append(Vector2(0.0, point_offset / curve.get_baked_length()))
+				uv_array.append(Vector2(1.0, point_offset / curve_length))
+				uv_array.append(Vector2(0.0, point_offset / curve_length))
+				
+				vertex_array_side_left.append(point0l)
+				vertex_array_side_left.append(point0l - track_up)
+				normal_array_side_left.append(-track_right)
+				normal_array_side_left.append(-track_right)
+				uv_array_side_left.append(Vector2(1.0, point_offset / curve_length))
+				uv_array_side_left.append(Vector2(0.0, point_offset / curve_length))
+				
+				vertex_array_side_right.append(point0r - track_up)
+				vertex_array_side_right.append(point0r)
+				normal_array_side_right.append(track_right)
+				normal_array_side_right.append(track_right)
+				uv_array_side_right.append(Vector2(1.0, point_offset / curve_length))
+				uv_array_side_right.append(Vector2(0.0, point_offset / curve_length))
 		arr[ArrayMesh.ARRAY_VERTEX] = vertex_array
 		arr[ArrayMesh.ARRAY_NORMAL] = normal_array
 		arr[ArrayMesh.ARRAY_TEX_UV] = uv_array
+		
+		arr_side_left[ArrayMesh.ARRAY_VERTEX] = vertex_array_side_left
+		arr_side_left[ArrayMesh.ARRAY_NORMAL] = normal_array_side_left
+		arr_side_left[ArrayMesh.ARRAY_TEX_UV] = uv_array_side_left
+		
+		arr_side_right[ArrayMesh.ARRAY_VERTEX] = vertex_array_side_right
+		arr_side_right[ArrayMesh.ARRAY_NORMAL] = normal_array_side_right
+		arr_side_right[ArrayMesh.ARRAY_TEX_UV] = uv_array_side_right
+		
 		arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLE_STRIP, arr)
+		arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLE_STRIP, arr)
+		arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLE_STRIP, arr_side_left)
+		arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLE_STRIP, arr_side_right)
 		for child in get_children():
 			if child.is_class("MeshInstance3D"):
 				child.queue_free()
@@ -215,6 +257,9 @@ func _generate_mesh():
 		add_child(newmesh)
 		newmesh.mesh = arrmesh
 		newmesh.set_surface_override_material(0, ROAD_MATERIAL)
+		newmesh.set_surface_override_material(1, ROAD_UNDERSIDE_MATERIAL)
+		newmesh.set_surface_override_material(2, ROAD_SIDE_MATERIAL)
+		newmesh.set_surface_override_material(3, ROAD_SIDE_MATERIAL)
 
 
 func _generate_mesh_draft():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://dnc70ycajbrmd"]
+[gd_scene load_steps=43 format=3 uid="uid://dnc70ycajbrmd"]
 
 [ext_resource type="Script" path="res://scripts/car.gd" id="1_h44u5"]
 [ext_resource type="Script" path="res://scripts/CamXForm.gd" id="1_sdi5q"]
@@ -9,6 +9,8 @@
 [ext_resource type="ArrayMesh" uid="uid://bk643hvj3litl" path="res://textures/rallycar spoiler.obj" id="4_650ai"]
 [ext_resource type="FastNoiseLite" uid="uid://cbjbroke477lp" path="res://textures/rubber_noise.tres" id="4_qopmw"]
 [ext_resource type="AudioStream" uid="uid://dg5lqkgf6wl5c" path="res://sounds/engine-shaver-refined-amplified.ogg" id="6_2lxj4"]
+[ext_resource type="Script" path="res://scripts/GrappleLauncher.gd" id="7_ry2u1"]
+[ext_resource type="PackedScene" uid="uid://bafv7scpxvlt0" path="res://scenes/grapple_hook.tscn" id="8_jov6m"]
 [ext_resource type="AudioStream" uid="uid://dhaxpy6pcf0jv" path="res://sounds/fund_drive_bounce.ogg" id="10_wvm3s"]
 
 [sub_resource type="Curve" id="Curve_5gdyi"]
@@ -321,6 +323,15 @@ autoplay = true
 [node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
 transform = Transform3D(-1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 0, -0.3, 0)
 shape = SubResource("ConvexPolygonShape3D_8avk3")
+
+[node name="GrappleLauncher" type="Node3D" parent="Chassis" node_paths=PackedStringArray("hook")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -1.68725)
+script = ExtResource("7_ry2u1")
+hook = NodePath("GrappleHook")
+
+[node name="GrappleHook" parent="Chassis/GrappleLauncher" instance=ExtResource("8_jov6m")]
+top_level = false
+visible = false
 
 [node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1.2)

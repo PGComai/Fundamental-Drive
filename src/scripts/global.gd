@@ -8,6 +8,7 @@ var build_mode := false:
 	set(value):
 		build_mode = value
 		emit_signal("build_mode_toggle", value)
+var kb_input := false
 
 var sub_v: SubViewport
 
@@ -19,4 +20,5 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if Input.is_action_just_pressed("change input"):
+		kb_input = not kb_input
