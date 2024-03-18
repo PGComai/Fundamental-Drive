@@ -123,13 +123,13 @@ func _physics_process(delta):
 			selected_object.widget.move_mode = "none"
 			selected_object = null
 		
+		if Input.is_action_just_pressed("select") and ray_cast_3d_handle.is_colliding() and not selected_object:
+			pass
+		
 		if Input.is_action_pressed("rotate_object") and selected_object:
 			object_rotation = true
 		elif Input.is_action_just_released("rotate_object"):
 			object_rotation = false
-		
-		if Input.is_action_just_pressed("select") and ray_cast_3d_handle.is_colliding() and not selected_object:
-			pass
 
 
 func rotate_selected_object_y(rot_amount: float):

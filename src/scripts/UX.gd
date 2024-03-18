@@ -55,6 +55,7 @@ func _ready():
 	v_box_container_options.visible = false
 	v_box_container_controls.visible = false
 	v_box_container_params.visible = false
+	build_ux.visible = false
 
 
 func _unhandled_input(event):

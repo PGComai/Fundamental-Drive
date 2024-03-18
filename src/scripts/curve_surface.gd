@@ -11,6 +11,7 @@ const DRAFT_ROAD_MATERIAL = preload("res://textures/draft_road_material.tres")
 const ROAD_UNDERSIDE_MATERIAL = preload("res://textures/road_underside_material.tres")
 const ROAD_SIDE_MATERIAL = preload("res://textures/road_side_material.tres")
 const PLACEABLE_ROAD_POINT = preload("res://scenes/placeable_road_point.tscn")
+const AREA = preload("res://scenes/area.tscn")
 const WHEEL_TRACKER_RADIUS = 2.0
 const CHASSIS_TRACKER_RADIUS = 4.0
 const DRAFT_TIME = 0.5
@@ -260,6 +261,45 @@ func _generate_mesh():
 		newmesh.set_surface_override_material(1, ROAD_UNDERSIDE_MATERIAL)
 		newmesh.set_surface_override_material(2, ROAD_SIDE_MATERIAL)
 		newmesh.set_surface_override_material(3, ROAD_SIDE_MATERIAL)
+		
+		if not area:
+			if not Engine.is_editor_hint():
+				var new_area = AREA.instantiate()
+				add_child(new_area)
+				area = new_area
+			
+			var min_x = 0.0
+			var min_y = 0.0
+			var min_z = 0.0
+			
+			var max_x = 0.0
+			var max_y = 0.0
+			var max_z = 0.0
+			
+			for point in curve_points:
+				min_x = min(min_x, point.x)
+				min_y = min(min_y, point.y)
+				min_z = min(min_z, point.z)
+				
+				max_x = max(max_x, point.x)
+				max_y = max(max_y, point.y)
+				max_z = max(max_z, point.z)
+			
+			var min_v = Vector3(min_x, min_y, min_z)
+			var max_v = Vector3(max_x, max_y, max_z)
+			var ctr = min_v.lerp(max_v, 0.5)
+			
+			var size_x = max_x - min_x + surface_width
+			var size_y = max_y - min_y + surface_width
+			var size_z = max_z - min_z + surface_width
+			
+			if area:
+				area.position = ctr
+				area.get_child(0).shape.size = Vector3(size_x, size_y, size_z)
+				area.body_entered.connect(_body_entered)
+				area.body_exited.connect(_body_exited)
+				area.set_collision_mask_value(2, true)
+				area.set_collision_mask_value(3, true)
 
 
 func _generate_mesh_draft():
