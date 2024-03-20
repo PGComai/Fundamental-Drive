@@ -10,7 +10,6 @@ const ROAD_MATERIAL = preload("res://textures/road_material.tres")
 const DRAFT_ROAD_MATERIAL = preload("res://textures/draft_road_material.tres")
 const ROAD_UNDERSIDE_MATERIAL = preload("res://textures/road_underside_material.tres")
 const ROAD_SIDE_MATERIAL = preload("res://textures/road_side_material.tres")
-const PLACEABLE_ROAD_POINT = preload("res://scenes/placeable_road_point.tscn")
 const AREA = preload("res://scenes/area.tscn")
 const WHEEL_TRACKER_RADIUS = 2.0
 const CHASSIS_TRACKER_RADIUS = 4.0
@@ -44,6 +43,8 @@ var chassis_max_offset: float
 var draft_timer := 0.0
 var generate_draft := false
 
+
+var placeable_points: Array[PlaceableRoadPoint] = []
 
 
 # Called when the node enters the scene tree for the first time.
@@ -303,7 +304,7 @@ func _generate_mesh():
 
 
 func _generate_mesh_draft():
-	if curve.point_count > 0:
+	if curve.point_count > 1:
 		var arrmesh := ArrayMesh.new()
 		var arr = []
 		arr.resize(ArrayMesh.ARRAY_MAX)
@@ -424,3 +425,13 @@ func _on_area_3d_area_exited(area):
 func _on_curve_changed():
 	draft_timer = DRAFT_TIME
 	generate_draft = true
+
+
+func _placeable_points_set():
+	print("making curve")
+	curve.clear_points()
+	for point in placeable_points:
+		curve.add_point(to_local(point.global_position),
+						point.global_basis.z * point.curve_size,
+						-point.global_basis.z * point.curve_size,
+						point.road_curve_idx)

@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=3 uid="uid://p04kros6agej"]
+
+[ext_resource type="Script" path="res://scripts/pso_widget.gd" id="1_a5b5m"]
+[ext_resource type="Material" uid="uid://dp7a3pqw8vton" path="res://textures/widget_highlight_material.tres" id="2_nbscd"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7oefa"]
+radius = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_d6upq"]
+flip_faces = true
+radius = 1.0
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4628j"]
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.788235, 0, 0.698039, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_qyqwj"]
+flip_faces = true
+radius = 1.1
+height = 2.2
+
+[sub_resource type="TextMesh" id="TextMesh_xgojq"]
+resource_local_to_scene = true
+text = "1"
+pixel_size = 0.074
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5u67"]
+render_priority = 1
+no_depth_test = true
+shading_mode = 0
+billboard_mode = 1
+
+[node name="PRPWidget" type="Node3D"]
+top_level = true
+script = ExtResource("1_a5b5m")
+
+[node name="WidgetMoveOrigin" type="StaticBody3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WidgetMoveOrigin"]
+shape = SubResource("SphereShape3D_7oefa")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D"]
+mesh = SubResource("SphereMesh_d6upq")
+surface_material_override/0 = SubResource("StandardMaterial3D_4628j")
+
+[node name="MeshHighlightOrigin" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_qyqwj")
+surface_material_override/0 = ExtResource("2_nbscd")
+
+[node name="Idx" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+mesh = SubResource("TextMesh_xgojq")
+surface_material_override/0 = SubResource("StandardMaterial3D_o5u67")

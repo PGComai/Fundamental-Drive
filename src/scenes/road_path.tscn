@@ -1,31 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://dxiassghx6e4x"]
+[gd_scene load_steps=3 format=3 uid="uid://dxiassghx6e4x"]
 
 [ext_resource type="Script" path="res://scripts/curve_surface.gd" id="1_vt422"]
 
 [sub_resource type="Curve3D" id="Curve3D_0yvwe"]
 bake_interval = 0.01
-_data = {
-"points": PackedVector3Array(0, 0, 1, 0, 0, -5, 0, 0, 0),
-"tilts": PackedFloat32Array(0)
-}
-point_count = 1
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_qtiuc"]
-height = 20.0
-radius = 20.0
 
 [node name="RoadPath" type="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.0332, 0, -69.6067)
 curve = SubResource("Curve3D_0yvwe")
 script = ExtResource("1_vt422")
 surface_width = 4.0
-
-[node name="Area3D" type="Area3D" parent="."]
-collision_mask = 3
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
-shape = SubResource("CylinderShape3D_qtiuc")
-
-[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
-[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

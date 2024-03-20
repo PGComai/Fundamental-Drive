@@ -115,7 +115,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	if not global.build_mode:
+	if global.player_state == 0:
 		emit_signal("position_signal", chassis.global_position)
 		emit_signal("velocity", chassis.linear_velocity)
 		throttle = -Input.get_axis("back", "fwd")

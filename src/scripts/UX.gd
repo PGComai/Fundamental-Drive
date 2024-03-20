@@ -59,7 +59,7 @@ func _ready():
 
 
 func _unhandled_input(event):
-	if not global.build_mode:
+	if not global.player_state == 1:
 		if event.is_action_pressed("esc"):
 			margin_container.visible = not margin_container.visible
 			if margin_container.visible:
@@ -71,15 +71,19 @@ func _unhandled_input(event):
 				panel.visible = false
 				v_box_container_menu.visible = panel.visible
 	if event.is_action_pressed("build"):
-		global.build_mode = not global.build_mode
-		build_ux.visible = global.build_mode
-		margin_container.visible = global.build_mode
-		if global.build_mode:
+		var player_is_driving: bool = global.player_state == 0
+		if player_is_driving:
+			global.player_state = 1
+		else:
+			global.player_state = 0
+		build_ux.visible = global.player_state == 1
+		margin_container.visible = global.player_state == 1
+		if global.player_state == 1:
 			panel.visible = false
 			v_box_container_params.visible = panel.visible
 			v_box_container_menu.visible = panel.visible
 			v_box_container_options.visible = panel.visible
-		emit_signal("build_time", global.build_mode)
+		emit_signal("build_time", global.player_state == 1)
 		
 
 
