@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/curve_surface.gd" id="1_vt422"]
 
-[sub_resource type="Curve3D" id="Curve3D_0yvwe"]
-bake_interval = 0.01
+[sub_resource type="Curve3D" id="Curve3D_x8u0o"]
+resource_local_to_scene = true
 
 [node name="RoadPath" type="Path3D"]
-curve = SubResource("Curve3D_0yvwe")
+curve = SubResource("Curve3D_x8u0o")
 script = ExtResource("1_vt422")
 surface_width = 4.0

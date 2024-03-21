@@ -4,6 +4,8 @@ extends Node3D
 const SENS = 0.002
 const SENS_JOY = 0.03
 const OBJ_ROT_SENS = 0.1
+const OBJ_TILT_SENS = 0.02
+const ROAD_DRAFT_TIME = 1.0
 
 
 var node_holder: Node
@@ -33,11 +35,13 @@ var selected_road_point: PlaceableRoadPoint:
 		selected_road_point = value
 		if selected_road_point:
 			selected_road_point.mode = 1
+		_selected_road_point_selected()
 var object_rotation := false
 var magnet_node: Node3D
 var magnet_enabled := false
 var target_spring_length := 0.0
 var just_placed_item := false
+var road_draft_timer := 0.0
 
 
 var global: Node
@@ -70,7 +74,7 @@ func _process(delta):
 	if (global.player_state == 1
 		or global.player_state == 2
 		or global.player_state == 3):
-			if Input.is_action_pressed("rotate_object") and selected_object:
+			if Input.is_action_pressed("rotate_object") and (selected_object or selected_road_point):
 				object_rotation = true
 			elif Input.is_action_just_released("rotate_object"):
 				object_rotation = false
@@ -97,13 +101,14 @@ func _process(delta):
 				spring_arm_3d.rotation.x = rot_v
 				var travel_dir = (cam.global_transform.basis * Vector3(input_dir.x, updown, input_dir.y)).normalized()
 				
-				if travel_dir and not selected_object:
+				if travel_dir and not (selected_object or selected_road_point):
 					global_position += travel_dir * 0.2 * build_speed_multiplier
 				elif travel_dir:
 					var movement_offset = travel_dir * 0.2 * build_speed_multiplier
 					if selected_object:
 						selected_object.global_position += movement_offset
-			
+					elif selected_road_point:
+						selected_road_point.global_position += movement_offset
 			elif selected_object:
 				selected_object.orthonormalize()
 				if abs(look_axis.x) > abs(look_axis.y):
@@ -112,6 +117,14 @@ func _process(delta):
 					rotate_selected_object_x(look_axis.y)
 				elif abs(input_dir.x) > 0.0:
 					rotate_selected_object_z(-input_dir.x)
+			elif selected_road_point:
+				selected_road_point.orthonormalize()
+				if abs(look_axis.x) > abs(look_axis.y):
+					rotate_selected_road_point_y(look_axis.x)
+				elif abs(look_axis.x) < abs(look_axis.y):
+					rotate_selected_road_point_x(look_axis.y)
+				elif abs(input_dir.x) > 0.0:
+					rotate_selected_road_point_z(-input_dir.x)
 	
 	if global.player_state == 2:
 		global_position = global_position.lerp(selected_object.global_position, 0.4)
@@ -124,11 +137,37 @@ func _process(delta):
 	elif global.player_state == 3:
 		if edited_object.object_type == 1:
 			# currently editing road
+			if selected_road_point:
+				global_position = global_position.lerp(selected_road_point.global_position, 0.4)
+				road_draft_timer -= delta
+				if road_draft_timer <= 0.0:
+					road_draft_timer += ROAD_DRAFT_TIME
+					selected_road_point.parent_road._placeable_points_set()
+				if Input.is_action_just_pressed("jump"):
+					selected_road_point.parent_road._placeable_points_set()
+					selected_road_point = null
 			if Input.is_action_just_pressed("build toggle items"):
-				edited_object.add_road_point(global_position - (cam.global_basis.z * 5.0))
+				var new_point = edited_object.add_road_point(global_position - (cam.global_basis.z * 5.0))
+				if new_point:
+					var point_handoff = false
+					var point_basis: Basis
+					var point_tilt: float
+					if selected_road_point:
+						point_handoff = true
+						point_basis = selected_road_point.global_basis
+						point_tilt = selected_road_point.tilt
+						selected_road_point = null
+					selected_road_point = new_point
+					if point_handoff:
+						selected_road_point.global_basis = point_basis
+						selected_road_point.tilt = point_tilt
 		if Input.is_action_just_pressed("go back"):
 			# EDIT -> SELECT HANDOFF
 			print("exiting editing")
+			if edited_object.object_type == 1:
+				if edited_object.road.curve.point_count > 1:
+					edited_object.road._generate_mesh()
+					edited_object.road._initialize_trackers()
 			selected_object = edited_object
 			global.player_state = 2
 			edited_object = null
@@ -154,7 +193,6 @@ func _physics_process(delta):
 		var up = Vector3.UP
 		#var up = global_position.normalized()
 		look_at(look_at_pos, up)
-	
 	elif (global.player_state == 1
 		or global.player_state == 2):
 		if (Input.is_action_just_pressed("select")
@@ -174,6 +212,59 @@ func _physics_process(delta):
 		and ray_cast_3d_handle.is_colliding()
 		and not selected_object):
 			pass
+	elif global.player_state == 3:
+		pass
+
+
+func rotate_selected_road_point_y(rot_amount: float):
+	if selected_road_point.global_basis.x.angle_to(cam.global_basis.y) < PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.x, rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.x.angle_to(cam.global_basis.y) > 3.0 * PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.x, -rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.y.angle_to(cam.global_basis.y) < PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.y, rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.y.angle_to(cam.global_basis.y) > 3.0 * PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.y, -rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.z.angle_to(cam.global_basis.y) < PI/4.0:
+		# tilt
+		selected_road_point.tilt -= rot_amount * OBJ_TILT_SENS
+	elif selected_road_point.global_basis.z.angle_to(cam.global_basis.y) > 3.0 * PI/4.0:
+		# tilt
+		selected_road_point.tilt += rot_amount * OBJ_TILT_SENS
+
+
+func rotate_selected_road_point_x(rot_amount: float):
+	if selected_road_point.global_basis.x.angle_to(cam.global_basis.x) < PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.x, rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.x.angle_to(cam.global_basis.x) > 3.0 * PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.x, -rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.y.angle_to(cam.global_basis.x) < PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.y, rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.y.angle_to(cam.global_basis.x) > 3.0 * PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.y, -rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.z.angle_to(cam.global_basis.x) < PI/4.0:
+		# tilt
+		selected_road_point.tilt -= rot_amount * OBJ_TILT_SENS
+	elif selected_road_point.global_basis.z.angle_to(cam.global_basis.x) > 3.0 * PI/4.0:
+		# tilt
+		selected_road_point.tilt += rot_amount * OBJ_TILT_SENS
+
+
+func rotate_selected_road_point_z(rot_amount: float):
+	if selected_road_point.global_basis.x.angle_to(cam.global_basis.z) < PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.x, rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.x.angle_to(cam.global_basis.z) > 3.0 * PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.x, -rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.y.angle_to(cam.global_basis.z) < PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.y, rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.y.angle_to(cam.global_basis.z) > 3.0 * PI/4.0:
+		selected_road_point.rotate(selected_road_point.global_basis.y, -rot_amount * OBJ_ROT_SENS)
+	elif selected_road_point.global_basis.z.angle_to(cam.global_basis.z) < PI/4.0:
+		# tilt
+		selected_road_point.tilt -= rot_amount * OBJ_TILT_SENS
+	elif selected_road_point.global_basis.z.angle_to(cam.global_basis.z) > 3.0 * PI/4.0:
+		# tilt
+		selected_road_point.tilt += rot_amount * OBJ_TILT_SENS
 
 
 func rotate_selected_object_y(rot_amount: float):
@@ -230,6 +321,19 @@ func _selected_object_selected():
 		target_spring_length = 10.0
 	else:
 		print("deselected")
+		global_position = cam.global_position
+		target_spring_length = 0.0
+
+
+func _selected_road_point_selected():
+	if selected_road_point:
+		selected_road_point.mode == 1
+		print("selected road point")
+		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_road_point.global_position)
+		print(spring_arm_3d.spring_length)
+		target_spring_length = 10.0
+	else:
+		print("deselected road point")
 		global_position = cam.global_position
 		target_spring_length = 0.0
 

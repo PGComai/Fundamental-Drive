@@ -27,6 +27,7 @@ var road_curve_idx: int:
 		road_curve_idx = value
 		_idx_set()
 var curve_size: float = 10.0
+var tilt: float = 0.0
 
 var global: Node
 
@@ -45,19 +46,18 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if widget:
-		widget.global_position = global_position
+	pass
+	#if widget:
+		#widget.global_position = global_position
 
 
 func _mode_set():
 	if MODES[mode] == "None":
 		if widget:
 			widget.move = false
-			widget.edit = false
 	elif MODES[mode] == "Selected":
 		if widget:
 			widget.move = true
-			widget.edit = false
 
 
 func _on_global_player_state_changed(state: String):

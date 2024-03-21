@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://p04kros6agej"]
+[gd_scene load_steps=12 format=3 uid="uid://p04kros6agej"]
 
 [ext_resource type="Script" path="res://scripts/pso_widget.gd" id="1_a5b5m"]
 [ext_resource type="Material" uid="uid://dp7a3pqw8vton" path="res://textures/widget_highlight_material.tres" id="2_nbscd"]
@@ -32,8 +32,19 @@ no_depth_test = true
 shading_mode = 0
 billboard_mode = 1
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_su6tu"]
+radius = 0.2
+height = 6.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_4h7ef"]
+top_radius = 0.0
+height = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_0efdl"]
+radius = 1.0
+height = 2.0
+
 [node name="PRPWidget" type="Node3D"]
-top_level = true
 script = ExtResource("1_a5b5m")
 
 [node name="WidgetMoveOrigin" type="StaticBody3D" parent="."]
@@ -55,3 +66,24 @@ surface_material_override/0 = ExtResource("2_nbscd")
 [node name="Idx" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
 mesh = SubResource("TextMesh_xgojq")
 surface_material_override/0 = SubResource("StandardMaterial3D_o5u67")
+
+[node name="Dir" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_su6tu")
+surface_material_override/0 = SubResource("StandardMaterial3D_4628j")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D/Dir"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 1.31134e-07)
+mesh = SubResource("CylinderMesh_4h7ef")
+surface_material_override/0 = SubResource("StandardMaterial3D_4628j")
+
+[node name="DirShadow" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_su6tu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D/DirShadow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 1.31134e-07)
+mesh = SubResource("CylinderMesh_4h7ef")
+
+[node name="ShadowMesh" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+mesh = SubResource("SphereMesh_0efdl")

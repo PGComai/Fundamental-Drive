@@ -50,6 +50,8 @@ func add_road_point(pos: Vector3):
 		new_road_point.global_position = pos
 		new_road_point.parent_placeable_object = self
 		new_road_point.parent_road = road
+		return new_road_point
+	return null
 
 
 func _mode_set():

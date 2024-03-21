@@ -42,6 +42,7 @@ var chassis_min_offset: float
 var chassis_max_offset: float
 var draft_timer := 0.0
 var generate_draft := false
+var trackers_initialized := false
 
 
 var placeable_points: Array[PlaceableRoadPoint] = []
@@ -50,26 +51,9 @@ var placeable_points: Array[PlaceableRoadPoint] = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	connect("curve_changed", _on_curve_changed)
-	if not Engine.is_editor_hint():
-		if area:
-			area.body_entered.connect(_body_entered)
-			area.body_exited.connect(_body_exited)
-		for i in 4:
-			var new_tracker = WHEEL_TRACKER.instantiate()
-			add_child(new_tracker)
-			wheel_trackers.append(new_tracker)
-		var new_chassis_tracker = CHASSIS_TRACKER.instantiate()
-		add_child(new_chassis_tracker)
-		chassis_tracker = new_chassis_tracker
-		var new_cam_tracker = CAM_TRACKER.instantiate()
-		add_child(new_cam_tracker)
-		cam_tracker = new_cam_tracker
+	if not Engine.is_editor_hint() and curve.point_count > 1:
 		_generate_mesh()
-		track_length = curve.get_baked_length()
-		wheel_min_offset = WHEEL_TRACKER_RADIUS
-		wheel_max_offset = track_length - WHEEL_TRACKER_RADIUS
-		chassis_min_offset = CHASSIS_TRACKER_RADIUS
-		chassis_max_offset = track_length - CHASSIS_TRACKER_RADIUS
+		_initialize_trackers()
 
 
 func _process(delta):
@@ -138,6 +122,26 @@ func _physics_process(delta):
 			var side_to_cam = sign(closest_transform_cam.basis.x.dot(dir_to_cam))
 			cam_tracker.transform = closest_transform_cam
 			cam_tracker.position += closest_transform_cam.basis.x * side_to_cam * dist_to_cam
+
+
+func _initialize_trackers():
+	if not trackers_initialized:
+		for i in 4:
+			var new_tracker = WHEEL_TRACKER.instantiate()
+			add_child(new_tracker)
+			wheel_trackers.append(new_tracker)
+		var new_chassis_tracker = CHASSIS_TRACKER.instantiate()
+		add_child(new_chassis_tracker)
+		chassis_tracker = new_chassis_tracker
+		var new_cam_tracker = CAM_TRACKER.instantiate()
+		add_child(new_cam_tracker)
+		cam_tracker = new_cam_tracker
+		trackers_initialized = true
+	track_length = curve.get_baked_length()
+	wheel_min_offset = WHEEL_TRACKER_RADIUS
+	wheel_max_offset = track_length - WHEEL_TRACKER_RADIUS
+	chassis_min_offset = CHASSIS_TRACKER_RADIUS
+	chassis_max_offset = track_length - CHASSIS_TRACKER_RADIUS
 
 
 func _generate_mesh():
@@ -263,12 +267,12 @@ func _generate_mesh():
 		newmesh.set_surface_override_material(2, ROAD_SIDE_MATERIAL)
 		newmesh.set_surface_override_material(3, ROAD_SIDE_MATERIAL)
 		
-		if not area:
-			if not Engine.is_editor_hint():
+		if not Engine.is_editor_hint():
+			if not area:
 				var new_area = AREA.instantiate()
 				add_child(new_area)
 				area = new_area
-			
+				
 			var min_x = 0.0
 			var min_y = 0.0
 			var min_z = 0.0
@@ -297,8 +301,9 @@ func _generate_mesh():
 			if area:
 				area.position = ctr
 				area.get_child(0).shape.size = Vector3(size_x, size_y, size_z)
-				area.body_entered.connect(_body_entered)
-				area.body_exited.connect(_body_exited)
+				if not area.is_connected("body_entered", _body_entered):
+					area.body_entered.connect(_body_entered)
+					area.body_exited.connect(_body_exited)
 				area.set_collision_mask_value(2, true)
 				area.set_collision_mask_value(3, true)
 
@@ -435,3 +440,4 @@ func _placeable_points_set():
 						point.global_basis.z * point.curve_size,
 						-point.global_basis.z * point.curve_size,
 						point.road_curve_idx)
+		curve.set_point_tilt(point.road_curve_idx, point.tilt)

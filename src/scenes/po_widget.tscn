@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bcqu1jyk77ksi"]
+[gd_scene load_steps=9 format=3 uid="uid://bcqu1jyk77ksi"]
 
 [ext_resource type="Script" path="res://scripts/po_widget.gd" id="1_25ver"]
 [ext_resource type="Material" uid="uid://dp7a3pqw8vton" path="res://textures/widget_highlight_material.tres" id="2_3xevt"]
@@ -22,6 +22,10 @@ height = 2.2
 
 [sub_resource type="BoxMesh" id="BoxMesh_pmspt"]
 size = Vector3(2.2, 2.2, 2.2)
+
+[sub_resource type="SphereMesh" id="SphereMesh_pi7db"]
+radius = 1.0
+height = 2.0
 
 [node name="POWidget" type="Node3D"]
 top_level = true
@@ -48,3 +52,6 @@ visible = false
 cast_shadow = 0
 mesh = SubResource("BoxMesh_pmspt")
 surface_material_override/0 = ExtResource("2_3xevt")
+
+[node name="ShadowMesh" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+mesh = SubResource("SphereMesh_pi7db")
