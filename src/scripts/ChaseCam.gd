@@ -3,9 +3,11 @@ extends Node3D
 
 const SENS = 0.002
 const SENS_JOY = 0.03
-const OBJ_ROT_SENS = 0.1
-const OBJ_TILT_SENS = 0.02
-const ROAD_DRAFT_TIME = 1.0
+const OBJ_ROT_SENS = 0.05
+const OBJ_TILT_SENS = 0.05
+const ROAD_DRAFT_TIME = 0.2
+const ADJUST_CURVE_SIZE_SENS = 0.05
+const DEFAULT_SPRING_LENGTH = 10.0
 
 
 var node_holder: Node
@@ -42,6 +44,9 @@ var magnet_enabled := false
 var target_spring_length := 0.0
 var just_placed_item := false
 var road_draft_timer := 0.0
+var adjusted_spring_length := 10.0:
+	set(value):
+		adjusted_spring_length = clampf(value, 2.0, 30.0)
 
 
 var global: Node
@@ -66,18 +71,19 @@ func _ready():
 		xform_node = node_holder.cam_x_form_node
 
 
-func _input(event):
-	pass
-
-
 func _process(delta):
 	if (global.player_state == 1
 		or global.player_state == 2
 		or global.player_state == 3):
+#region building/selecting/editing input/movement/rotation
 			if Input.is_action_pressed("rotate_object") and (selected_object or selected_road_point):
 				object_rotation = true
 			elif Input.is_action_just_released("rotate_object"):
 				object_rotation = false
+			
+			var curve_length_change = false
+			if Input.is_action_pressed("flip") and selected_road_point:
+				curve_length_change = true
 			
 			if Input.is_action_pressed("buildmovefast"):
 				build_speed_multiplier = lerp(build_speed_multiplier, 10.0, 0.1)
@@ -90,7 +96,6 @@ func _process(delta):
 			var updown = Input.get_axis("builddown", "buildup")
 			var input_dir = Input.get_vector("buildleft", "buildright", "buildfwd", "buildback")
 			
-			var dir_to_center = -global_position.normalized()
 			
 			if not object_rotation:
 				if look_axis:
@@ -101,7 +106,9 @@ func _process(delta):
 				spring_arm_3d.rotation.x = rot_v
 				var travel_dir = (cam.global_transform.basis * Vector3(input_dir.x, updown, input_dir.y)).normalized()
 				
-				if travel_dir and not (selected_object or selected_road_point):
+				if curve_length_change:
+					selected_road_point.curve_size += input_dir.x * ADJUST_CURVE_SIZE_SENS
+				elif travel_dir and not (selected_object or selected_road_point):
 					global_position += travel_dir * 0.2 * build_speed_multiplier
 				elif travel_dir:
 					var movement_offset = travel_dir * 0.2 * build_speed_multiplier
@@ -109,6 +116,9 @@ func _process(delta):
 						selected_object.global_position += movement_offset
 					elif selected_road_point:
 						selected_road_point.global_position += movement_offset
+			elif abs(input_dir.y) > abs(input_dir.x):
+				adjusted_spring_length += input_dir.y * 0.3
+				target_spring_length = adjusted_spring_length
 			elif selected_object:
 				selected_object.orthonormalize()
 				if abs(look_axis.x) > abs(look_axis.y):
@@ -125,8 +135,10 @@ func _process(delta):
 					rotate_selected_road_point_x(look_axis.y)
 				elif abs(input_dir.x) > 0.0:
 					rotate_selected_road_point_z(-input_dir.x)
+#endregion
 	
 	if global.player_state == 2:
+#region selecting
 		global_position = global_position.lerp(selected_object.global_position, 0.4)
 		if Input.is_action_just_pressed("build toggle items"):
 			# SELECT -> EDIT HANDOFF
@@ -134,7 +146,9 @@ func _process(delta):
 			edited_object = selected_object
 			global.player_state = 3
 			selected_object = null
+#endregion
 	elif global.player_state == 3:
+#region editing
 		if edited_object.object_type == 1:
 			# currently editing road
 			if selected_road_point:
@@ -152,15 +166,18 @@ func _process(delta):
 					var point_handoff = false
 					var point_basis: Basis
 					var point_tilt: float
+					var point_size: float
 					if selected_road_point:
 						point_handoff = true
 						point_basis = selected_road_point.global_basis
 						point_tilt = selected_road_point.tilt
+						point_size = selected_road_point.curve_size
 						selected_road_point = null
 					selected_road_point = new_point
 					if point_handoff:
 						selected_road_point.global_basis = point_basis
 						selected_road_point.tilt = point_tilt
+						selected_road_point.curve_size = point_size
 		if Input.is_action_just_pressed("go back"):
 			# EDIT -> SELECT HANDOFF
 			print("exiting editing")
@@ -171,6 +188,7 @@ func _process(delta):
 			selected_object = edited_object
 			global.player_state = 2
 			edited_object = null
+#endregion
 		
 	spring_arm_3d.spring_length = lerp(spring_arm_3d.spring_length, target_spring_length, 0.1)
 	just_placed_item = false
@@ -181,6 +199,7 @@ func _physics_process(delta):
 	area_3d.global_position = car.chassis.global_position
 	
 	if xform_node and global.player_state == 0:
+#region camera movement while driving
 		rot_h = lerp(rot_h, 0.0, 0.1)
 		rot_v = lerp(rot_v, 0.0, 0.1)
 		if not magnet_node:
@@ -193,8 +212,10 @@ func _physics_process(delta):
 		var up = Vector3.UP
 		#var up = global_position.normalized()
 		look_at(look_at_pos, up)
+#endregion
 	elif (global.player_state == 1
 		or global.player_state == 2):
+#region build mode selection detection
 		if (Input.is_action_just_pressed("select")
 		and ray_cast_3d.is_colliding()
 		and not selected_object):
@@ -212,6 +233,7 @@ func _physics_process(delta):
 		and ray_cast_3d_handle.is_colliding()
 		and not selected_object):
 			pass
+#endregion
 	elif global.player_state == 3:
 		pass
 
@@ -318,7 +340,7 @@ func _selected_object_selected():
 		print("selected")
 		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_object.global_position)
 		print(spring_arm_3d.spring_length)
-		target_spring_length = 10.0
+		target_spring_length = adjusted_spring_length
 	else:
 		print("deselected")
 		global_position = cam.global_position
@@ -331,7 +353,7 @@ func _selected_road_point_selected():
 		print("selected road point")
 		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_road_point.global_position)
 		print(spring_arm_3d.spring_length)
-		target_spring_length = 10.0
+		target_spring_length = adjusted_spring_length
 	else:
 		print("deselected road point")
 		global_position = cam.global_position

@@ -15,7 +15,7 @@ func _process(delta):
 		look_dir = look_dir.slerp(-global_basis.z, 0.03)
 	else:
 		look_dir = look_dir.slerp(linear_velocity, 0.1)
-	look_dir.y *= 0.7
+	look_dir.y *= 0.8
 	cam_base.look_at(global_position + look_dir)
 
 

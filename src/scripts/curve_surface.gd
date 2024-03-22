@@ -13,7 +13,7 @@ const ROAD_SIDE_MATERIAL = preload("res://textures/road_side_material.tres")
 const AREA = preload("res://scenes/area.tscn")
 const WHEEL_TRACKER_RADIUS = 2.0
 const CHASSIS_TRACKER_RADIUS = 4.0
-const DRAFT_TIME = 0.5
+const DRAFT_TIME = 0.05
 
 
 @export var surface_width := 8.0
@@ -145,7 +145,7 @@ func _initialize_trackers():
 
 
 func _generate_mesh():
-	if curve.point_count > 0:
+	if curve.point_count > 1:
 		var curve_length = curve.get_baked_length()
 		var arrmesh := ArrayMesh.new()
 		var arr = []
@@ -354,31 +354,31 @@ func _generate_mesh_draft():
 					var pt_next = circle_center_next + (dir_to_pos_next.rotated(track_fwd_next, vertex_angle) * radius_value)
 					if alternator > 0.0:
 						vertex_array.append(pt_next)
-						normal_array.append(-dir_to_pos_next)
-						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+						#normal_array.append(-dir_to_pos_next)
+						#uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
 						
 						vertex_array.append(pt)
-						normal_array.append(-dir_to_pos)
-						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+						#normal_array.append(-dir_to_pos)
+						#uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
 					else:
 						vertex_array.append(pt)
-						normal_array.append(-dir_to_pos)
-						uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+						#normal_array.append(-dir_to_pos)
+						#uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
 						
 						vertex_array.append(pt_next)
-						normal_array.append(-dir_to_pos_next)
-						uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
+						#normal_array.append(-dir_to_pos_next)
+						#uv_array.append(Vector2(1.0, point_offset_next / curve.get_baked_length()))
 				alternator *= -1.0
 			else:
 				vertex_array.append(point0r)
 				vertex_array.append(point0l)
-				normal_array.append(track_up)
-				normal_array.append(track_up)
-				uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
-				uv_array.append(Vector2(0.0, point_offset / curve.get_baked_length()))
+				#normal_array.append(track_up)
+				#normal_array.append(track_up)
+				#uv_array.append(Vector2(1.0, point_offset / curve.get_baked_length()))
+				#uv_array.append(Vector2(0.0, point_offset / curve.get_baked_length()))
 		arr[ArrayMesh.ARRAY_VERTEX] = vertex_array
-		arr[ArrayMesh.ARRAY_NORMAL] = normal_array
-		arr[ArrayMesh.ARRAY_TEX_UV] = uv_array
+		#arr[ArrayMesh.ARRAY_NORMAL] = normal_array
+		#arr[ArrayMesh.ARRAY_TEX_UV] = uv_array
 		if radius:
 			arrmesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINE_STRIP, arr)
 		else:
@@ -441,3 +441,4 @@ func _placeable_points_set():
 						-point.global_basis.z * point.curve_size,
 						point.road_curve_idx)
 		curve.set_point_tilt(point.road_curve_idx, point.tilt)
+		point._update()

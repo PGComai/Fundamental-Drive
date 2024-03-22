@@ -15,6 +15,7 @@ var item_idx: int = 0
 
 @onready var h_box_container_selector = $HBoxContainerSelector
 @onready var label_item_selector = $HBoxContainerSelector/LabelItemSelector
+@onready var reticle = $Reticle
 
 
 # Called when the node enters the scene tree for the first time.
@@ -48,5 +49,6 @@ func _process(delta):
 
 func _on_global_player_state_changed(state: String):
 	h_box_container_selector.visible = state == "Browsing"
+	reticle.visible = state != "Editing" or state == "Selecting"
 	if state == "Browsing":
 		label_item_selector.text = ITEMS[item_idx]

@@ -13,3 +13,4 @@ object_type = 1
 [node name="RoadPath" type="Path3D" parent="."]
 curve = SubResource("Curve3D_111qj")
 script = ExtResource("2_27hso")
+surface_width = 20.0
