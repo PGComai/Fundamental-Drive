@@ -5,6 +5,7 @@ const PLAYER_STATES = ["Driving", "Building", "Selecting", "Editing", "Browsing"
 
 
 signal player_state_changed(state: String)
+signal show_reticle(status: bool)
 
 
 var player_state: int = 0:
@@ -12,9 +13,12 @@ var player_state: int = 0:
 		player_state = value
 		emit_signal("player_state_changed", PLAYER_STATES[player_state])
 		print("player state changed: %s" % PLAYER_STATES[player_state])
-var kb_input := false
 var player_has_object_selected := false
 var player_is_editing_object := false
+var player_needs_reticle := false:
+	set(value):
+		player_needs_reticle = value
+		emit_signal("show_reticle", player_needs_reticle)
 
 var sub_v: SubViewport
 

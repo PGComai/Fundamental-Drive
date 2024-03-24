@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bcqu1jyk77ksi"]
+[gd_scene load_steps=11 format=3 uid="uid://bcqu1jyk77ksi"]
 
 [ext_resource type="Script" path="res://scripts/po_widget.gd" id="1_25ver"]
 [ext_resource type="Material" uid="uid://dp7a3pqw8vton" path="res://textures/widget_highlight_material.tres" id="2_3xevt"]
@@ -26,6 +26,18 @@ size = Vector3(2.2, 2.2, 2.2)
 [sub_resource type="SphereMesh" id="SphereMesh_pi7db"]
 radius = 1.0
 height = 2.0
+
+[sub_resource type="TextMesh" id="TextMesh_j8xfx"]
+resource_local_to_scene = true
+text = "Name"
+pixel_size = 0.0965
+offset = Vector2(0, 21.98)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mnun4"]
+render_priority = 1
+no_depth_test = true
+shading_mode = 0
+billboard_mode = 1
 
 [node name="POWidget" type="Node3D"]
 top_level = true
@@ -55,3 +67,7 @@ surface_material_override/0 = ExtResource("2_3xevt")
 
 [node name="ShadowMesh" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
 mesh = SubResource("SphereMesh_pi7db")
+
+[node name="ObjectName" type="MeshInstance3D" parent="WidgetMoveOrigin/CollisionShape3D/MeshInstance3D"]
+mesh = SubResource("TextMesh_j8xfx")
+surface_material_override/0 = SubResource("StandardMaterial3D_mnun4")

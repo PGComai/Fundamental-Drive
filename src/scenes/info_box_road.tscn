@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://bcqitmriebl6h"]
+
+[ext_resource type="Script" path="res://scripts/info_box.gd" id="1_855bx"]
+[ext_resource type="PackedScene" uid="uid://dar7j5qbf85mf" path="res://scenes/stat_box.tscn" id="2_gsejc"]
+
+[node name="InfoBoxRoad" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+script = ExtResource("1_855bx")
+
+[node name="StatBoxRoadPoints" parent="." instance=ExtResource("2_gsejc")]
+layout_mode = 2
+stat_name = "Road points"
+stat_value = "0"
+
+[node name="StatBoxRoadDimX" parent="." instance=ExtResource("2_gsejc")]
+layout_mode = 2
+stat_name = "Size X"
+stat_value = "0"
+
+[node name="StatBoxRoadDimY" parent="." instance=ExtResource("2_gsejc")]
+layout_mode = 2
+stat_name = "Size Y"
+stat_value = "0"
+
+[node name="StatBoxRoadDimZ" parent="." instance=ExtResource("2_gsejc")]
+layout_mode = 2
+stat_name = "Size Z"
+stat_value = "0"

@@ -442,3 +442,13 @@ func _placeable_points_set():
 						point.road_curve_idx)
 		curve.set_point_tilt(point.road_curve_idx, point.tilt)
 		point._update()
+
+
+func _delete_point(point: PlaceableRoadPoint):
+	var idx = point.road_curve_idx
+	placeable_points.erase(point)
+	for pt in placeable_points:
+		if pt.road_curve_idx > idx:
+			pt.road_curve_idx -= 1
+	point.queue_free()
+	_placeable_points_set()

@@ -22,6 +22,7 @@ var item_idx: int = 0
 func _ready():
 	global = get_node("/root/Global")
 	global.player_state_changed.connect(_on_global_player_state_changed)
+	global.show_reticle.connect(_on_global_show_reticle)
 	h_box_container_selector.visible = false
 
 
@@ -38,7 +39,7 @@ func _unhandled_input(event):
 		if event.is_action_pressed("right"):
 			item_idx = wrapi(item_idx + 1, 0, ITEMS.size() - 1)
 			label_item_selector.text = ITEMS[item_idx]
-		if event.is_action_pressed("jump"):
+		if event.is_action_pressed("select"):
 			emit_signal("create_item", PLACEABLE_ROAD)
 
 
@@ -49,6 +50,9 @@ func _process(delta):
 
 func _on_global_player_state_changed(state: String):
 	h_box_container_selector.visible = state == "Browsing"
-	reticle.visible = state != "Editing" or state == "Selecting"
 	if state == "Browsing":
 		label_item_selector.text = ITEMS[item_idx]
+
+
+func _on_global_show_reticle(status: bool):
+	reticle.visible = status

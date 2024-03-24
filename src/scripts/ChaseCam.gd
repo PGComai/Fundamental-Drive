@@ -8,6 +8,7 @@ const OBJ_TILT_SENS = 0.05
 const ROAD_DRAFT_TIME = 0.2
 const ADJUST_CURVE_SIZE_SENS = 0.05
 const DEFAULT_SPRING_LENGTH = 10.0
+const DELETE_TIME = 0.5
 
 
 var node_holder: Node
@@ -47,6 +48,8 @@ var road_draft_timer := 0.0
 var adjusted_spring_length := 10.0:
 	set(value):
 		adjusted_spring_length = clampf(value, 2.0, 30.0)
+var delete_timer := 0.0
+var delete_timer_on := false
 
 
 var global: Node
@@ -72,6 +75,10 @@ func _ready():
 
 
 func _process(delta):
+	if delete_timer_on:
+		delete_timer -= delta
+		if delete_timer <= 0.0:
+			delete_timer_on = false
 	if (global.player_state == 1
 		or global.player_state == 2
 		or global.player_state == 3):
@@ -139,13 +146,23 @@ func _process(delta):
 	
 	if global.player_state == 2:
 #region selecting
-		global_position = global_position.lerp(selected_object.global_position, 0.4)
-		if Input.is_action_just_pressed("build toggle items"):
-			# SELECT -> EDIT HANDOFF
-			print("editing object")
-			edited_object = selected_object
-			global.player_state = 3
-			selected_object = null
+		if selected_object:
+			global_position = global_position.lerp(selected_object.global_position, 0.4)
+			if Input.is_action_just_pressed("build toggle items"):
+				# SELECT -> EDIT HANDOFF
+				print("editing object")
+				edited_object = selected_object
+				global.player_state = 3
+				selected_object = null
+			if Input.is_action_just_pressed("delete object"):
+				if not delete_timer_on:
+					delete_timer = DELETE_TIME
+					delete_timer_on = true
+				else:
+					selected_object._delete()
+					selected_object = null
+					global.player_state = 1
+					delete_timer_on = false
 #endregion
 	elif global.player_state == 3:
 #region editing
@@ -157,9 +174,14 @@ func _process(delta):
 				if road_draft_timer <= 0.0:
 					road_draft_timer += ROAD_DRAFT_TIME
 					selected_road_point.parent_road._placeable_points_set()
-				if Input.is_action_just_pressed("jump"):
-					selected_road_point.parent_road._placeable_points_set()
-					selected_road_point = null
+				if Input.is_action_just_pressed("delete object"):
+					if not delete_timer_on:
+						delete_timer = DELETE_TIME
+						delete_timer_on = true
+					else:
+						selected_road_point._delete()
+						selected_road_point = null
+						delete_timer_on = false
 			if Input.is_action_just_pressed("build toggle items"):
 				var new_point = edited_object.add_road_point(global_position - (cam.global_basis.z * 5.0))
 				if new_point:
@@ -228,14 +250,17 @@ func _physics_process(delta):
 			selected_object.mode = 0
 			selected_object = null
 			global.player_state = 1
-		
-		if (Input.is_action_just_pressed("select")
-		and ray_cast_3d_handle.is_colliding()
-		and not selected_object):
-			pass
 #endregion
 	elif global.player_state == 3:
-		pass
+		if (Input.is_action_just_pressed("select")
+		and ray_cast_3d.is_colliding()
+		and not selected_road_point):
+			var collider: Node = ray_cast_3d.get_collider()
+			selected_road_point = collider.get_parent().ref
+		elif (Input.is_action_just_pressed("select")
+		and selected_road_point):
+			selected_road_point.parent_road._placeable_points_set()
+			selected_road_point = null
 
 
 func rotate_selected_road_point_y(rot_amount: float):
@@ -336,12 +361,14 @@ func rotate_selected_object_z(rot_amount: float):
 
 func _selected_object_selected():
 	if selected_object:
+		global.player_needs_reticle = false
 		selected_object.mode = 1
 		print("selected")
 		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_object.global_position)
 		print(spring_arm_3d.spring_length)
 		target_spring_length = adjusted_spring_length
 	else:
+		global.player_needs_reticle = true
 		print("deselected")
 		global_position = cam.global_position
 		target_spring_length = 0.0
@@ -349,12 +376,14 @@ func _selected_object_selected():
 
 func _selected_road_point_selected():
 	if selected_road_point:
+		global.player_needs_reticle = false
 		selected_road_point.mode == 1
 		print("selected road point")
 		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_road_point.global_position)
 		print(spring_arm_3d.spring_length)
 		target_spring_length = adjusted_spring_length
 	else:
+		global.player_needs_reticle = true
 		print("deselected road point")
 		global_position = cam.global_position
 		target_spring_length = 0.0

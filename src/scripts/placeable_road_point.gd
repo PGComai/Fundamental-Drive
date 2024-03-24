@@ -86,3 +86,8 @@ func _update():
 			var up = parent_road.curve.sample_baked_up_vector(closest_offset, true)
 			widget.up_dir.look_at(widget.global_position + up, global_basis.z)
 			widget.represent_values(curve_size)
+
+
+func _delete():
+	if parent_road:
+		parent_road._delete_point(self)

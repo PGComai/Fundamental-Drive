@@ -5,12 +5,13 @@ class_name PlaceableObject
 const PO_WIDGET = preload("res://scenes/po_widget.tscn")
 const PLACEABLE_ROAD_POINT = preload("res://scenes/placeable_road_point.tscn")
 const MODES = ["None", "Selected", "Edited"]
+const NAMES = ["test", "Road"]
 
 
 signal widget_ready(item)
 
 
-@export_enum("test", "Road", "Road Point") var object_type = 0
+@export_enum("test", "Road") var object_type = 0
 
 
 var widget: Node3D
@@ -34,6 +35,7 @@ func _ready():
 	widget = new_widget
 	widget.ref = self
 	widget.visible = global.player_state != 0
+	widget._set_object_name(NAMES[object_type])
 	emit_signal("widget_ready", self)
 
 
@@ -72,3 +74,7 @@ func _mode_set():
 func _on_global_player_state_changed(state: String):
 	if widget:
 		widget.visible = state != "Driving"
+
+
+func _delete():
+	queue_free()

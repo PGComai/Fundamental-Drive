@@ -3,6 +3,7 @@ extends Node3D
 
 @onready var mesh_highlight_origin = $WidgetMoveOrigin/CollisionShape3D/MeshInstance3D/MeshHighlightOrigin
 @onready var mesh_highlight_origin_edit = $WidgetMoveOrigin/CollisionShape3D/MeshInstance3D/MeshHighlightOriginEdit
+@onready var object_name = $WidgetMoveOrigin/CollisionShape3D/MeshInstance3D/ObjectName
 
 
 var ref: Node3D
@@ -32,3 +33,7 @@ func _move_mode_set():
 
 func _edit_set():
 	mesh_highlight_origin_edit.visible = edit
+
+
+func _set_object_name(name_text: String):
+	object_name.mesh.text = name_text
