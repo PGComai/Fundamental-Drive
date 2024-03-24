@@ -242,8 +242,9 @@ func _physics_process(delta):
 		and ray_cast_3d.is_colliding()
 		and not selected_object):
 			var collider: Node = ray_cast_3d.get_collider()
-			selected_object = collider.get_parent().ref
-			global.player_state = 2
+			if collider.get_meta("WidgetType") == "Object":
+				selected_object = collider.get_parent().ref
+				global.player_state = 2
 		elif (Input.is_action_just_pressed("select")
 		and selected_object
 		and not just_placed_item):
@@ -256,7 +257,8 @@ func _physics_process(delta):
 		and ray_cast_3d.is_colliding()
 		and not selected_road_point):
 			var collider: Node = ray_cast_3d.get_collider()
-			selected_road_point = collider.get_parent().ref
+			if collider.get_meta("WidgetType") == "RoadPoint":
+				selected_road_point = collider.get_parent().ref
 		elif (Input.is_action_just_pressed("select")
 		and selected_road_point):
 			selected_road_point.parent_road._placeable_points_set()
@@ -364,13 +366,20 @@ func _selected_object_selected():
 		global.player_needs_reticle = false
 		selected_object.mode = 1
 		print("selected")
-		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_object.global_position)
-		print(spring_arm_3d.spring_length)
+		if selected_object.position_already_set:
+			spring_arm_3d.spring_length = cam.global_position.distance_to(selected_object.global_position)
+			global_position = selected_object.global_position
+		else:
+			spring_arm_3d.spring_length = adjusted_spring_length
+			selected_object.global_position = global_position - (cam.global_basis.z * adjusted_spring_length)
+			global_position = selected_object.global_position
 		target_spring_length = adjusted_spring_length
+		selected_object.position_already_set = true
 	else:
 		global.player_needs_reticle = true
 		print("deselected")
 		global_position = cam.global_position
+		spring_arm_3d.spring_length = 0.0
 		target_spring_length = 0.0
 
 
@@ -379,13 +388,20 @@ func _selected_road_point_selected():
 		global.player_needs_reticle = false
 		selected_road_point.mode == 1
 		print("selected road point")
-		spring_arm_3d.spring_length = cam.global_position.distance_to(selected_road_point.global_position)
-		print(spring_arm_3d.spring_length)
+		if selected_road_point.position_already_set:
+			spring_arm_3d.spring_length = cam.global_position.distance_to(selected_road_point.global_position)
+			global_position = selected_road_point.global_position
+		else:
+			spring_arm_3d.spring_length = adjusted_spring_length
+			selected_road_point.global_position = global_position - (cam.global_basis.z * adjusted_spring_length)
+			global_position = selected_road_point.global_position
 		target_spring_length = adjusted_spring_length
+		selected_road_point.position_already_set = true
 	else:
 		global.player_needs_reticle = true
 		print("deselected road point")
 		global_position = cam.global_position
+		spring_arm_3d.spring_length = 0.0
 		target_spring_length = 0.0
 
 
@@ -437,7 +453,6 @@ func _on_build_ux_create_item(item):
 	var new_item = item.instantiate()
 	new_item.widget_ready.connect(_on_new_item_widget_ready)
 	get_parent().add_child(new_item)
-	new_item.global_position = global_position - (cam.global_basis.z * 5.0)
 	global.player_state = 2
 
 

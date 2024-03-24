@@ -30,6 +30,7 @@ var curve_size: float = 10.0:
 	set(value):
 		curve_size = clampf(value, 0.1, 200.0)
 var tilt: float = 0.0
+var position_already_set := false
 
 var global: Node
 
@@ -42,7 +43,6 @@ func _ready():
 	add_child(new_widget)
 	widget = new_widget
 	widget.ref = self
-	widget.visible = global.player_state == 3
 	emit_signal("widget_ready", self)
 
 
@@ -64,13 +64,16 @@ func _mode_set():
 
 func _on_global_player_state_changed(state: String):
 	if widget:
-		widget.visible = state == "Editing"
+		widget.visible = (state == "Editing"
+						and parent_placeable_object.mode == 2)
 
 
 func _parent_road_set():
 	road_curve_idx = parent_road.placeable_points.size()
 	parent_road.placeable_points.append(self)
 	parent_road._placeable_points_set()
+	widget.visible = (global.player_state == 3
+					and parent_placeable_object.mode == 2)
 
 
 func _idx_set():

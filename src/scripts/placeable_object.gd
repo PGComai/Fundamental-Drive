@@ -20,6 +20,7 @@ var mode: int = 0:
 		mode = clampi(value, 0, MODES.size() - 1)
 		_mode_set()
 var road: RoadPath
+var position_already_set := false
 
 var global: Node
 
