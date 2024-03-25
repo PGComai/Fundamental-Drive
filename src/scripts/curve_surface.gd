@@ -22,7 +22,6 @@ const DRAFT_TIME = 0.05
 @export var cam_magnet: Node3D
 @export var radius := false
 @export var radius_value := 50.0
-@export var radius_up_offset := 50.0
 @export var generate_mesh := false:
 	set(value):
 		if value:
@@ -78,17 +77,18 @@ func _physics_process(delta):
 			var track_up = closest_transform.basis.y
 			var track_fwd = -closest_transform.basis.z
 			if radius:
-				var circle_center = closest_point + Vector3(track_up * radius_up_offset)
-				var circle_circumference = radius_up_offset * 2.0 * PI
+				var circle_center = closest_point + Vector3(track_up * radius_value)
+				var circle_circumference = radius_value * 2.0 * PI
 				var track_coverage = surface_width / circle_circumference
 				track_coverage *= 2.0
-				var dir_to_pos = circle_center.direction_to(wheel.global_position)
-				dir_to_pos = Plane(track_fwd, circle_center).project(dir_to_pos).normalized()
-				var angle_to_wheel = -track_up.signed_angle_to(wheel_pos, track_fwd)
-				var dir_basis_x = dir_to_pos.cross(track_fwd)
-				var wheel_basis = Basis(dir_basis_x, -dir_to_pos, -track_fwd)
-				tracker.basis = wheel_basis.orthonormalized()
-				tracker.position = circle_center + Vector3(dir_to_pos * radius_value)
+				var dir_to_pt = circle_center.direction_to(wheel_pos)
+				tracker.position = circle_center + (dir_to_pt * radius_value)
+				#dir_to_pos = Plane(track_fwd, circle_center).project(dir_to_pos).normalized()
+				#var angle_to_wheel = -track_up.signed_angle_to(wheel_pos, track_fwd)
+				#var dir_basis_x = dir_to_pos.cross(track_fwd)
+				#var wheel_basis = Basis(dir_basis_x, -dir_to_pos, -track_fwd)
+				#tracker.basis = wheel_basis.orthonormalized()
+				#tracker.position = circle_center + Vector3(dir_to_pos * radius_value)
 			else:
 				var dist_to_wheel = min(closest_point.distance_to(wheel_pos), (surface_width / 2.0) - 1.0)
 				var dir_to_wheel = closest_point.direction_to(wheel_pos)
@@ -186,20 +186,19 @@ func _generate_mesh():
 			var point0r = point + (track_right * surface_width / 2.0)
 			var point0l = point - (track_right * surface_width / 2.0)
 			if radius:
-				var circle_center = point + Vector3(track_up * radius_up_offset)
-				var circle_center_next = point_next + Vector3(track_up_next * radius_up_offset)
-				var circle_circumference = radius_up_offset * 2.0 * PI
+				var circle_center = point + Vector3(track_up * radius_value)
+				var circle_center_next = point_next + Vector3(track_up_next * radius_value)
+				var circle_circumference = radius_value * 2.0 * PI
 				var track_coverage = surface_width / circle_circumference
-				#track_coverage = clampf(track_coverage, 0.0, 1.0)
 				track_coverage *= 2.0
-				#track_coverage -= 1.0
 				for va in 11:
 					var progress = float(va) / 10.0
 					progress -= 0.5
 					progress *= alternator
 					var vertex_angle = track_coverage * progress * PI
 					var dir_to_pos = circle_center.direction_to(point)
-					var pt = circle_center + (dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value)
+					var dir_to_pt = dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value
+					var pt = circle_center + dir_to_pt
 					var dir_to_pos_next = circle_center_next.direction_to(point_next)
 					var pt_next = circle_center_next + (dir_to_pos_next.rotated(track_fwd_next, vertex_angle) * radius_value)
 					if alternator > 0.0:
@@ -219,6 +218,35 @@ func _generate_mesh():
 						normal_array.append(-dir_to_pos_next)
 						uv_array.append(Vector2(1.0, point_offset_next / curve_length))
 				alternator *= -1.0
+				
+				var vertex_angle = track_coverage * ((0.0 / 10.0) - 0.5) * -PI
+				var dir_to_pos = circle_center.direction_to(point)
+				var dir_to_pt = dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value
+				var pt = circle_center + dir_to_pt
+				
+				var norm = dir_to_pt.cross(track_fwd)
+				
+				vertex_array_side_left.append(pt)
+				vertex_array_side_left.append(pt + dir_to_pos)
+				normal_array_side_left.append(-norm)
+				normal_array_side_left.append(-norm)
+				uv_array_side_left.append(Vector2(1.0, point_offset / curve_length))
+				uv_array_side_left.append(Vector2(0.0, point_offset / curve_length))
+				
+				vertex_angle = track_coverage * ((0.0 / 10.0) - 0.5) * PI
+				dir_to_pos = circle_center.direction_to(point)
+				dir_to_pt = dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value
+				pt = circle_center + (dir_to_pos.rotated(track_fwd, vertex_angle) * radius_value)
+				
+				norm = dir_to_pt.cross(track_fwd)
+				
+				vertex_array_side_right.append(pt + dir_to_pos)
+				vertex_array_side_right.append(pt)
+				normal_array_side_right.append(norm)
+				normal_array_side_right.append(norm)
+				uv_array_side_right.append(Vector2(1.0, point_offset / curve_length))
+				uv_array_side_right.append(Vector2(0.0, point_offset / curve_length))
+				
 			else:
 				vertex_array.append(point0r)
 				vertex_array.append(point0l)
@@ -336,9 +364,9 @@ func _generate_mesh_draft():
 			var point0r = point + (track_right * surface_width / 2.0)
 			var point0l = point - (track_right * surface_width / 2.0)
 			if radius:
-				var circle_center = point + Vector3(track_up * radius_up_offset)
-				var circle_center_next = point_next + Vector3(track_up_next * radius_up_offset)
-				var circle_circumference = radius_up_offset * 2.0 * PI
+				var circle_center = point + Vector3(track_up * radius_value)
+				var circle_center_next = point_next + Vector3(track_up_next * radius_value)
+				var circle_circumference = radius_value * 2.0 * PI
 				var track_coverage = surface_width / circle_circumference
 				#track_coverage = clampf(track_coverage, 0.0, 1.0)
 				track_coverage *= 2.0
