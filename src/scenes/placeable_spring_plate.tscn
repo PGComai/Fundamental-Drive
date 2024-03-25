@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cf23eshre624j"]
+
+[ext_resource type="Script" path="res://scripts/placeable_object.gd" id="1_mi0yt"]
+[ext_resource type="PackedScene" uid="uid://c8dkdrbd8hknc" path="res://scenes/spring_plate.tscn" id="2_phk05"]
+
+[node name="PlaceableSpringPlate" type="Node3D"]
+script = ExtResource("1_mi0yt")
+object_type = 2
+
+[node name="SpringPlate" parent="." instance=ExtResource("2_phk05")]

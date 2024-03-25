@@ -5,13 +5,13 @@ class_name PlaceableObject
 const PO_WIDGET = preload("res://scenes/po_widget.tscn")
 const PLACEABLE_ROAD_POINT = preload("res://scenes/placeable_road_point.tscn")
 const MODES = ["None", "Selected", "Edited"]
-const NAMES = ["test", "Road"]
+const NAMES = ["test", "Road", "Toy"]
 
 
 signal widget_ready(item)
 
 
-@export_enum("test", "Road") var object_type = 0
+@export_enum("test", "Road", "Toy") var object_type = 0
 
 
 var widget: Node3D
@@ -25,12 +25,17 @@ var road_stats := {"NumPoints": 0,
 					"SizeX": 0.0,
 					"SizeY": 0.0,
 					"SizeZ": 0.0}
+var child_object: Node
+var size_editable := false
 
 var global: Node
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	child_object = get_child(0)
+	if child_object.is_class("SpringPlate"):
+		size_editable = true
 	global = get_node("/root/Global")
 	global.player_state_changed.connect(_on_global_player_state_changed)
 	if object_type == 1:
@@ -48,6 +53,13 @@ func _ready():
 func _process(delta):
 	if widget:
 		widget.global_position = global_position
+
+
+func size_edit(value):
+	print("no")
+	if child_object.has_meta("adjustable_size"):
+		print("yes")
+		child_object.plate_radius += value
 
 
 func add_road_point(pos: Vector3):

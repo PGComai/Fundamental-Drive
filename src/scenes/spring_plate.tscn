@@ -1,0 +1,86 @@
+[gd_scene load_steps=13 format=3 uid="uid://c8dkdrbd8hknc"]
+
+[ext_resource type="Script" path="res://scripts/spring_plate.gd" id="1_wkqu5"]
+[ext_resource type="Shader" uid="uid://b2gt25h36uptx" path="res://textures/spring_plate.tres" id="2_q85dn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mwkai"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5jm6j"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7swlk"]
+albedo_color = Color(0.184314, 0.266667, 0.482353, 1)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w0fc4"]
+bounce = 1.0
+absorbent = true
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_x8afj"]
+height = 0.5
+radius = 5.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_bv1vh"]
+top_radius = 5.0
+bottom_radius = 5.0
+height = 0.5
+
+[sub_resource type="Gradient" id="Gradient_o7544"]
+offsets = PackedFloat32Array(0, 0.359073)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vusyk"]
+noise_type = 2
+frequency = 0.0559
+cellular_return_type = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8hx2b"]
+seamless = true
+as_normal_map = true
+bump_strength = 0.4
+color_ramp = SubResource("Gradient_o7544")
+noise = SubResource("FastNoiseLite_vusyk")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0w63k"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_q85dn")
+shader_parameter/Color = Color(0.529412, 0.282353, 0.290196, 1)
+shader_parameter/Emission = 0.0
+shader_parameter/tex_frg_7 = SubResource("NoiseTexture2D_8hx2b")
+
+[node name="SpringPlate" type="Node3D"]
+script = ExtResource("1_wkqu5")
+metadata/adjustable_size = true
+
+[node name="Base" type="StaticBody3D" parent="."]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Base"]
+shape = SubResource("BoxShape3D_mwkai")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Base/CollisionShape3D"]
+mesh = SubResource("BoxMesh_5jm6j")
+surface_material_override/0 = SubResource("StandardMaterial3D_7swlk")
+
+[node name="Sprang" type="Generic6DOFJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+node_a = NodePath("../Base")
+node_b = NodePath("../Plate")
+linear_limit_y/upper_distance = 3.0
+linear_limit_y/lower_distance = -3.0
+
+[node name="Plate" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+collision_layer = 7
+collision_mask = 7
+physics_material_override = SubResource("PhysicsMaterial_w0fc4")
+gravity_scale = 0.2
+linear_damp = 0.923
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Plate"]
+shape = SubResource("CylinderShape3D_x8afj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Plate/CollisionShape3D"]
+mesh = SubResource("CylinderMesh_bv1vh")
+surface_material_override/0 = SubResource("ShaderMaterial_0w63k")

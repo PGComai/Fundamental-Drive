@@ -1,8 +1,9 @@
 extends Control
 
 
-const ITEMS = ["Road"]
+const ITEMS = ["Road", "Spring Plate"]
 const PLACEABLE_ROAD = preload("res://scenes/placeable_road.tscn")
+const PLACEABLE_SPRING_PLATE = preload("res://scenes/placeable_spring_plate.tscn")
 
 
 signal create_item(item: Resource)
@@ -11,6 +12,7 @@ signal create_item(item: Resource)
 var global: Node
 
 var item_idx: int = 0
+var item_list: Array[Resource] = [PLACEABLE_ROAD, PLACEABLE_SPRING_PLATE]
 
 
 @onready var h_box_container_selector = $HBoxContainerSelector
@@ -42,20 +44,21 @@ func _unhandled_input(event):
 		global.player_state = 4
 	elif event.is_action_pressed("build toggle items") and global.player_state == 4:
 		global.player_state = 1
-	elif global.player_state == 4:
-		if event.is_action_pressed("left"):
-			item_idx = wrapi(item_idx - 1, 0, ITEMS.size() - 1)
-			label_item_selector.text = ITEMS[item_idx]
-		if event.is_action_pressed("right"):
-			item_idx = wrapi(item_idx + 1, 0, ITEMS.size() - 1)
-			label_item_selector.text = ITEMS[item_idx]
-		if event.is_action_pressed("select"):
-			emit_signal("create_item", PLACEABLE_ROAD)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if global.player_state == 4:
+		if Input.is_action_just_pressed("left"):
+			item_idx = wrapi(item_idx - 1, 0, ITEMS.size())
+			print(item_idx)
+			label_item_selector.text = ITEMS[item_idx]
+		if Input.is_action_just_pressed("right"):
+			item_idx = wrapi(item_idx + 1, 0, ITEMS.size())
+			print(item_idx)
+			label_item_selector.text = ITEMS[item_idx]
+		if Input.is_action_just_pressed("select"):
+			emit_signal("create_item", item_list[item_idx])
 
 
 func _on_global_player_state_changed(state: String):

@@ -9,6 +9,7 @@ const ROAD_DRAFT_TIME = 0.2
 const ADJUST_CURVE_SIZE_SENS = 0.05
 const DEFAULT_SPRING_LENGTH = 10.0
 const DELETE_TIME = 0.5
+const SIZE_ADJUST_SENS = 0.1
 
 
 var node_holder: Node
@@ -89,8 +90,11 @@ func _process(delta):
 				object_rotation = false
 			
 			var curve_length_change = false
+			var object_size_edit = false
 			if Input.is_action_pressed("flip") and selected_road_point:
 				curve_length_change = true
+			elif Input.is_action_pressed("flip") and edited_object:
+				object_size_edit = true
 			
 			if Input.is_action_pressed("buildmovefast"):
 				build_speed_multiplier = lerp(build_speed_multiplier, 10.0, 0.1)
@@ -115,6 +119,8 @@ func _process(delta):
 				
 				if curve_length_change:
 					selected_road_point.curve_size += input_dir.x * ADJUST_CURVE_SIZE_SENS
+				elif object_size_edit:
+					edited_object.size_edit(input_dir.x * SIZE_ADJUST_SENS)
 				elif travel_dir and not (selected_object or selected_road_point):
 					global_position += travel_dir * 0.2 * build_speed_multiplier
 				elif travel_dir:
@@ -364,6 +370,7 @@ func rotate_selected_object_z(rot_amount: float):
 func _selected_object_selected():
 	global.currently_selected_object = selected_object
 	if selected_object:
+		spring_arm_3d.collision_mask = 0
 		global.player_needs_reticle = false
 		selected_object.mode = 1
 		print("selected")
@@ -377,6 +384,7 @@ func _selected_object_selected():
 		target_spring_length = adjusted_spring_length
 		selected_object.position_already_set = true
 	else:
+		spring_arm_3d.collision_mask = 1
 		global.player_needs_reticle = true
 		print("deselected")
 		global_position = cam.global_position

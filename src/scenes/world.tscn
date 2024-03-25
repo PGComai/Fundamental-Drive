@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://dy715lluh8chj"]
+[gd_scene load_steps=64 format=3 uid="uid://dy715lluh8chj"]
 
 [ext_resource type="Script" path="res://scripts/subv.gd" id="1_35kq4"]
 [ext_resource type="Theme" uid="uid://c1uu6giijvvtr" path="res://textures/ux.tres" id="1_b7d5o"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/map.gd" id="5_ytfad"]
 [ext_resource type="PackedScene" uid="uid://chqi8b4qvcb2l" path="res://scenes/billiard_ball.tscn" id="6_mlmbd"]
 [ext_resource type="Script" path="res://scripts/placeable_object.gd" id="10_indbg"]
+[ext_resource type="PackedScene" uid="uid://cf23eshre624j" path="res://scenes/placeable_spring_plate.tscn" id="12_o6h4w"]
 [ext_resource type="Script" path="res://scripts/curve_surface.gd" id="13_x5qnx"]
 [ext_resource type="Texture2D" uid="uid://c27oaf68kg784" path="res://textures/keyboard.png" id="14_rx56l"]
 [ext_resource type="PackedScene" uid="uid://bcqitmriebl6h" path="res://scenes/info_box_road.tscn" id="15_ist7t"]
@@ -93,16 +94,68 @@ radius = 5.0
 height = 10.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oib6e"]
+resource_local_to_scene = true
 size = Vector3(10, 1, 10)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0ib50"]
 size = Vector3(10, 1, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gyvfl"]
+resource_local_to_scene = true
+size = Vector3(30, 1, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_m2fcr"]
+size = Vector3(30, 1, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gc4os"]
 size = Vector3(20, 2, 500)
 
 [sub_resource type="BoxMesh" id="BoxMesh_p1hju"]
 size = Vector3(20, 2, 500)
+
+[sub_resource type="Curve3D" id="Curve3D_3qkhn"]
+_data = {
+"points": PackedVector3Array(0, 0, 1, 0, 0, -5, 0, 0, 0, -5, -0.5, 0, 5, 0.5, 0, 10, 2, -10, 0, -0.5, -5, 0, 0.5, 5, 20, 4, 0, 5, -0.5, 0, 0, 0, 0, 10, 6, 10),
+"tilts": PackedFloat32Array(0, -0.02, -0.02, 0)
+}
+point_count = 4
+
+[sub_resource type="Curve3D" id="Curve3D_j0wnv"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, -12.5, 0, 0, 0, 0, -12.5, 0, 0, 0, 0, 0, 25, -25, 0, -12.5, 0, 0, 12.5, 0, 0, 40, -25, 0, 0, -12.5, 0, 0, 0, 0, 65, 0),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xvail"]
+data = PackedVector3Array(4, 1, 7.5, 4, -1, 7.5, -4, -1, 7.5, 4, 1, -7.5, -4, -1, -7.5, 4, -1, -7.5, 4, 1, 7.5, 4, 1, -7.5, 4, -1, 7.5, 4, 1, -7.5, 4, -1, -7.5, 4, -1, 7.5, 4, 1, -7.5, 4, 1, 7.5, -4, -1, -7.5, 4, 1, 7.5, -4, -1, 7.5, -4, -1, -7.5, -4, -1, 7.5, 4, -1, 7.5, -4, -1, -7.5, 4, -1, 7.5, 4, -1, -7.5, -4, -1, -7.5)
+
+[sub_resource type="PrismMesh" id="PrismMesh_wbub2"]
+left_to_right = 1.0
+size = Vector3(8, 2, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xfvnm"]
+size = Vector3(50, 10, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yk2it"]
+size = Vector3(50, 10, 4)
+
+[sub_resource type="Curve3D" id="Curve3D_4sx8l"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, 0, 0, -100, -14.6309, 0.0400887, -0.0585938, 14.6309, -0.0400887, 0.0585938, 30, 10, -130, -1.19559, 0.168891, -9.54436, 1.19559, -0.168891, 9.54436, 58.7078, 5.50843, -100.454, -0.349274, -0.00925159, -10.1827, 0.349274, 0.00925159, 10.1827, 60, 5, -80, 2.06522, -1.31245, -10.9488, -2.06522, 1.31245, 10.9488, 59.8507, 5.66048, -9.138, 6.01193, -0.484112, -5.76321, -6.01193, 0.484112, 5.76321, 51.9595, 9.0954, 15.007, 7.48358, 0.102029, 5.90711, -7.48358, -0.102029, -5.90711, 31.6154, 10.0774, 15.7003, 1.16043, -1.15657, 11.0169, -1.16043, 1.15657, -11.0169, 21.2868, 5, -28.6164, -6.47812, -1.10414, 8.42683, 6.47812, 1.10414, -8.42683, 28.5068, 12.4081, -79.0704, -15.4147, 0.0866356, -0.224915, 15.4147, -0.0866356, 0.224915, 49.5558, 17.8927, -90.4266, -17.1544, 1.70864, 0.571236, 17.1544, -1.70864, -0.571236, 87.5798, 5, -86.3385),
+"tilts": PackedFloat32Array(0, 0, 0, 0, -0.168, 0, 0, 0, 0, 0, 0, -0.7)
+}
+point_count = 12
+
+[sub_resource type="Curve3D" id="Curve3D_jvhsc"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, -50, 0, 0, 0, -69.6183, -7.57712, 121.572, 69.6183, 7.57712, -121.572, 0, 0, -500, -82.0115, 2.84982, -23.9048, 82.0115, -2.84982, 23.9048, 200, 0, -550, -71.1162, 2.37573, -5.4505, 71.1162, -2.37573, 5.4505, 400, 0, -500, 58.727, -6.11332, 0.803345, -58.727, 6.11332, -0.803345, 403.774, 90.661, -482.39, -49.4883, 7.48293, -9.28525, 49.4883, -7.48293, 9.28525, 397.875, 7.64693, -448.842, -38.5564, 0.423447, -7.73132, 38.5564, -0.423447, 7.73132, 501.602, -1.13, -424.062, 20.5278, 4.58107, -31.1344, -20.5278, -4.58107, 31.1344, 554.137, -8.9235, -345.776, 24.0074, 18.0527, 20.5793, -24.0074, -18.0527, -20.5793, 473.448, -21.3205, -331.943, -22.6992, 8.10367, 11.8475, 22.6992, -8.10367, -11.8475, 468.385, -58.345, -421.44, -13.0423, 5.22374, -27.3328, 13.0423, -5.22374, 27.3328, 546.596, -78.03, -410.59),
+"tilts": PackedFloat32Array(0, 0.113397, 0, 0, 0.275, 1.04, 1.733, 2.295, 2.83, 2.87, 2.9)
+}
+point_count = 11
+
+[sub_resource type="BoxMesh" id="BoxMesh_ujr04"]
+size = Vector3(3, 3, 3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_c2lxc"]
 size = Vector3(1, 10, 1)
@@ -154,50 +207,6 @@ noise = SubResource("FastNoiseLite_gn4d2")
 albedo_texture = SubResource("GradientTexture2D_xkj5h")
 normal_enabled = true
 normal_texture = SubResource("NoiseTexture2D_jk7la")
-
-[sub_resource type="Curve3D" id="Curve3D_3qkhn"]
-_data = {
-"points": PackedVector3Array(0, 0, 1, 0, 0, -5, 0, 0, 0, -5, -0.5, 0, 5, 0.5, 0, 10, 2, -10, 0, -0.5, -5, 0, 0.5, 5, 20, 4, 0, 5, -0.5, 0, 0, 0, 0, 10, 6, 10),
-"tilts": PackedFloat32Array(0, -0.02, -0.02, 0)
-}
-point_count = 4
-
-[sub_resource type="Curve3D" id="Curve3D_j0wnv"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, -12.5, 0, 0, 0, 0, -12.5, 0, 0, 0, 0, 0, 25, -25, 0, -12.5, 0, 0, 12.5, 0, 0, 40, -25, 0, 0, -12.5, 0, 0, 0, 0, 65, 0),
-"tilts": PackedFloat32Array(0, 0, 0, 0)
-}
-point_count = 4
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xvail"]
-data = PackedVector3Array(4, 1, 7.5, 4, -1, 7.5, -4, -1, 7.5, 4, 1, -7.5, -4, -1, -7.5, 4, -1, -7.5, 4, 1, 7.5, 4, 1, -7.5, 4, -1, 7.5, 4, 1, -7.5, 4, -1, -7.5, 4, -1, 7.5, 4, 1, -7.5, 4, 1, 7.5, -4, -1, -7.5, 4, 1, 7.5, -4, -1, 7.5, -4, -1, -7.5, -4, -1, 7.5, 4, -1, 7.5, -4, -1, -7.5, 4, -1, 7.5, 4, -1, -7.5, -4, -1, -7.5)
-
-[sub_resource type="PrismMesh" id="PrismMesh_wbub2"]
-left_to_right = 1.0
-size = Vector3(8, 2, 15)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_xfvnm"]
-size = Vector3(50, 10, 4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_yk2it"]
-size = Vector3(50, 10, 4)
-
-[sub_resource type="Curve3D" id="Curve3D_4sx8l"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, 0, 0, -100, -14.6309, 0.0400887, -0.0585938, 14.6309, -0.0400887, 0.0585938, 30, 10, -130, -1.19559, 0.168891, -9.54436, 1.19559, -0.168891, 9.54436, 58.7078, 5.50843, -100.454, -0.349274, -0.00925159, -10.1827, 0.349274, 0.00925159, 10.1827, 60, 5, -80, 2.06522, -1.31245, -10.9488, -2.06522, 1.31245, 10.9488, 59.8507, 5.66048, -9.138, 6.01193, -0.484112, -5.76321, -6.01193, 0.484112, 5.76321, 51.9595, 9.0954, 15.007, 7.48358, 0.102029, 5.90711, -7.48358, -0.102029, -5.90711, 31.6154, 10.0774, 15.7003, 1.16043, -1.15657, 11.0169, -1.16043, 1.15657, -11.0169, 21.2868, 5, -28.6164, -6.47812, -1.10414, 8.42683, 6.47812, 1.10414, -8.42683, 28.5068, 12.4081, -79.0704, -15.4147, 0.0866356, -0.224915, 15.4147, -0.0866356, 0.224915, 49.5558, 17.8927, -90.4266, -17.1544, 1.70864, 0.571236, 17.1544, -1.70864, -0.571236, 87.5798, 5, -86.3385),
-"tilts": PackedFloat32Array(0, 0, 0, 0, -0.168, 0, 0, 0, 0, 0, 0, -0.7)
-}
-point_count = 12
-
-[sub_resource type="Curve3D" id="Curve3D_jvhsc"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, -50, 0, 0, 0, -69.6183, -7.57712, 121.572, 69.6183, 7.57712, -121.572, 0, 0, -500, -82.0115, 2.84982, -23.9048, 82.0115, -2.84982, 23.9048, 200, 0, -550, -71.1162, 2.37573, -5.4505, 71.1162, -2.37573, 5.4505, 400, 0, -500, 58.727, -6.11332, 0.803345, -58.727, 6.11332, -0.803345, 403.774, 90.661, -482.39, -49.4883, 7.48293, -9.28525, 49.4883, -7.48293, 9.28525, 397.875, 7.64693, -448.842, -38.5564, 0.423447, -7.73132, 38.5564, -0.423447, 7.73132, 501.602, -1.13, -424.062, 20.5278, 4.58107, -31.1344, -20.5278, -4.58107, 31.1344, 554.137, -8.9235, -345.776, 24.0074, 18.0527, 20.5793, -24.0074, -18.0527, -20.5793, 473.448, -21.3205, -331.943, -22.6992, 8.10367, 11.8475, 22.6992, -8.10367, -11.8475, 468.385, -58.345, -421.44, -13.0423, 5.22374, -27.3328, 13.0423, -5.22374, 27.3328, 546.596, -78.03, -410.59),
-"tilts": PackedFloat32Array(0, 0.113397, 0, 0, 0.275, 1.04, 1.733, 2.295, 2.83, 2.87, 2.9)
-}
-point_count = 11
-
-[sub_resource type="BoxMesh" id="BoxMesh_ujr04"]
-size = Vector3(3, 3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ptrkc"]
 bg_color = Color(0.207843, 0.207843, 0.207843, 0.568627)
@@ -534,6 +543,18 @@ shape = SubResource("BoxShape3D_oib6e")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Static/Ramp14/CollisionShape3D"]
 mesh = SubResource("BoxMesh_0ib50")
 
+[node name="Ramp16" type="StaticBody3D" parent="TextureRect/SubViewport/World/Static"]
+transform = Transform3D(0.540111, 0.144722, -0.829057, -0.258819, 0.965926, 0, 0.800808, 0.214576, 0.559164, -50.5475, 0.598824, 20.5029)
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Static/Ramp16"]
+transform = Transform3D(0.993654, 0.112475, 0, -0.112475, 0.993654, -2.98023e-08, 1.19209e-07, 0, 1, -10.2846, 1.44546, -1.52588e-05)
+shape = SubResource("BoxShape3D_gyvfl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Static/Ramp16/CollisionShape3D"]
+mesh = SubResource("BoxMesh_m2fcr")
+
 [node name="Ramp2" type="StaticBody3D" parent="TextureRect/SubViewport/World/Static"]
 transform = Transform3D(1, 0, 0, 0, 0.990239, -0.13938, 0, 0.13938, 0.990239, 19.3366, 0.858857, -67.5325)
 collision_layer = 7
@@ -750,76 +771,6 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 103.01
 collision_layer = 7
 collision_mask = 7
 
-[node name="SeeSaw" type="Node3D" parent="TextureRect/SubViewport/World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 57.6533, 0, 65.8741)
-
-[node name="Fulcrum" type="StaticBody3D" parent="TextureRect/SubViewport/World/SeeSaw"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-collision_layer = 7
-collision_mask = 7
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/SeeSaw/Fulcrum"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
-shape = SubResource("BoxShape3D_c2lxc")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/SeeSaw/Fulcrum/CollisionShape3D"]
-mesh = SubResource("BoxMesh_0j78t")
-
-[node name="HingeJoint3D" type="HingeJoint3D" parent="TextureRect/SubViewport/World/SeeSaw"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 11, 0)
-node_a = NodePath("../Fulcrum")
-node_b = NodePath("../Saw")
-
-[node name="Saw" type="RigidBody3D" parent="TextureRect/SubViewport/World/SeeSaw" groups=["wood"]]
-transform = Transform3D(1, 0, 0, 0, 0.968752, 0.24803, 0, -0.24803, 0.968752, 0, 11, -0.0939102)
-collision_layer = 7
-collision_mask = 7
-axis_lock_angular_y = true
-axis_lock_angular_z = true
-mass = 10.0
-can_sleep = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/SeeSaw/Saw"]
-shape = SubResource("BoxShape3D_7fmti")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/SeeSaw/Saw/CollisionShape3D"]
-mesh = SubResource("BoxMesh_fkc45")
-
-[node name="Wobbler" type="Node3D" parent="TextureRect/SubViewport/World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.7484, 0, 148.317)
-
-[node name="Fulcrum" type="StaticBody3D" parent="TextureRect/SubViewport/World/Wobbler"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-collision_layer = 7
-collision_mask = 7
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Wobbler/Fulcrum"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
-shape = SubResource("BoxShape3D_c2lxc")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Wobbler/Fulcrum/CollisionShape3D"]
-mesh = SubResource("BoxMesh_0j78t")
-
-[node name="HingeJoint3D" type="PinJoint3D" parent="TextureRect/SubViewport/World/Wobbler"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 11, 0)
-node_a = NodePath("../Fulcrum")
-node_b = NodePath("../Table")
-
-[node name="Table" type="RigidBody3D" parent="TextureRect/SubViewport/World/Wobbler" groups=["cymbal"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11, 0)
-collision_layer = 7
-collision_mask = 7
-axis_lock_angular_y = true
-mass = 20.0
-can_sleep = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Wobbler/Table"]
-shape = SubResource("CylinderShape3D_ml7tb")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Wobbler/Table/CollisionShape3D"]
-mesh = SubResource("CylinderMesh_vcf5k")
-surface_material_override/0 = SubResource("StandardMaterial3D_lbhm7")
-
 [node name="RoadPaths" type="Node3D" parent="TextureRect/SubViewport/World"]
 
 [node name="RoadPathTest" type="Path3D" parent="TextureRect/SubViewport/World/RoadPaths"]
@@ -897,6 +848,81 @@ script = ExtResource("10_indbg")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/PlaceableObject"]
 mesh = SubResource("BoxMesh_ujr04")
+
+[node name="Toys" type="Node3D" parent="TextureRect/SubViewport/World"]
+
+[node name="SeeSaw" type="Node3D" parent="TextureRect/SubViewport/World/Toys"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 57.6533, 0, 65.8741)
+
+[node name="Fulcrum" type="StaticBody3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw/Fulcrum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+shape = SubResource("BoxShape3D_c2lxc")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw/Fulcrum/CollisionShape3D"]
+mesh = SubResource("BoxMesh_0j78t")
+
+[node name="HingeJoint3D" type="HingeJoint3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 11, 0)
+node_a = NodePath("../Fulcrum")
+node_b = NodePath("../Saw")
+
+[node name="Saw" type="RigidBody3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw" groups=["wood"]]
+transform = Transform3D(1, 0, 0, 0, 0.968752, 0.24803, 0, -0.24803, 0.968752, 0, 11, -0.0939102)
+collision_layer = 7
+collision_mask = 7
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+mass = 10.0
+can_sleep = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw/Saw"]
+shape = SubResource("BoxShape3D_7fmti")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Toys/SeeSaw/Saw/CollisionShape3D"]
+mesh = SubResource("BoxMesh_fkc45")
+
+[node name="Wobbler" type="Node3D" parent="TextureRect/SubViewport/World/Toys"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.7484, 0, 148.317)
+
+[node name="Fulcrum" type="StaticBody3D" parent="TextureRect/SubViewport/World/Toys/Wobbler"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Toys/Wobbler/Fulcrum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+shape = SubResource("BoxShape3D_c2lxc")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Toys/Wobbler/Fulcrum/CollisionShape3D"]
+mesh = SubResource("BoxMesh_0j78t")
+
+[node name="HingeJoint3D" type="PinJoint3D" parent="TextureRect/SubViewport/World/Toys/Wobbler"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 11, 0)
+node_a = NodePath("../Fulcrum")
+node_b = NodePath("../Table")
+
+[node name="Table" type="RigidBody3D" parent="TextureRect/SubViewport/World/Toys/Wobbler" groups=["cymbal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11, 0)
+collision_layer = 7
+collision_mask = 7
+axis_lock_angular_y = true
+mass = 20.0
+can_sleep = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TextureRect/SubViewport/World/Toys/Wobbler/Table"]
+shape = SubResource("CylinderShape3D_ml7tb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TextureRect/SubViewport/World/Toys/Wobbler/Table/CollisionShape3D"]
+mesh = SubResource("CylinderMesh_vcf5k")
+surface_material_override/0 = SubResource("StandardMaterial3D_lbhm7")
+
+[node name="PlaceableSpringPlate" parent="TextureRect/SubViewport/World/Toys" instance=ExtResource("12_o6h4w")]
+transform = Transform3D(0.675552, 0.737313, 0, -0.737313, 0.675552, 0, 0, 0, 1, -54.0405, 2.76629, -20.0995)
 
 [node name="Panel" type="Panel" parent="."]
 visible = false
