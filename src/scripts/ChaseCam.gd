@@ -33,6 +33,7 @@ var edited_object: PlaceableObject:
 		edited_object = value
 		if edited_object:
 			edited_object.mode = 2
+		_edited_object_selected()
 var selected_road_point: PlaceableRoadPoint:
 	set(value):
 		selected_road_point = value
@@ -57,7 +58,6 @@ var global: Node
 @onready var spring_arm_3d = $SpringArm3D
 @onready var cam = $SpringArm3D/Cam
 @onready var ray_cast_3d = $SpringArm3D/Cam/RayCast3D
-@onready var ray_cast_3d_handle = $SpringArm3D/Cam/RayCast3DHandle
 @onready var pos_fwd = $PosFwd
 @onready var pos_left = $PosLeft
 @onready var area_3d = $SpringArm3D/Cam/Area3D
@@ -122,7 +122,7 @@ func _process(delta):
 					if selected_object:
 						selected_object.global_position += movement_offset
 					elif selected_road_point:
-						selected_road_point.global_position += movement_offset
+						selected_road_point.subpixel_position += movement_offset
 			elif abs(input_dir.y) > abs(input_dir.x):
 				adjusted_spring_length += input_dir.y * 0.3
 				target_spring_length = adjusted_spring_length
@@ -169,7 +169,7 @@ func _process(delta):
 		if edited_object.object_type == 1:
 			# currently editing road
 			if selected_road_point:
-				global_position = global_position.lerp(selected_road_point.global_position, 0.4)
+				global_position = global_position.lerp(selected_road_point.subpixel_position, 0.4)
 				road_draft_timer -= delta
 				if road_draft_timer <= 0.0:
 					road_draft_timer += ROAD_DRAFT_TIME
@@ -362,6 +362,7 @@ func rotate_selected_object_z(rot_amount: float):
 
 
 func _selected_object_selected():
+	global.currently_selected_object = selected_object
 	if selected_object:
 		global.player_needs_reticle = false
 		selected_object.mode = 1
@@ -384,6 +385,7 @@ func _selected_object_selected():
 
 
 func _selected_road_point_selected():
+	global.currently_selected_road_point = selected_road_point
 	if selected_road_point:
 		global.player_needs_reticle = false
 		selected_road_point.mode == 1
@@ -403,6 +405,10 @@ func _selected_road_point_selected():
 		global_position = cam.global_position
 		spring_arm_3d.spring_length = 0.0
 		target_spring_length = 0.0
+
+
+func _edited_object_selected():
+	global.currently_edited_object = edited_object
 
 
 func _on_cam_x_form_node_set(toggle):

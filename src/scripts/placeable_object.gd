@@ -21,6 +21,10 @@ var mode: int = 0:
 		_mode_set()
 var road: RoadPath
 var position_already_set := false
+var road_stats := {"NumPoints": 0,
+					"SizeX": 0.0,
+					"SizeY": 0.0,
+					"SizeZ": 0.0}
 
 var global: Node
 
@@ -50,7 +54,7 @@ func add_road_point(pos: Vector3):
 	if road:
 		var new_road_point = PLACEABLE_ROAD_POINT.instantiate()
 		add_child(new_road_point)
-		new_road_point.global_position = pos
+		new_road_point.subpixel_position = pos
 		new_road_point.parent_placeable_object = self
 		new_road_point.parent_road = road
 		return new_road_point
@@ -75,6 +79,15 @@ func _mode_set():
 func _on_global_player_state_changed(state: String):
 	if widget:
 		widget.visible = state != "Driving"
+
+
+func get_stats():
+	if road:
+		road_stats["NumPoints"] = road.curve.point_count
+		road_stats["SizeX"] = road.size_x
+		road_stats["SizeY"] = road.size_y
+		road_stats["SizeZ"] = road.size_z
+	return road_stats
 
 
 func _delete():

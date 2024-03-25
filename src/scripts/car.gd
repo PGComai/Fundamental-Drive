@@ -26,6 +26,7 @@ const ENGINE_NOTE_TIME = 0.125
 @onready var cam_x_form = $Chassis/CamBase/SpringArm3D/CamXForm
 
 @onready var audio_stream_player_engine = $Chassis/AudioStreamPlayerEngine
+@onready var audio_stream_player_engine_2 = $Chassis/AudioStreamPlayerEngine2
 
 
 var joints: Array[Generic6DOFJoint3D]
@@ -137,6 +138,8 @@ func _process(delta):
 		engine_rpm = lerp(engine_rpm, speed_note_factor, 0.03)
 		brake_multiplier = 2.0
 	audio_stream_player_engine.pitch_scale = engine_rpm
+	audio_stream_player_engine_2.pitch_scale = engine_rpm * 0.9
+	audio_stream_player_engine_2.volume_db = remap(speed_note_factor, 1.0, 1.5, -10.0, 0.0)
 		
 	for wheel: RigidBody3D in wheels:
 		var wheel_ang_rot = wheel_fl.angular_velocity.x

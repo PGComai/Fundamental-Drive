@@ -4,3 +4,4 @@
 
 [node name="PlaceableObject" type="Node3D"]
 script = ExtResource("1_a0jjv")
+metadata/Placeable = true

@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfvaayvv6tgeh"]
+
+[ext_resource type="Script" path="res://scripts/stat_box_vector.gd" id="1_ldplf"]
+[ext_resource type="Script" path="res://scripts/HBoxContainerVector.gd" id="2_7th6k"]
+
+[node name="StatBoxVector" type="HBoxContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.0
+offset_top = -11.5
+offset_right = 57.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ldplf")
+stat_name = "Vector name"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Vector name"
+
+[node name="HBoxContainerVector" type="HBoxContainer" parent="."]
+layout_mode = 2
+script = ExtResource("2_7th6k")
+
+[node name="LabelX" type="Label" parent="HBoxContainerVector"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.882353, 0.882353, 0.882353, 1)
+text = "X"
+
+[node name="LabelXVal" type="Label" parent="HBoxContainerVector"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "0.0"
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainerVector"]
+layout_mode = 2
+
+[node name="LabelY" type="Label" parent="HBoxContainerVector"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.882353, 0.882353, 0.882353, 1)
+text = "Y"
+
+[node name="LabelYVal" type="Label" parent="HBoxContainerVector"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "0.0"
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainerVector"]
+layout_mode = 2
+
+[node name="LabelZ" type="Label" parent="HBoxContainerVector"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.882353, 0.882353, 0.882353, 1)
+text = "Z"
+
+[node name="LabelZVal" type="Label" parent="HBoxContainerVector"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "0.0"

@@ -28,9 +28,21 @@ var road_curve_idx: int:
 		_idx_set()
 var curve_size: float = 10.0:
 	set(value):
-		curve_size = clampf(value, 0.1, 200.0)
+		curve_size = snappedf(clampf(value, 0.1, 200.0), 0.1)
 var tilt: float = 0.0
 var position_already_set := false
+var up_dir := Vector3.UP
+var stats := {"Idx": 0,
+				"Pos": Vector3.ZERO,
+				"Fwd": Vector3.FORWARD,
+				"Up": Vector3.UP,
+				"CurveSize": 10.0}
+var subpixel_position := Vector3.ZERO:
+	set(value):
+		subpixel_position = value
+		_set_position()
+var target_position := Vector3.ZERO
+var chasing_target_position := false
 
 var global: Node
 
@@ -48,9 +60,20 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-	#if widget:
-		#widget.global_position = global_position
+	if global.position_snap and chasing_target_position:
+		global_position = global_position.lerp(target_position, 0.1)
+		if global_position.is_equal_approx(target_position):
+			chasing_target_position = false
+			global_position = target_position
+
+
+func _set_position():
+	if global.position_snap:
+		target_position = subpixel_position.snapped(Vector3(1.0, 1.0, 1.0))
+		chasing_target_position = true
+	else:
+		global_position = subpixel_position
+		target_position = global_position
 
 
 func _mode_set():
@@ -86,9 +109,21 @@ func _update():
 		if parent_road.curve.point_count > 0:
 			var local_point = parent_road.to_local(global_position)
 			var closest_offset = parent_road.curve.get_closest_offset(local_point)
-			var up = parent_road.curve.sample_baked_up_vector(closest_offset, true)
-			widget.up_dir.look_at(widget.global_position + up, global_basis.z)
+			up_dir = parent_road.curve.sample_baked_up_vector(closest_offset, true)
+			widget.up_dir.look_at(widget.global_position + up_dir, global_basis.z)
 			widget.represent_values(curve_size)
+			global.edited_object_modified = true
+			global.selected_road_point_modified = true
+
+
+func get_stats():
+	if parent_road:
+		stats["Idx"] = road_curve_idx + 1
+		stats["Pos"] = position
+		stats["Fwd"] = -global_basis.z
+		stats["Up"] = up_dir
+		stats["CurveSize"] = curve_size
+	return stats
 
 
 func _delete():

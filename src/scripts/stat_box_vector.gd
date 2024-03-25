@@ -1,26 +1,21 @@
 @tool
 extends HBoxContainer
-class_name StatBox
+class_name StatBoxVector
 
 
 @export var stat_name: String = "Stat name":
 	set(value):
 		stat_name = value
 		_set_stat_name()
-@export var stat_value: String = "Stat value":
-	set(value):
-		stat_value = value
-		_set_stat_value()
 
 
 @onready var label = $Label
-@onready var label_stat = $LabelStat
+@onready var h_box_container_vector = $HBoxContainerVector
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	label.text = stat_name
-	label_stat.text = stat_value
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -33,6 +28,5 @@ func _set_stat_name():
 		label.text = stat_name
 
 
-func _set_stat_value():
-	if label_stat:
-		label_stat.text = stat_value
+func _set_vector(value: Vector3):
+	h_box_container_vector.vec = value

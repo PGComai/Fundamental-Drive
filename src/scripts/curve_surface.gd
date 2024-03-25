@@ -42,6 +42,15 @@ var chassis_max_offset: float
 var draft_timer := 0.0
 var generate_draft := false
 var trackers_initialized := false
+var size_x := 0.0:
+	set(value):
+		size_x = snappedf(value, 0.1)
+var size_y := 0.0:
+	set(value):
+		size_y = snappedf(value, 0.1)
+var size_z := 0.0:
+	set(value):
+		size_z = snappedf(value, 0.1)
 
 
 var placeable_points: Array[PlaceableRoadPoint] = []
@@ -81,7 +90,9 @@ func _physics_process(delta):
 				var circle_circumference = radius_value * 2.0 * PI
 				var track_coverage = surface_width / circle_circumference
 				track_coverage *= 2.0
+				var radial_plane = Plane(track_fwd, circle_center)
 				var dir_to_pt = circle_center.direction_to(wheel_pos)
+				#dir_to_pt = radial_plane.project(dir_to_pt)
 				tracker.position = circle_center + (dir_to_pt * radius_value)
 				#dir_to_pos = Plane(track_fwd, circle_center).project(dir_to_pos).normalized()
 				#var angle_to_wheel = -track_up.signed_angle_to(wheel_pos, track_fwd)
@@ -322,9 +333,9 @@ func _generate_mesh():
 			var max_v = Vector3(max_x, max_y, max_z)
 			var ctr = min_v.lerp(max_v, 0.5)
 			
-			var size_x = max_x - min_x + surface_width
-			var size_y = max_y - min_y + surface_width
-			var size_z = max_z - min_z + surface_width
+			size_x = max_x - min_x + surface_width
+			size_y = max_y - min_y + surface_width
+			size_z = max_z - min_z + surface_width
 			
 			if area:
 				area.position = ctr
@@ -419,6 +430,31 @@ func _generate_mesh_draft():
 		newmesh.mesh = arrmesh
 		newmesh.set_surface_override_material(0, DRAFT_ROAD_MATERIAL)
 		print("generated draft road")
+		
+		var min_x = 0.0
+		var min_y = 0.0
+		var min_z = 0.0
+		
+		var max_x = 0.0
+		var max_y = 0.0
+		var max_z = 0.0
+		
+		for point in curve_points:
+			min_x = min(min_x, point.x)
+			min_y = min(min_y, point.y)
+			min_z = min(min_z, point.z)
+			
+			max_x = max(max_x, point.x)
+			max_y = max(max_y, point.y)
+			max_z = max(max_z, point.z)
+		
+		var min_v = Vector3(min_x, min_y, min_z)
+		var max_v = Vector3(max_x, max_y, max_z)
+		var ctr = min_v.lerp(max_v, 0.5)
+		
+		size_x = max_x - min_x + surface_width
+		size_y = max_y - min_y + surface_width
+		size_z = max_z - min_z + surface_width
 
 
 func _body_entered(body: Node):

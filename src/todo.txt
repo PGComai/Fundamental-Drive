@@ -9,3 +9,7 @@
 - editor snapping
 - grinding
 - trick recognition
+- rotation snap
+
+OPTIMIZATIONS:
+	- only generate draft roads locally (+- 2 or 3 points)

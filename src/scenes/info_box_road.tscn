@@ -1,34 +1,49 @@
-[gd_scene load_steps=3 format=3 uid="uid://bcqitmriebl6h"]
+[gd_scene load_steps=4 format=3 uid="uid://bcqitmriebl6h"]
 
-[ext_resource type="Script" path="res://scripts/info_box.gd" id="1_855bx"]
+[ext_resource type="Script" path="res://scripts/info_box_road.gd" id="1_8arlt"]
 [ext_resource type="PackedScene" uid="uid://dar7j5qbf85mf" path="res://scenes/stat_box.tscn" id="2_gsejc"]
 
-[node name="InfoBoxRoad" type="VBoxContainer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-script = ExtResource("1_855bx")
+[sub_resource type="Theme" id="Theme_aa7q6"]
+default_font_size = 16
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
 
-[node name="StatBoxRoadPoints" parent="." instance=ExtResource("2_gsejc")]
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -52.0
+offset_right = 1280.0
+offset_bottom = 52.0
+grow_vertical = 2
+theme = SubResource("Theme_aa7q6")
+script = ExtResource("1_8arlt")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="InfoBoxRoad" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StatBoxRoadPoints" parent="MarginContainer/InfoBoxRoad" instance=ExtResource("2_gsejc")]
 layout_mode = 2
 stat_name = "Road points"
 stat_value = "0"
 
-[node name="StatBoxRoadDimX" parent="." instance=ExtResource("2_gsejc")]
+[node name="StatBoxRoadDimX" parent="MarginContainer/InfoBoxRoad" instance=ExtResource("2_gsejc")]
 layout_mode = 2
 stat_name = "Size X"
 stat_value = "0"
 
-[node name="StatBoxRoadDimY" parent="." instance=ExtResource("2_gsejc")]
+[node name="StatBoxRoadDimY" parent="MarginContainer/InfoBoxRoad" instance=ExtResource("2_gsejc")]
 layout_mode = 2
 stat_name = "Size Y"
 stat_value = "0"
 
-[node name="StatBoxRoadDimZ" parent="." instance=ExtResource("2_gsejc")]
+[node name="StatBoxRoadDimZ" parent="MarginContainer/InfoBoxRoad" instance=ExtResource("2_gsejc")]
 layout_mode = 2
 stat_name = "Size Z"
 stat_value = "0"

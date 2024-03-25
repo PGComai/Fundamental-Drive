@@ -1,29 +1,21 @@
-[gd_scene load_steps=42 format=3 uid="uid://dnc70ycajbrmd"]
+[gd_scene load_steps=43 format=3 uid="uid://dnc70ycajbrmd"]
 
 [ext_resource type="Script" path="res://scripts/car.gd" id="1_h44u5"]
 [ext_resource type="Script" path="res://scripts/CamXForm.gd" id="1_sdi5q"]
+[ext_resource type="Curve" uid="uid://bugq0krpwm7on" path="res://textures/curves/rpm_torque_response.tres" id="2_28jgq"]
 [ext_resource type="Script" path="res://scripts/Chassis.gd" id="2_arpt0"]
+[ext_resource type="Curve" uid="uid://cb0sp0cqlkvk5" path="res://textures/curves/grip_curve.tres" id="3_56amm"]
 [ext_resource type="Script" path="res://scripts/wheel.gd" id="3_b08dv"]
 [ext_resource type="Shader" uid="uid://4ohetevf3vhs" path="res://textures/rubber.tres" id="3_onalh"]
 [ext_resource type="ArrayMesh" uid="uid://5v11hqpbv1t7" path="res://textures/rallycar soft.obj" id="3_qkukt"]
 [ext_resource type="ArrayMesh" uid="uid://bk643hvj3litl" path="res://textures/rallycar spoiler.obj" id="4_650ai"]
+[ext_resource type="Curve" uid="uid://1p863nv114us" path="res://textures/curves/sideways curve.tres" id="4_b3alx"]
 [ext_resource type="FastNoiseLite" uid="uid://cbjbroke477lp" path="res://textures/rubber_noise.tres" id="4_qopmw"]
 [ext_resource type="AudioStream" uid="uid://dg5lqkgf6wl5c" path="res://sounds/engine-shaver-refined-amplified.ogg" id="6_2lxj4"]
 [ext_resource type="Script" path="res://scripts/GrappleLauncher.gd" id="7_ry2u1"]
 [ext_resource type="PackedScene" uid="uid://bafv7scpxvlt0" path="res://scenes/grapple_hook.tscn" id="8_jov6m"]
 [ext_resource type="AudioStream" uid="uid://dhaxpy6pcf0jv" path="res://sounds/fund_drive_bounce.ogg" id="10_wvm3s"]
-
-[sub_resource type="Curve" id="Curve_5gdyi"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_v47ld"]
-_data = [Vector2(0, 0.267976), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_kwmb6"]
-_data = [Vector2(0, 0.594571), 0.0, 0.0, 0, 0, Vector2(0.86747, 0.43315), 0.0, 0.0, 0, 0, Vector2(1, 0.868611), 0.0, 0.0, 0, 0]
-point_count = 3
+[ext_resource type="AudioStream" uid="uid://d7qsgbrsq8px" path="res://sounds/engine test.ogg" id="12_uh4w6"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_mjyfr"]
 noise_type = 4
@@ -172,9 +164,9 @@ rings = 8
 
 [node name="Car" type="Node3D"]
 script = ExtResource("1_h44u5")
-rpm_torque_response = SubResource("Curve_5gdyi")
-grip_curve = SubResource("Curve_v47ld")
-sideways_curve = SubResource("Curve_kwmb6")
+rpm_torque_response = ExtResource("2_28jgq")
+grip_curve = ExtResource("3_56amm")
+sideways_curve = ExtResource("4_b3alx")
 
 [node name="Chassis" type="RigidBody3D" parent="." groups=["chassis"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.266479, 0)
@@ -313,7 +305,7 @@ size = Vector3(1.19788, 0.944625, 2.44984)
 
 [node name="AudioStreamPlayerEngine" type="AudioStreamPlayer3D" parent="Chassis"]
 stream = ExtResource("6_2lxj4")
-volume_db = -10.539
+volume_db = -15.808
 autoplay = true
 
 [node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
@@ -328,6 +320,10 @@ hook = NodePath("GrappleHook")
 [node name="GrappleHook" parent="Chassis/GrappleLauncher" instance=ExtResource("8_jov6m")]
 top_level = false
 visible = false
+
+[node name="AudioStreamPlayerEngine2" type="AudioStreamPlayer3D" parent="Chassis"]
+stream = ExtResource("12_uh4w6")
+autoplay = true
 
 [node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1.2)

@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://cso5mt6mbahy6"]
+
+[ext_resource type="Script" path="res://scripts/info_box_road_point.gd" id="1_ftgjh"]
+[ext_resource type="PackedScene" uid="uid://dar7j5qbf85mf" path="res://scenes/stat_box.tscn" id="2_1p8m2"]
+[ext_resource type="PackedScene" uid="uid://dfvaayvv6tgeh" path="res://scenes/stat_box_vector.tscn" id="3_1iw8o"]
+
+[sub_resource type="Theme" id="Theme_aa7q6"]
+default_font_size = 16
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+
+[node name="InfoBoxRoadPoint" type="PanelContainer"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -52.0
+offset_right = 1280.0
+offset_bottom = 52.0
+grow_vertical = 2
+theme = SubResource("Theme_aa7q6")
+script = ExtResource("1_ftgjh")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StatBoxIdx" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_1p8m2")]
+layout_mode = 2
+stat_name = "Point Index"
+stat_value = "0"
+
+[node name="StatBoxVectorPos" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_1iw8o")]
+layout_mode = 2
+stat_name = "Position"
+
+[node name="StatBoxVectorFwd" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_1iw8o")]
+layout_mode = 2
+stat_name = "Forward"
+
+[node name="StatBoxVectorUp" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_1iw8o")]
+layout_mode = 2
+stat_name = "Upward"
+
+[node name="StatBoxCurveSize" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_1p8m2")]
+layout_mode = 2
+stat_name = "Curve Size"
+stat_value = "1"
