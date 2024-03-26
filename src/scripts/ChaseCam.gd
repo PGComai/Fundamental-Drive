@@ -234,9 +234,9 @@ func _physics_process(delta):
 			lerp_speed = global_position.distance_squared_to(xform_node.global_position)
 			lerp_speed = clamp(lerp_speed, 50.0, 100.0)
 			lerp_speed = remap(lerp_speed, 50.0, 100.0, 0.1, 0.3)
-			global_position = global_position.slerp(xform_node.global_position, lerp_speed)
+			global_position = global_position.lerp(xform_node.global_position, lerp_speed)
 		else:
-			global_position = global_position.slerp(magnet_node.global_position, 0.03)
+			global_position = global_position.lerp(magnet_node.global_position, 0.03)
 		var up = Vector3.UP
 		#var up = global_position.normalized()
 		look_at(look_at_pos, up)

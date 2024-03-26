@@ -305,7 +305,8 @@ size = Vector3(1.19788, 0.944625, 2.44984)
 
 [node name="AudioStreamPlayerEngine" type="AudioStreamPlayer3D" parent="Chassis"]
 stream = ExtResource("6_2lxj4")
-volume_db = -15.808
+volume_db = -16.287
+max_db = -9.126
 autoplay = true
 
 [node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
@@ -323,6 +324,7 @@ visible = false
 
 [node name="AudioStreamPlayerEngine2" type="AudioStreamPlayer3D" parent="Chassis"]
 stream = ExtResource("12_uh4w6")
+max_db = 1.473
 autoplay = true
 
 [node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
@@ -372,8 +374,8 @@ radius = 0.368013
 
 [node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelFL"]
 stream = ExtResource("10_wvm3s")
-volume_db = -12.934
-max_db = 1.383
+volume_db = -19.641
+max_db = -9.126
 pitch_scale = 0.99
 
 [node name="WheelFR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
@@ -423,8 +425,8 @@ radius = 0.368013
 
 [node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelFR"]
 stream = ExtResource("10_wvm3s")
-volume_db = -12.934
-max_db = 1.383
+volume_db = -19.641
+max_db = -9.126
 
 [node name="WheelBL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1.2)
@@ -473,8 +475,8 @@ radius = 0.368013
 
 [node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelBL"]
 stream = ExtResource("10_wvm3s")
-volume_db = -12.934
-max_db = 1.383
+volume_db = -19.641
+max_db = -9.126
 pitch_scale = 1.01
 
 [node name="WheelBR" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
@@ -524,8 +526,8 @@ radius = 0.368013
 
 [node name="AudioStreamPlayer3DBounce" type="AudioStreamPlayer3D" parent="WheelBR"]
 stream = ExtResource("10_wvm3s")
-volume_db = -12.934
-max_db = 1.383
+volume_db = -19.641
+max_db = -9.126
 pitch_scale = 1.02
 
 [connection signal="body_entered" from="Chassis" to="." method="_on_chassis_body_entered"]
