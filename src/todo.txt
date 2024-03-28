@@ -11,6 +11,8 @@
 - trick recognition
 - rotation snap
 - better camera movement
+- graffiti
+- thicker wheels
 
 OPTIMIZATIONS:
 	- only generate draft roads locally (+- 2 or 3 points)
