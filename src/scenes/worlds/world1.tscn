@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://pc4wweacqy4d"]
+
+[ext_resource type="PackedScene" uid="uid://ygjlhuuoyr3y" path="res://scenes/chase_cam.tscn" id="1_8ynpf"]
+[ext_resource type="PackedScene" uid="uid://dnc70ycajbrmd" path="res://scenes/car.tscn" id="2_dr01j"]
+[ext_resource type="PackedScene" uid="uid://dxiassghx6e4x" path="res://scenes/road_path.tscn" id="3_b2kxh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n6shk"]
+sky_top_color = Color(0.490196, 0.364706, 0.729412, 1)
+sky_horizon_color = Color(0.866667, 0.694118, 0.862745, 1)
+sky_curve = 0.2
+ground_bottom_color = Color(0.427451, 0.133333, 0.298039, 1)
+ground_horizon_color = Color(0.866667, 0.694118, 0.862745, 1)
+ground_curve = 0.2
+
+[sub_resource type="Sky" id="Sky_glhfr"]
+sky_material = SubResource("ProceduralSkyMaterial_n6shk")
+
+[sub_resource type="Environment" id="Environment_kvxah"]
+background_mode = 2
+sky = SubResource("Sky_glhfr")
+ambient_light_source = 2
+ambient_light_color = Color(0.796078, 0, 0.643137, 1)
+ambient_light_energy = 0.35
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j15t8"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hffew"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="Curve3D" id="Curve3D_8qxka"]
+resource_local_to_scene = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10.249, 229.516, 0, -10.249, -229.516, 0, -10.024, -414.858, 49.9248, 58.834, 247.044, -49.9248, -58.834, -247.044, -16.3042, -453.046, -1206.25, 183.066, 6.24756, -33.838, -183.066, -6.24756, 33.838, -478.881, -522.664, -1527.2, -26.8768, 18.9582, -141.158, 26.8768, -18.9582, 141.158, -893.755, -394.249, -1250.33, -137.854, 39.0608, -61.281, 137.854, -39.0608, 61.281, -673.843, -470.058, -995.859, -173.236, 54.9738, 124.9, 173.236, -54.9738, -124.9, -120.081, -630.779, -935.72, -181.605, 73.8432, 193.957, 181.605, -73.8432, -193.957, 290.168, -755.52, -1375.99, 0, 0, 0, 0, 0, 0, 598.543, -1093.13, -1068.84),
+"tilts": PackedFloat32Array(0, 0, -0.463832, -0.511593, -0.221154, -0.301478, -0.521358, 0.22762, 0)
+}
+point_count = 9
+
+[node name="World" type="Node3D"]
+
+[node name="ChaseCam" parent="." instance=ExtResource("1_8ynpf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 20)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.489507, -0.755175, 0.435998, 1.29048e-08, 0.499998, 0.866027, -0.871999, -0.423926, 0.244753, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_blend_splits = true
+directional_shadow_fade_start = 0.745
+directional_shadow_max_distance = 170.2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kvxah")
+
+[node name="Car" parent="." instance=ExtResource("2_dr01j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36173, 0)
+
+[node name="Static" type="Node3D" parent="."]
+
+[node name="Platform" type="StaticBody3D" parent="Static"]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Static/Platform"]
+shape = SubResource("BoxShape3D_j15t8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Static/Platform/CollisionShape3D"]
+mesh = SubResource("BoxMesh_hffew")
+
+[node name="Rigid" type="Node3D" parent="."]
+
+[node name="RoadPaths" type="Node3D" parent="."]
+
+[node name="RoadPath" parent="RoadPaths" instance=ExtResource("3_b2kxh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+curve = SubResource("Curve3D_8qxka")
+surface_width = 120.0
+
+[node name="Toys" type="Node3D" parent="."]
+
+[connection signal="position_signal" from="Car" to="ChaseCam" method="_on_car_position_signal"]

@@ -7,10 +7,12 @@ const RES_OPTIONS = [Vector2i(1280, 720),
 					Vector2i(2560, 1440)]
 const WIN_OPTIONS = [DisplayServer.WINDOW_MODE_WINDOWED,
 					DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
+const FISHEYE_MATERIAL = preload("res://textures/fisheye_material.tres")
 
 
 var old_window_mode: DisplayServer.WindowMode
 var old_res: Vector2i
+var current_res: Vector2i
 
 var display_settings_confirmed := false
 var counting_down := false
@@ -35,13 +37,17 @@ var global: Node
 @onready var v_box_container_controls = $MarginContainer/CenterContainer/VBoxContainerControls
 @onready var texture_rect_keyboard_controls = $MarginContainer/CenterContainer/VBoxContainerControls/TextureRectKeyboardControls
 @onready var texture_rect_controller_controls = $MarginContainer/CenterContainer/VBoxContainerControls/TextureRectControllerControls
+@onready var texture_rect = $TextureRect
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	global = get_node("/root/Global")
+	global.camera_type_changed.connect(_on_global_camera_type_changed)
+	texture_rect.use_parent_material = true
 	margin_container.visible = false
 	var resolution = get_viewport_rect()
+	current_res = resolution.size
 	print("Resolution: %s" % resolution.size)
 	if resolution.size.x == 2560.0:
 		option_button_res.selected = 2
@@ -129,6 +135,7 @@ func _on_button_apply_button_up():
 	DisplayServer.window_set_mode(selected_win)
 	DisplayServer.window_set_size(selected_res)
 	sub_viewport.size = selected_res
+	current_res = selected_res
 	button_confirm_settings.visible = true
 	display_timer.start()
 	counting_down = true
@@ -143,27 +150,6 @@ func _on_button_confirm_settings_button_up():
 	pass # Replace with function body.
 
 
-func _on_margin_container_visibility_changed():
-	if panel:
-		pass # re-enable if controller controls dont work
-		#if margin_container.visible:
-			#margin_container.process_mode = Node.PROCESS_MODE_INHERIT
-			#button_apply.focus_mode = FOCUS_ALL
-			#button_confirm_settings.focus_mode = FOCUS_ALL
-			#button_debug.focus_mode = FOCUS_ALL
-			#button_options.focus_mode = FOCUS_ALL
-			#option_button_res.focus_mode = FOCUS_ALL
-			#option_button_win.focus_mode = FOCUS_ALL
-		#else:
-			#margin_container.process_mode = Node.PROCESS_MODE_DISABLED
-			#button_apply.focus_mode = FOCUS_NONE
-			#button_confirm_settings.focus_mode = FOCUS_NONE
-			#button_debug.focus_mode = FOCUS_NONE
-			#button_options.focus_mode = FOCUS_NONE
-			#option_button_res.focus_mode = FOCUS_NONE
-			#option_button_win.focus_mode = FOCUS_NONE
-
-
 func _on_button_keyboard_button_up():
 	texture_rect_keyboard_controls.visible = true
 	texture_rect_controller_controls.visible = false
@@ -172,6 +158,21 @@ func _on_button_keyboard_button_up():
 func _on_button_controller_button_up():
 	texture_rect_keyboard_controls.visible = false
 	texture_rect_controller_controls.visible = true
+
+
+func _on_global_camera_type_changed():
+	if global.camera_type == 0:
+		texture_rect.use_parent_material = true
+		#sub_viewport.size = current_res
+		#texture_rect.material = null
+	elif global.camera_type == 1:
+		texture_rect.use_parent_material = true
+		#sub_viewport.size = current_res
+		#texture_rect.material = null
+	elif global.camera_type == 2:
+		texture_rect.use_parent_material = false
+		#sub_viewport.size = Vector2i(1920, 1080)
+		#texture_rect.material = FISHEYE_MATERIAL
 
 
 func _on_button_quit_button_up():

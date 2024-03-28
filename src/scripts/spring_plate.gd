@@ -71,7 +71,7 @@ func _set_plate_radius():
 	mesh_instance_3d.mesh.top_radius = snappedf(plate_radius, 1.0)
 	mesh_instance_3d.mesh.bottom_radius = snappedf(plate_radius, 1.0)
 	audio_stream_player_3d.unit_size = plate_radius * (5.0 / 3.0)
-	normal_pitch = remap(-plate_radius, -40.0, -5.0, 0.3, 1.0)
+	normal_pitch = remap(-plate_radius, -40.0, -5.0, 0.75, 1.0)
 	plate.mass = remap(plate_radius, 5.0, 40.0, 1.0, 5.0)
 
 

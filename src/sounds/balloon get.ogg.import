@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b6u52p2lmc63t"
+path="res://.godot/imported/balloon get.ogg-b1f5aba384de1c707355b32d470ad2b6.oggvorbisstr"
+
+[deps]
+
+source_file="res://sounds/balloon get.ogg"
+dest_files=["res://.godot/imported/balloon get.ogg-b1f5aba384de1c707355b32d470ad2b6.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

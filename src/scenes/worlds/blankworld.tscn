@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3 uid="uid://br1j2ctpxr6pc"]
+
+[ext_resource type="Script" path="res://scripts/ChaseCam.gd" id="1_bnhvr"]
+[ext_resource type="PackedScene" uid="uid://dnc70ycajbrmd" path="res://scenes/car.tscn" id="2_k6lgm"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5w0m2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_83xrg"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_gxlpr"]
+sky_material = SubResource("ProceduralSkyMaterial_83xrg")
+
+[sub_resource type="Environment" id="Environment_jh70y"]
+background_mode = 2
+sky = SubResource("Sky_gxlpr")
+
+[node name="World" type="Node3D"]
+
+[node name="ChaseCam" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.18253, 4.82996, 59.2115)
+script = ExtResource("1_bnhvr")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="ChaseCam"]
+spring_length = 0.0
+
+[node name="Cam" type="Camera3D" parent="ChaseCam/SpringArm3D"]
+
+[node name="RayCast3D" type="RayCast3D" parent="ChaseCam/SpringArm3D/Cam"]
+target_position = Vector3(0, 0, -200)
+collision_mask = 16
+
+[node name="Area3D" type="Area3D" parent="ChaseCam/SpringArm3D/Cam"]
+top_level = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChaseCam/SpringArm3D/Cam/Area3D"]
+shape = SubResource("SphereShape3D_5w0m2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866024, -0.433016, 0.25, 0, 0.499998, 0.866027, -0.500003, 0.75, -0.43301, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_blend_splits = true
+directional_shadow_fade_start = 0.745
+directional_shadow_max_distance = 170.2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_jh70y")
+
+[node name="Car" parent="." instance=ExtResource("2_k6lgm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.56995, -5)
+
+[node name="Static" type="Node3D" parent="."]
+
+[node name="Rigid" type="Node3D" parent="."]
+
+[node name="RoadPaths" type="Node3D" parent="."]
+
+[node name="Toys" type="Node3D" parent="."]
+
+[connection signal="area_entered" from="ChaseCam/SpringArm3D/Cam/Area3D" to="ChaseCam" method="_on_area_3d_area_entered"]
+[connection signal="area_exited" from="ChaseCam/SpringArm3D/Cam/Area3D" to="ChaseCam" method="_on_area_3d_area_exited"]
+[connection signal="position_signal" from="Car" to="ChaseCam" method="_on_car_position_signal"]

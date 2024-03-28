@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c043vswtewoen"]
+
+[ext_resource type="Shader" path="res://textures/fisheye2.gdshader" id="1_r32u6"]
+
+[resource]
+shader = ExtResource("1_r32u6")
+shader_parameter/aspect = 1.78
+shader_parameter/distortion = 2.16
+shader_parameter/radius = 1.32
+shader_parameter/alpha = 1.0
+shader_parameter/crop = 0.94
+shader_parameter/crop_color = Color(0, 0, 0, 1)
+shader_parameter/crop_feathering = 0.055
+shader_parameter/channel_offset = 0.003
+shader_parameter/noise_strength = 1.0

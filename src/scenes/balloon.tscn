@@ -1,0 +1,116 @@
+[gd_scene load_steps=16 format=3 uid="uid://btk6ixcjut14v"]
+
+[ext_resource type="Script" path="res://scripts/balloon.gd" id="1_6atgq"]
+[ext_resource type="AudioStream" uid="uid://b6u52p2lmc63t" path="res://sounds/balloon get.ogg" id="2_bmbvp"]
+[ext_resource type="Material" uid="uid://dqyyg7hjssai2" path="res://textures/balloon_material.tres" id="2_khu45"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_fm7hp"]
+radius = 1.0
+rings = 3
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_vj4oe"]
+radius = 1.0
+height = 1.5
+rings = 3
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_oys5g"]
+radius = 0.1
+height = 0.15
+rings = 3
+is_hemisphere = true
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_whfid"]
+points = PackedVector3Array(-0.607201, 0.00700992, -0.78958, 0.966168, 0.0399767, 0.181014, 0.925022, 0.10518, 0.238545, -0.458305, 0.0037973, 0.886362, -0.028804, 0.983157, -0.0286939, 0.517011, 0.00623203, -0.851593, -0.719844, 0.672796, 0.0298809, 0.17862, 0.701642, 0.685678, 0.268507, 0.701814, -0.656373, 0.685654, 0.701629, -0.178739, -0.981668, 0.00187902, 0.183944, 0.396491, 0.0046618, 0.915236, -0.268551, 0.70181, -0.656358, -0.386436, 0.701121, 0.594604, 0.59465, 0.701127, 0.386355, -0.18402, 0.00197484, -0.981617, 0.950156, 0.00235675, -0.306284, -0.656403, 0.701801, -0.268439, -0.950097, 0.00231544, -0.306501, 0.70681, 0.00102549, 0.706789, -0.851602, 0.00615284, 0.517059, 0.543964, 0.704279, -0.453245, -0.18402, 0.00197479, 0.981617, -0.656403, 0.701801, 0.268438, -0.178844, 0.701628, 0.685627, 0.183781, 0.00195148, -0.981662, 0.386398, 0.701127, 0.594623, 0.0287611, 0.98317, 0.0286946, 0.685653, 0.701629, 0.178738, -0.0299938, 0.67277, -0.719849, 0.70681, 0.00102549, -0.706789, -0.594529, 0.701132, -0.386552)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cldln"]
+points = PackedVector3Array(0.875852, 0.44425, 0.0300844, -0.183457, 0.0119088, -0.979206, -0.305695, 0.012529, -0.947732, -0.0295863, 1.45875, -0.0593587, -0.515743, 0.0180351, 0.84956, 0.605835, 0.0190516, 0.787662, -0.979206, 0.0119086, -0.183457, -0.150855, 1.04768, 0.69397, -0.693942, 1.04775, -0.15089, 0.269265, 1.0451, -0.65835, 0.787662, 0.0190516, -0.605835, 0.65835, 1.0451, 0.269265, -0.387646, 1.04413, -0.596321, -0.596321, 1.04413, 0.387646, 0.658348, 1.0451, -0.269265, 0.12371, 0.00332638, 0.99046, 0.329921, 1.04569, 0.629781, 0.947781, 0.0123479, 0.305711, -0.947732, 0.012529, 0.305695, -0.787621, 0.0192315, -0.605804, 0.123711, 0.0033263, -0.99046, -0.150855, 1.04768, -0.693972, 0.979255, 0.0117284, -0.183466, 0.0295863, 1.45875, 0.0593587, 0.45728, 0.0144059, -0.88419, -0.693943, 1.04775, 0.15089, 0.442457, 1.07046, -0.530985, -0.787623, 0.0192299, 0.605805, -0.387647, 1.04413, 0.596322, -0.596322, 1.04413, -0.387647, -0.183457, 0.0119086, 0.979206, 0.596351, 1.04401, 0.387666)
+
+[sub_resource type="Curve" id="Curve_5goyq"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.248148, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_quv3m"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.142593, 1), 0.0, 0.0, 0, 0, Vector2(0.733333, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_wcryo"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_5ph0h"]
+curve_x = SubResource("Curve_5goyq")
+curve_y = SubResource("Curve_quv3m")
+curve_z = SubResource("Curve_wcryo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qu00w"]
+lifetime_randomness = 0.46
+particle_flag_align_y = true
+emission_shape = 2
+emission_sphere_radius = 1.0
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 11.94
+initial_velocity_max = 13.94
+damping_min = 6.27
+damping_max = 6.27
+scale_curve = SubResource("CurveXYZTexture_5ph0h")
+turbulence_enabled = true
+turbulence_noise_scale = 1.957
+
+[sub_resource type="Curve" id="Curve_g8bjw"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.5, 0.153187), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_yv6u8"]
+section_length = 0.1
+curve = SubResource("Curve_g8bjw")
+
+[node name="Balloon" type="Node3D"]
+script = ExtResource("1_6atgq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_fm7hp")
+surface_material_override/0 = ExtResource("2_khu45")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0)
+mesh = SubResource("SphereMesh_vj4oe")
+surface_material_override/0 = ExtResource("2_khu45")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, -7.64274e-15, -8.74228e-08, 1, 8.74228e-08, 0, 8.74228e-08, -1, 0, -1.6, 0)
+mesh = SubResource("SphereMesh_oys5g")
+surface_material_override/0 = ExtResource("2_khu45")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 6
+collision_mask = 6
+priority = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("ConvexPolygonShape3D_whfid")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_cldln")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_bmbvp")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+material_override = ExtResource("2_khu45")
+emitting = false
+amount = 16
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_qu00w")
+draw_pass_1 = SubResource("TubeTrailMesh_yv6u8")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

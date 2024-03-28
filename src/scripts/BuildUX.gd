@@ -58,7 +58,7 @@ func _process(delta):
 			print(item_idx)
 			label_item_selector.text = ITEMS[item_idx]
 		if Input.is_action_just_pressed("select"):
-			emit_signal("create_item", item_list[item_idx])
+			global.create_item = item_list[item_idx]
 
 
 func _on_global_player_state_changed(state: String):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://dnc70ycajbrmd"]
+[gd_scene load_steps=44 format=3 uid="uid://dnc70ycajbrmd"]
 
 [ext_resource type="Script" path="res://scripts/car.gd" id="1_h44u5"]
 [ext_resource type="Script" path="res://scripts/CamXForm.gd" id="1_sdi5q"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://bafv7scpxvlt0" path="res://scenes/grapple_hook.tscn" id="8_jov6m"]
 [ext_resource type="AudioStream" uid="uid://dhaxpy6pcf0jv" path="res://sounds/fund_drive_bounce.ogg" id="10_wvm3s"]
 [ext_resource type="AudioStream" uid="uid://d7qsgbrsq8px" path="res://sounds/engine test.ogg" id="12_uh4w6"]
+[ext_resource type="Script" path="res://scripts/CamXFormType2.gd" id="13_2386a"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_mjyfr"]
 noise_type = 4
@@ -61,9 +62,11 @@ uv1_triplanar = true
 points = PackedVector3Array(0.463725, 1.16061, 0.804567, -0.592202, -0.646505, 0.126094, 0.565157, -1.06564, 0.113971, 0.506528, 1.02018, 0.0142642, -0.54368, 0.448378, 0.914802, -0.563654, 1.23184, 0.158534, 0.532074, -0.588345, 0.726837, -0.556968, -0.955777, 0.505714, -0.568673, 1.39751, 0.700872, -0.482234, -0.95941, 0.00834799, 0.562971, 1.40155, 0.701566, 0.0878263, 0.0773165, 0.945589, -0.510044, 1.01333, 0.0179832, 0.579581, 0.113212, 0.881698, 0.478286, -0.967999, 0.00464681, 0.587392, 1.14226, 0.124425, -0.537756, -0.401669, 0.799628, 0.520724, -1.01489, 0.467273, 0.0517724, 0.633068, 0.950647, -0.529201, -1.09503, 0.155879, -0.0600075, 1.31368, 0.805474, 0.0514094, -0.513132, 0.800073, 0.556109, 1.23182, 0.158541, 0.534858, 0.484672, 0.91378, -0.548159, 0.97634, 0.843297, -0.591371, 1.02254, 0.126603, 0.585678, -0.761989, 0.125475, -0.0593629, -0.73942, 0.69057, 0.58146, -0.264415, 0.807497, 0.586773, 1.33169, 0.696126, -0.541907, -0.109029, 0.876254, -0.490917, -1.09651, 0.272395)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cj3f5"]
-radius = 0.25
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_y3xcp"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_574t8"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 10.0
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8avk3"]
 points = PackedVector3Array(-0.428504, 1.15588, 0.699724, 0.868726, 1.79652, 1.19965, 0.914286, 1.64142, 1.21389, -0.914286, 1.64142, 1.21389, 0.428504, 1.41302, 0.64257, -0.914286, 1.81289, 1.12816, 0.610068, 1.37005, 1.15701, 0.428504, 1.15588, 0.699724, -0.609954, 1.37007, 1.15697, -0.428504, 1.41302, 0.64257, 0.914286, 1.81289, 1.12816, -0.857009, 1.47014, 1.09958, 0.857009, 1.47014, 1.09958, -0.428504, 1.15588, 0.756878, -0.868728, 1.79652, 1.19965, 0.28795, 1.32842, 1.12019, 0.428504, 1.15588, 0.756878, 0.428504, 1.35591, 0.64257, 0.428504, 1.44158, 0.671147, -0.885647, 1.52719, 1.09958, 0.885647, 1.52719, 1.09958, -0.288117, 1.32833, 1.1203, -0.428504, 1.35591, 0.64257, -0.799911, 1.41302, 1.09958, 0.799911, 1.41302, 1.09958, -0.428504, 1.44158, 0.671147, 0.796372, 1.47115, 1.16712, -0.796306, 1.47115, 1.1671, -0.914286, 1.61286, 1.12816, 0.914286, 1.61286, 1.12816, -0.72708, 1.41952, 1.1619, 0.727089, 1.41952, 1.16191)
@@ -295,9 +298,9 @@ transform = Transform3D(1, 0, 0, 0, 0.883529, 0.468377, 0, -0.468377, 0.883529, 
 script = ExtResource("1_sdi5q")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Chassis/CamBase"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24348, -6.41097)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 visible = false
-mesh = SubResource("CapsuleMesh_y3xcp")
+mesh = SubResource("CylinderMesh_574t8")
 
 [node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="Chassis"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000305176, 0.137215, 0.106761)
@@ -305,8 +308,8 @@ size = Vector3(1.19788, 0.944625, 2.44984)
 
 [node name="AudioStreamPlayerEngine" type="AudioStreamPlayer3D" parent="Chassis"]
 stream = ExtResource("6_2lxj4")
-volume_db = -16.287
-max_db = -9.126
+volume_db = -14.85
+max_db = -12.36
 autoplay = true
 
 [node name="CollisionSpoiler" type="CollisionShape3D" parent="Chassis"]
@@ -326,6 +329,14 @@ visible = false
 stream = ExtResource("12_uh4w6")
 max_db = 1.473
 autoplay = true
+
+[node name="DownCast" type="RayCast3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.266479, 0)
+collision_mask = 5
+
+[node name="CamXFormType2" type="Node3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 0.87754, 0.479504, 0, -0.479504, 0.87754, -2.38419e-07, 1.6824, 0.73066)
+script = ExtResource("13_2386a")
 
 [node name="WheelFL" type="RigidBody3D" parent="." node_paths=PackedStringArray("car", "mesh", "smoke", "attractor", "bounce_noise") groups=["wheel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1.2)

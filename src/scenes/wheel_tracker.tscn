@@ -27,5 +27,6 @@ shape = SubResource("BoxShape3D_xrhy8")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.138927, 0)
+visible = false
 mesh = SubResource("BoxMesh_7n85f")
 surface_material_override/0 = SubResource("StandardMaterial3D_8g6oo")

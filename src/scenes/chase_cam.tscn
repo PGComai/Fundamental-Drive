@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://ygjlhuuoyr3y"]
+
+[ext_resource type="Script" path="res://scripts/ChaseCam.gd" id="1_gyd3n"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5w0m2"]
+
+[node name="ChaseCam" type="Node3D"]
+script = ExtResource("1_gyd3n")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="."]
+spring_length = 0.0
+
+[node name="Cam" type="Camera3D" parent="SpringArm3D"]
+
+[node name="RayCast3D" type="RayCast3D" parent="SpringArm3D/Cam"]
+target_position = Vector3(0, 0, -200)
+collision_mask = 16
+
+[node name="Area3D" type="Area3D" parent="SpringArm3D/Cam"]
+top_level = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SpringArm3D/Cam/Area3D"]
+shape = SubResource("SphereShape3D_5w0m2")
+
+[connection signal="area_entered" from="SpringArm3D/Cam/Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="area_exited" from="SpringArm3D/Cam/Area3D" to="." method="_on_area_3d_area_exited"]

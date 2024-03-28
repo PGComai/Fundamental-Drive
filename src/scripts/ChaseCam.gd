@@ -10,11 +10,12 @@ const ADJUST_CURVE_SIZE_SENS = 0.05
 const DEFAULT_SPRING_LENGTH = 10.0
 const DELETE_TIME = 0.5
 const SIZE_ADJUST_SENS = 0.1
+const CAM_FOV_TYPE_0_1 = 75.0
+const CAM_FOV_TYPE_2 = 150.0
 
 
 var node_holder: Node
 var waiting_for_xform_target := true
-var xform_node: Node3D
 var lerp_speed := 0.2
 var look_at_pos: Vector3
 
@@ -59,8 +60,6 @@ var global: Node
 @onready var spring_arm_3d = $SpringArm3D
 @onready var cam = $SpringArm3D/Cam
 @onready var ray_cast_3d = $SpringArm3D/Cam/RayCast3D
-@onready var pos_fwd = $PosFwd
-@onready var pos_left = $PosLeft
 @onready var area_3d = $SpringArm3D/Cam/Area3D
 @onready var car = $"../Car"
 
@@ -68,11 +67,9 @@ var global: Node
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	global = get_node("/root/Global")
-	node_holder = get_node("/root/NodeHolder")
-	node_holder.cam_x_form_node_set.connect(_on_cam_x_form_node_set)
-	if node_holder.cam_x_form_node:
-		waiting_for_xform_target = false
-		xform_node = node_holder.cam_x_form_node
+	global.player_state_changed.connect(_on_global_player_state_changed)
+	global.player_create_item.connect(_on_global_player_create_item)
+	global.camera_type_changed.connect(_on_global_camera_type_changed)
 
 
 func _process(delta):
@@ -150,7 +147,12 @@ func _process(delta):
 					rotate_selected_road_point_z(-input_dir.x)
 #endregion
 	
-	if global.player_state == 2:
+	if global.player_state == 0:
+		if Input.is_action_just_pressed("next camera"):
+			global.camera_type += 1
+		elif Input.is_action_just_pressed("prev camera"):
+			global.camera_type -= 1
+	elif global.player_state == 2:
 #region selecting
 		if selected_object:
 			global_position = global_position.lerp(selected_object.global_position, 0.4)
@@ -225,21 +227,23 @@ func _process(delta):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	area_3d.global_position = car.chassis.global_position
+	var xform_node = global.camera_transform_node
 	
 	if xform_node and global.player_state == 0:
 #region camera movement while driving
-		rot_h = lerp(rot_h, 0.0, 0.1)
-		rot_v = lerp(rot_v, 0.0, 0.1)
-		if not magnet_node:
-			lerp_speed = global_position.distance_squared_to(xform_node.global_position)
-			lerp_speed = clamp(lerp_speed, 50.0, 100.0)
-			lerp_speed = remap(lerp_speed, 50.0, 100.0, 0.1, 0.3)
-			global_position = global_position.lerp(xform_node.global_position, lerp_speed)
-		else:
-			global_position = global_position.lerp(magnet_node.global_position, 0.03)
-		var up = Vector3.UP
-		#var up = global_position.normalized()
-		look_at(look_at_pos, up)
+		if global.camera_type == 0 or global.camera_type == 1:
+			rot_h = lerp(rot_h, 0.0, 0.1)
+			rot_v = lerp(rot_v, 0.0, 0.1)
+			if not magnet_node:
+				lerp_speed = global_position.distance_squared_to(xform_node.global_position)
+				lerp_speed = clamp(lerp_speed, 50.0, 100.0)
+				lerp_speed = remap(lerp_speed, 50.0, 100.0, 0.05, 0.1)
+				global_position = global_position.lerp(xform_node.global_position, lerp_speed)
+			else:
+				global_position = global_position.lerp(magnet_node.global_position, 0.03)
+			look_at(look_at_pos, global.camera_up)
+		elif global.camera_type == 2:
+			global_transform = xform_node.global_transform
 #endregion
 	elif (global.player_state == 1
 		or global.player_state == 2):
@@ -269,6 +273,26 @@ func _physics_process(delta):
 		and selected_road_point):
 			selected_road_point.parent_road._placeable_points_set()
 			selected_road_point = null
+
+
+func _on_global_player_state_changed(state: String):
+	if state == "Building" and not global.last_player_state == "Selecting":
+		rot_h = rotation.y
+		rot_v = rotation.x
+		rotation = Vector3.ZERO
+		spring_arm_3d.rotation = Vector3.ZERO
+	elif state == "Driving":
+		spring_arm_3d.rotation = Vector3.ZERO
+		if selected_object:
+			selected_object.widget.move = false
+			selected_object = null
+
+
+func _on_global_player_create_item(item: Resource):
+	var new_item = item.instantiate()
+	new_item.widget_ready.connect(_on_new_item_widget_ready)
+	get_parent().add_child(new_item)
+	global.player_state = 2
 
 
 func rotate_selected_road_point_y(rot_amount: float):
@@ -419,15 +443,6 @@ func _edited_object_selected():
 	global.currently_edited_object = edited_object
 
 
-func _on_cam_x_form_node_set(toggle):
-	if waiting_for_xform_target and toggle:
-		xform_node = node_holder.cam_x_form_node
-		waiting_for_xform_target = false
-	if not toggle:
-		xform_node = null
-		waiting_for_xform_target = true
-
-
 func _on_car_position_signal(pos):
 	look_at_pos = pos
 
@@ -442,18 +457,6 @@ func _on_area_3d_area_exited(area):
 		magnet_node = null
 
 
-func _on_ux_build_time(toggle):
-	if toggle:
-		rot_h = rotation.y
-		rot_v = rotation.x
-		rotation = Vector3.ZERO
-	else:
-		if selected_object:
-			selected_object.widget.move = false
-			selected_object = null
-	spring_arm_3d.rotation = Vector3.ZERO
-
-
 func _on_ux_gui_input(event):
 	if (global.player_state == 1
 		or global.player_state == 2
@@ -463,14 +466,16 @@ func _on_ux_gui_input(event):
 			rot_v -= event.relative.y * SENS
 
 
-func _on_build_ux_create_item(item):
-	var new_item = item.instantiate()
-	new_item.widget_ready.connect(_on_new_item_widget_ready)
-	get_parent().add_child(new_item)
-	global.player_state = 2
-
-
 func _on_new_item_widget_ready(item):
 	print("ready")
 	just_placed_item = true
 	selected_object = item
+
+
+func _on_global_camera_type_changed():
+	if global.camera_type == 0:
+		cam.fov = CAM_FOV_TYPE_0_1
+	elif global.camera_type == 1:
+		cam.fov = CAM_FOV_TYPE_0_1
+	elif global.camera_type == 2:
+		cam.fov = CAM_FOV_TYPE_2

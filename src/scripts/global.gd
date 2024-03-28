@@ -11,10 +11,14 @@ signal object_edited(obj: PlaceableObject)
 signal edited_modified
 signal road_point_selected(point: PlaceableRoadPoint)
 signal road_point_modified
+signal player_create_item(item: Resource)
+signal camera_type_changed
 
 
+var last_player_state: String
 var player_state: int = 0:
 	set(value):
+		last_player_state = PLAYER_STATES[player_state]
 		player_state = value
 		emit_signal("player_state_changed", PLAYER_STATES[player_state])
 		print("player state changed: %s" % PLAYER_STATES[player_state])
@@ -45,6 +49,17 @@ var selected_road_point_modified := false:
 		if value:
 			emit_signal("road_point_modified")
 var position_snap := false
+var create_item: Resource:
+	set(value):
+		if value:
+			emit_signal("player_create_item", value)
+var camera_up := Vector3.UP
+var camera_type: int = 0:
+	set(value):
+		camera_type = wrapi(value, 0, 3)
+		print("camera type set: %s" % camera_type)
+		emit_signal("camera_type_changed")
+var camera_transform_node: Node3D
 
 var sub_v: SubViewport
 

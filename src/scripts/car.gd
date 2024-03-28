@@ -7,6 +7,7 @@ signal position_signal(pos: Vector3)
 
 const WHEEL_RADIUS = 0.4
 const ENGINE_NOTE_TIME = 0.125
+const RESPAWN_TIME = 0.3
 
 @export var rpm_torque_response: Curve
 @export var grip_curve: Curve
@@ -36,9 +37,6 @@ var wheel_angle := 0.0
 
 var node_holder: Node
 
-
-var spawn_transform: Transform3D
-
 var flipped := false
 var engine_note_timer := 0.1
 var engine_rpm := 0.0:
@@ -53,6 +51,7 @@ var engine_beat_counter := 0
 var second_beat_timing := false
 var second_beat_timer := 0.08
 var throttle := 0.0
+var respawn_timer := 0.0
 
 var global: Node
 
@@ -62,7 +61,6 @@ func _ready():
 	global = get_node("/root/Global")
 	#v_box_container_params.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	spawn_transform = chassis.global_transform
 	joints = [joint_fl,
 			joint_fr,
 			joint_bl,
@@ -92,6 +90,7 @@ func _ready():
 			wheel_fr,
 			wheel_bl,
 			wheel_br]
+	_set_spawn_transforms()
 	node_holder = get_node("/root/NodeHolder")
 	node_holder.player_node = self
 
@@ -124,6 +123,13 @@ func _physics_process(delta):
 
 
 func _process(delta):
+	if Input.is_action_just_pressed("respawn"):
+		respawn_timer = RESPAWN_TIME
+	if Input.is_action_pressed("respawn"):
+		respawn_timer -= delta
+		if respawn_timer <= 0.0:
+			_respawn()
+	
 	var heading = sign(chassis.linear_velocity.dot(chassis.global_basis.z))
 	# -1 is forward
 	
@@ -147,6 +153,24 @@ func _process(delta):
 		wheel_ang_rot = rpm_torque_response.sample_baked(wheel_ang_rot)
 		wheel.braking_multiplier = brake_multiplier
 		wheel.throttle = throttle
+
+
+func _set_spawn_transforms():
+	chassis.spawn_transform = chassis.global_transform
+	for wheel in wheels:
+		wheel.spawn_transform = wheel.global_transform
+
+
+func _respawn():
+	chassis.freeze = true
+	for wheel in wheels:
+		wheel.freeze = true
+	chassis.global_transform = chassis.spawn_transform
+	for wheel in wheels:
+		wheel.global_transform = wheel.spawn_transform
+	chassis.freeze = false
+	for wheel in wheels:
+		wheel.freeze = false
 
 
 func hydraulics():
@@ -214,7 +238,8 @@ func input_percussion():
 
 func input_flip():
 	if (Input.is_action_just_pressed("flip")
-	and chassis.linear_velocity.length_squared() < 1.5):
+	and chassis.linear_velocity.length_squared() < 100.0
+	and chassis.get_contact_count() > 0):
 		print(chassis.global_basis.y.dot(Vector3.DOWN))
 		if chassis.global_basis.y.dot(Vector3.DOWN) >= 0.0:
 			flipped = true

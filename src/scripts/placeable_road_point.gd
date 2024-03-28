@@ -28,7 +28,8 @@ var road_curve_idx: int:
 		_idx_set()
 var curve_size: float = 10.0:
 	set(value):
-		curve_size = snappedf(clampf(value, 0.1, 200.0), 0.1)
+		curve_size = clampf(value, 0.1, 200.0)
+		_set_curve_size()
 var tilt: float = 0.0
 var position_already_set := false
 var up_dir := Vector3.UP
@@ -54,6 +55,7 @@ func _ready():
 	var new_widget = PRP_WIDGET.instantiate()
 	add_child(new_widget)
 	widget = new_widget
+	widget.represent_values(curve_size)
 	widget.ref = self
 	emit_signal("widget_ready", self)
 
@@ -111,7 +113,6 @@ func _update():
 			var closest_offset = parent_road.curve.get_closest_offset(local_point)
 			up_dir = parent_road.curve.sample_baked_up_vector(closest_offset, true)
 			widget.up_dir.look_at(widget.global_position + up_dir, global_basis.z)
-			widget.represent_values(curve_size)
 			global.edited_object_modified = true
 			global.selected_road_point_modified = true
 
@@ -122,8 +123,13 @@ func get_stats():
 		stats["Pos"] = position
 		stats["Fwd"] = -global_basis.z
 		stats["Up"] = up_dir
-		stats["CurveSize"] = curve_size
+		stats["CurveSize"] = snappedf(curve_size, 0.1)
 	return stats
+
+
+func _set_curve_size():
+	print(curve_size)
+	widget.represent_values(curve_size)
 
 
 func _delete():

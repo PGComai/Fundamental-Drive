@@ -177,11 +177,12 @@ func _generate_mesh():
 		var normal_array_side_right := PackedVector3Array([])
 		var uv_array_side_right := PackedVector2Array([])
 		
-		var curve_points := curve.tessellate_even_length()
+		var curve_points := curve.tessellate_even_length(10, 1.0)
 		var alternator = 1.0
 		for i in curve_points.size() - 1:
 			var point = curve_points[i]
 			var point_offset = curve.get_closest_offset(point)
+			var progress_x = point_offset# / curve_length
 			var point_transform = curve.sample_baked_with_rotation(point_offset, true, true)
 			var track_right = point_transform.basis.x
 			var track_up = point_transform.basis.y
@@ -189,6 +190,7 @@ func _generate_mesh():
 			
 			var point_next = curve_points[i + 1]
 			var point_offset_next = curve.get_closest_offset(point_next)
+			var progress_x_next = point_offset_next# / curve_length
 			var point_transform_next = curve.sample_baked_with_rotation(point_offset_next, true, true)
 			var track_right_next = point_transform_next.basis.x
 			var track_up_next = point_transform_next.basis.y
@@ -196,7 +198,14 @@ func _generate_mesh():
 			
 			var point0r = point + (track_right * surface_width / 2.0)
 			var point0l = point - (track_right * surface_width / 2.0)
+			
+			var point0r_next = point_next + (track_right_next * surface_width / 2.0)
+			var point0l_next = point_next - (track_right_next * surface_width / 2.0)
 			if radius:
+#region radial_road
+				var ratio = curve_length / surface_width
+				var uvy = (point_offset / curve_length) * ratio
+				var uvy_next = (point_offset_next / curve_length) * ratio
 				var circle_center = point + Vector3(track_up * radius_value)
 				var circle_center_next = point_next + Vector3(track_up_next * radius_value)
 				var circle_circumference = radius_value * 2.0 * PI
@@ -215,19 +224,19 @@ func _generate_mesh():
 					if alternator > 0.0:
 						vertex_array.append(pt_next)
 						normal_array.append(-dir_to_pos_next)
-						uv_array.append(Vector2(1.0, point_offset_next / curve_length))
+						uv_array.append(Vector2(1.0, uvy_next))
 						
 						vertex_array.append(pt)
 						normal_array.append(-dir_to_pos)
-						uv_array.append(Vector2(1.0, point_offset / curve_length))
+						uv_array.append(Vector2(1.0, uvy))
 					else:
 						vertex_array.append(pt)
 						normal_array.append(-dir_to_pos)
-						uv_array.append(Vector2(1.0, point_offset / curve_length))
+						uv_array.append(Vector2(1.0, uvy))
 						
 						vertex_array.append(pt_next)
 						normal_array.append(-dir_to_pos_next)
-						uv_array.append(Vector2(1.0, point_offset_next / curve_length))
+						uv_array.append(Vector2(1.0, uvy_next))
 				alternator *= -1.0
 				
 				var vertex_angle = track_coverage * ((0.0 / 10.0) - 0.5) * -PI
@@ -257,28 +266,66 @@ func _generate_mesh():
 				normal_array_side_right.append(norm)
 				uv_array_side_right.append(Vector2(1.0, point_offset / curve_length))
 				uv_array_side_right.append(Vector2(0.0, point_offset / curve_length))
+#endregion
 				
 			else:
-				vertex_array.append(point0r)
-				vertex_array.append(point0l)
-				normal_array.append(track_up)
-				normal_array.append(track_up)
-				uv_array.append(Vector2(1.0, point_offset / curve_length))
-				uv_array.append(Vector2(0.0, point_offset / curve_length))
+				var ratio = curve_length / surface_width
+				var uvy = (point_offset / curve_length) * ratio
+				#var uvy_next = (point_offset_next / curve_length) * ratio
+#region flat road v1
+				#vertex_array.append(point0r)
+				#vertex_array.append(point0l)
+				#normal_array.append(track_up)
+				#normal_array.append(track_up)
+				#uv_array.append(Vector2(1.0, uvy))
+				#uv_array.append(Vector2(0.0, uvy))
+				#
+				#vertex_array_side_left.append(point0l)
+				#vertex_array_side_left.append(point0l - track_up)
+				#normal_array_side_left.append(-track_right)
+				#normal_array_side_left.append(-track_right)
+				#uv_array_side_left.append(Vector2(1.0, uvy))
+				#uv_array_side_left.append(Vector2(0.0, uvy))
+				#
+				#vertex_array_side_right.append(point0r - track_up)
+				#vertex_array_side_right.append(point0r)
+				#normal_array_side_right.append(track_right)
+				#normal_array_side_right.append(track_right)
+				#uv_array_side_right.append(Vector2(1.0, uvy))
+				#uv_array_side_right.append(Vector2(0.0, uvy))
+#endregion
+				
+#region flat road v2
+				for va in 23:
+					var progress = float(va) / 22.0
+					
+					var pt = point0l.lerp(point0r, progress)
+					var pt_next = point0l_next.lerp(point0r_next, progress)
+					
+					
+					vertex_array.append(pt_next)
+					normal_array.append(track_up_next)
+					uv_array.append(Vector2(progress_x_next, progress * surface_width))
+					
+					vertex_array.append(pt)
+					normal_array.append(track_up)
+					uv_array.append(Vector2(progress_x, progress * surface_width))
+				alternator *= -1.0
 				
 				vertex_array_side_left.append(point0l)
 				vertex_array_side_left.append(point0l - track_up)
 				normal_array_side_left.append(-track_right)
 				normal_array_side_left.append(-track_right)
-				uv_array_side_left.append(Vector2(1.0, point_offset / curve_length))
-				uv_array_side_left.append(Vector2(0.0, point_offset / curve_length))
+				uv_array_side_left.append(Vector2(1.0, uvy))
+				uv_array_side_left.append(Vector2(0.0, uvy))
 				
 				vertex_array_side_right.append(point0r - track_up)
 				vertex_array_side_right.append(point0r)
 				normal_array_side_right.append(track_right)
 				normal_array_side_right.append(track_right)
-				uv_array_side_right.append(Vector2(1.0, point_offset / curve_length))
-				uv_array_side_right.append(Vector2(0.0, point_offset / curve_length))
+				uv_array_side_right.append(Vector2(1.0, uvy))
+				uv_array_side_right.append(Vector2(0.0, uvy))
+#endregion
 		arr[ArrayMesh.ARRAY_VERTEX] = vertex_array
 		arr[ArrayMesh.ARRAY_NORMAL] = normal_array
 		arr[ArrayMesh.ARRAY_TEX_UV] = uv_array

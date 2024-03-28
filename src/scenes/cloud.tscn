@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://kgfg0wjxk43v"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_7o8u2"]
+radius = 40.0
+height = 80.0
+
+[sub_resource type="Curve" id="Curve_y8piw"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.244444, 0.767655), 0.0, 0.0, 0, 0, Vector2(0.418518, 0.54381), 0.0, 0.0, 0, 0, Vector2(0.524074, 0.872494), 0.0, 0.0, 0, 0, Vector2(0.694444, 0.370968), 0.0, 0.0, 0, 0, Vector2(0.785185, 0.659983), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 7
+
+[node name="Cloud" type="CPUParticles3D"]
+amount = 32
+lifetime = 60.0
+preprocess = 600.0
+fixed_fps = 1
+mesh = SubResource("SphereMesh_7o8u2")
+direction = Vector3(0, 0, -19.7)
+spread = 13.562
+gravity = Vector3(0, 0, 0.15)
+initial_velocity_min = 2.05
+initial_velocity_max = 2.7
+scale_amount_max = 1.45
+scale_amount_curve = SubResource("Curve_y8piw")

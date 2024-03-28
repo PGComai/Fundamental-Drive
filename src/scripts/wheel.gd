@@ -15,6 +15,7 @@ const STRAIGHT_MULTIPLIER = 3500.0
 
 var wheel_angular_velocity: float
 var braking_multiplier := 1.0
+var spawn_transform: Transform3D
 
 
 # Called when the node enters the scene tree for the first time.

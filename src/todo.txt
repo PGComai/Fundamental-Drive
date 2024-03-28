@@ -10,6 +10,7 @@
 - grinding
 - trick recognition
 - rotation snap
+- better camera movement
 
 OPTIMIZATIONS:
 	- only generate draft roads locally (+- 2 or 3 points)
